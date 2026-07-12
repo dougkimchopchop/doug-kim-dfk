@@ -568,11 +568,11 @@ function updateRowTotal(i){
 
 function renderPointsPanel(){
   const today=todayIdx();const days=currentWeekDayIndices();
-  const dt0=dayDate(days[0]);const dt6=dayDate(days[6]);
+  const _d2dt=d=>d>=0?dayDate(d):new Date(new Date(2026,6,13).getTime()+d*86400000);const dt0=_d2dt(days[0]);const dt6=_d2dt(days[6]);
   document.getElementById('pts-week-range').textContent='Week of '+dt0.toLocaleDateString('en-US',{month:'short',day:'numeric'})+' – '+dt6.toLocaleDateString('en-US',{month:'short',day:'numeric'});
   let rows='';
   days.forEach((di,i)=>{
-    const dt=dayDate(Math.max(0,di));const dow=dt.getDay();
+    const dt=di>=0?dayDate(di):new Date(new Date(2026,6,13).getTime()+di*86400000);const dow=dt.getDay();
     const isToday=di===today;const isFuture=di>today;const oor=di<0||di>89;
     const p=(!oor&&!isFuture)?getWeekPts(di):{output:0,leverage:0,exposure:0,energy:0};
     const total=p.output+p.leverage+p.exposure+p.energy;
