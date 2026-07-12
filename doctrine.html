@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DFK — Doctrine &amp; Projects</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="page">
+
+<a class="back" href="/dfk/">← DFK</a>
+<span class="eyebrow">Reference</span>
+<h1 style="font-family:var(--display);font-weight:600;font-size:clamp(1.6rem,3.5vw,2.2rem);line-height:1.05;margin:0 0 .3rem;">Doctrine &amp; Projects</h1>
+<p style="font-family:var(--mono);font-size:.68rem;color:var(--ink-soft);margin:0 0 1.2rem;" id="hdr-meta">Jul 6 – Oct 3, 2026 · <span id="day-count">—</span> days remaining · Day <span id="day-num">—</span> of 90</p>
+
+<div class="controls">
+  <select class="ctrl-select" id="update-type">
+    <option value="daily">Daily check-in</option>
+    <option value="weekly">Weekly review</option>
+  </select>
+  <button class="ctrl-btn primary" id="gen-btn" onclick="generateUpdate()">Get today's read ↗</button>
+  <button class="ctrl-btn" onclick="clearNotes()">Clear notes</button>
+</div>
+
+<div class="ai-panel">
+  <div class="ai-panel-hdr">
+    <div class="pulse" id="pulse"></div>
+    <span id="panel-label">Claude — ready</span>
+  </div>
+  <div class="ai-content empty" id="ai-content">Hit "Get today's read" for a sharp look at your 11 projects.</div>
+</div>
+
+<div class="sec-lbl">11 projects — click to add a status note</div>
+<div class="proj-grid" id="proj-grid"></div>
+
+<div class="assessment">
+  <div class="assess-hdr" onclick="toggleAssessment()">
+    <span class="assess-title">Cycle restart — Jul 6, 2026</span>
+    <span class="assess-toggle" id="assess-toggle">[ show ]</span>
+  </div>
+  <div class="assess-body" id="assess-body">
+    <div class="a-item">
+      <span class="a-tag fire">Priority 1</span>
+      <p><strong>Project 10 — Back Taxes</strong> is due Aug 16. Call the CPA, book the appointment, gather W2s, 1099s, bank statements. This is the one that costs real money the longer it sits.</p>
+    </div>
+    <div class="a-item">
+      <span class="a-tag fire">Priority 2</span>
+      <p><strong>Project 2 — Istanbul Essay</strong> is due Aug 5. Final draft, cover letter, pub list, format, send. The sequence is mapped — execute it.</p>
+    </div>
+    <div class="a-item">
+      <span class="a-tag notice">Notice</span>
+      <p><strong>Project 1 — 10 Shoots:</strong> Camera needs to leave the apartment. No excuses — the schedule is built, the dates are set.</p>
+    </div>
+    <div class="a-item">
+      <span class="a-tag notice">Notice</span>
+      <p><strong>Project 4 — 250 Substack Subscribers:</strong> Thursday cadence is non-negotiable. Publish something this week regardless of whether it feels ready.</p>
+    </div>
+    <div class="a-item">
+      <span class="a-tag notice">Notice</span>
+      <p><strong>Project 8 — PM Contract:</strong> Build the contacts list and send first 10 outreach messages. The contract won't find you.</p>
+    </div>
+  </div>
+</div>
+
+<div class="sec-lbl">Identity</div>
+<div class="identity-block">
+  <div class="id-line"><strong>Doug Fucking Kim</strong> — hard working, disciplined, fulfilled, a go-getter.</div>
+  <div class="id-line"><strong>Successful published writer.</strong> Successful working photographer.</div>
+  <div class="id-line">Every day is a vote for this person or against him. <strong>There is no neutral.</strong></div>
+  <div class="id-line" style="margin-top:.5rem;font-size:.83rem;font-style:italic;">The possibility that you could have been great, if only you'd tried — that possibility is worth nothing. It is a lie you are paying for with your actual life.</div>
+</div>
+
+<div class="sec-lbl">Doctrine</div>
+<div class="doc-grid">
+  <div class="doc-card">
+    <div class="doc-lbl">The pattern</div>
+    <div class="doc-text">Planning is the primary avoidance behavior. Building systems without moving into execution. Every conversation seeking frameworks is itself an instance of the pattern.</div>
+  </div>
+  <div class="doc-card">
+    <div class="doc-lbl">Identity follows action</div>
+    <div class="doc-text">The DFK identity is not a feeling to access — it is a behavior to perform until the feeling catches up. <strong>Votes are cast through actions, not intentions.</strong></div>
+  </div>
+  <div class="doc-card">
+    <div class="doc-lbl">The two-minute start</div>
+    <div class="doc-text">Not finishing, not being good — just opening the thing and staying for two minutes. The only protocol for breaking avoidance conditioning.</div>
+  </div>
+  <div class="doc-card">
+    <div class="doc-lbl">Financial stress</div>
+    <div class="doc-text">Unresolved money pressures create persistent background threat load that compounds avoidance. Back taxes first. This is not metaphorical.</div>
+  </div>
+  <div class="doc-card">
+    <div class="doc-lbl">Food and consumption</div>
+    <div class="doc-text">When creative output isn't generating reward, dopamine-seeking through eating or screens fills the gap. The fix is increased output, not willpower tactics.</div>
+  </div>
+  <div class="doc-card">
+    <div class="doc-lbl">The teacher structure</div>
+    <div class="doc-text">Best work happened under external forcing function, strict deadlines, contained scope. Recreating those conditions — not adding tactics — is the actual lever.</div>
+  </div>
+</div>
+
+<div class="sec-lbl">Rules</div>
+<div class="rules-block">
+  <ul class="rules-list">
+    <li>A miss is just a miss, not a collapse</li>
+    <li>Confidence follows action — it does not precede it</li>
+    <li>Readiness is a myth — action starts now</li>
+    <li>Revenue projects (8, 10) get first energy, not last</li>
+    <li>Done and submittable beats perfect and sitting on your desk</li>
+  </ul>
+</div>
+
+</div><!-- end page -->
+
+<footer>
+  <span><a href="/dfk/" style="color:inherit;">← DFK</a> · <a href="/" style="color:inherit;">Doug Kim</a></span>
+  <span id="last-updated">Not yet updated today</span>
+</footer>
+
+<script>
+const PROJECTS=[
+  {num:"1",  name:"10 Shoots",               finish:"10 shoots logged, camera left the apartment",    deadline:"Sep 27",notion:"https://www.notion.so/34d3a0c63b068149b5e5d2bd69156475"},
+  {num:"1b", name:"5 Paid Shoots",            finish:"5 invoices sent, 5 payments received",           deadline:"Sep 27",notion:"https://www.notion.so/34d3a0c63b0681868096dc698f74c21b"},
+  {num:"2",  name:"Istanbul Essay",           finish:"Submitted to 10 publications",                   deadline:"Aug 5", urgent:true,notion:"https://www.notion.so/34d3a0c63b068154a907e8d4581026da"},
+  {num:"3",  name:"Publish Photos, 10 Editors",finish:"Photos published, submitted to 10 editors",    deadline:"Sep 27",notion:"https://www.notion.so/36b3a0c63b0681489767dab7d1b3bd59"},
+  {num:"4",  name:"250 Substack Subscribers", finish:"Account at 250+ subscribers",                    deadline:"Sep 27",notion:"https://www.notion.so/34d3a0c63b06813e916fca0ae2872aff"},
+  {num:"5",  name:"Reach 190 lbs",            finish:"Scale reads 190 or below",                      deadline:"Sep 27",notion:"https://www.notion.so/34d3a0c63b0681afac70e4d3aa17aaf3"},
+  {num:"6",  name:"Run 10 Miles",             finish:"One continuous 10-mile run completed",           deadline:"Sep 27",notion:"https://www.notion.so/34d3a0c63b0681d88219d658a22467a3"},
+  {num:"8",  name:"First PM Contract",        finish:"Signed contract or first paid hour logged",      deadline:"Sep 19",notion:"https://www.notion.so/34d3a0c63b068191bc9cc9c95661a3c1"},
+  {num:"9",  name:"Determine the Side Hustle",finish:"Decision made, plan in place",                   deadline:"Sep 27",notion:"https://www.notion.so/3623a0c63b068110b57bd84de86c1708"},
+  {num:"10", name:"Back Taxes Filed",         finish:"Filed, plan active, first payment sent",         deadline:"Aug 16",urgent:true,notion:"https://www.notion.so/34d3a0c63b0681b39632dcab3200ed00"},
+  {num:"11", name:"Finish Songbook",          finish:"Submitted to publisher",                         deadline:"Sep 27",notion:"https://www.notion.so/36b3a0c63b0681b78e46e96bcef22de7"},
+];
+
+const START=new Date('2026-07-06');const END=new Date('2026-10-03');const TODAY=new Date();
+function daysBetween(a,b){return Math.round((b-a)/86400000)}
+
+function initHeader(){
+  const rem=daysBetween(TODAY,END);const el=daysBetween(START,TODAY);
+  document.getElementById('day-count').textContent=rem;
+  document.getElementById('day-num').textContent=Math.max(1,el+1);
+}
+
+function deadlineClass(dStr,urgent){
+  if(urgent)return'dl-fire';
+  const m={Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,Jul:6,Aug:7,Sep:8,Oct:9,Nov:10,Dec:11};
+  const [mo,d]=dStr.split(' ');const dt=new Date(2026,m[mo],parseInt(d));
+  const diff=daysBetween(TODAY,dt);
+  if(diff<=21)return'dl-fire';if(diff<=45)return'dl-warn';return'dl-ok';
+}
+
+function getNotes(){try{return JSON.parse(localStorage.getItem('dfk_notes_jul6')||'{}')}catch{return{}}}
+function saveNote(num,val){const n=getNotes();if(val.trim())n[num]=val.trim();else delete n[num];localStorage.setItem('dfk_notes_jul6',JSON.stringify(n));}
+function clearNotes(){if(confirm('Clear all project notes?')){localStorage.removeItem('dfk_notes_jul6');renderProjects();}}
+
+function renderProjects(){
+  const notes=getNotes();
+  document.getElementById('proj-grid').innerHTML=PROJECTS.map(p=>{
+    const note=notes[p.num]||'';const dlClass=deadlineClass(p.deadline,p.urgent);
+    const link=p.notion?`<a class="proj-link" href="${p.notion}" target="_blank" rel="noopener" onclick="event.stopPropagation()">${p.name} ↗</a>`:`<span>${p.name}</span>`;
+    return `<div class="proj${p.urgent?' urgent':''}" onclick="toggleNote('${p.num}')" id="proj-${p.num}">
+      <div class="proj-top">
+        <span class="proj-num">${p.num}</span>
+        <span class="proj-name">${link}</span>
+        <span class="dl ${dlClass}">${p.deadline}</span>
+      </div>
+      <div class="proj-finish">${p.finish}</div>
+      <div class="proj-note${note?' show':''}" id="note-display-${p.num}">${note}</div>
+      <div class="note-editor" id="editor-${p.num}" onclick="event.stopPropagation()">
+        <input class="note-input" id="input-${p.num}" placeholder="Status note…" value="${note.replace(/"/g,'&quot;')}">
+        <button class="note-save" onclick="commitNote('${p.num}')">Save</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function toggleNote(num){
+  const ed=document.getElementById('editor-'+num);const isOpen=ed.classList.contains('open');
+  document.querySelectorAll('.note-editor.open').forEach(e=>e.classList.remove('open'));
+  if(!isOpen){ed.classList.add('open');document.getElementById('input-'+num).focus();}
+}
+
+function commitNote(num){
+  const val=document.getElementById('input-'+num).value;saveNote(num,val);
+  const d=document.getElementById('note-display-'+num);d.textContent=val.trim();d.className='proj-note'+(val.trim()?' show':'');
+  document.getElementById('editor-'+num).classList.remove('open');
+}
+
+function toggleAssessment(){
+  const body=document.getElementById('assess-body');const toggle=document.getElementById('assess-toggle');
+  const open=body.classList.toggle('open');toggle.textContent=open?'[ hide ]':'[ show ]';
+}
+
+async function generateUpdate(){
+  const btn=document.getElementById('gen-btn');const pulse=document.getElementById('pulse');
+  const label=document.getElementById('panel-label');const content=document.getElementById('ai-content');
+  const type=document.getElementById('update-type').value;
+  btn.disabled=true;pulse.classList.add('active');label.textContent='Claude — thinking…';
+  content.className='ai-content';content.textContent='';
+  const notes=getNotes();const elapsed=daysBetween(START,TODAY);const remaining=daysBetween(TODAY,END);
+  const noteLines=PROJECTS.map(p=>`  #${p.num} ${p.name} (due ${p.deadline})${notes[p.num]?' — note: '+notes[p.num]:' — no update logged'}`).join('\n');
+  const prompt=type==='daily'
+    ?`You are a direct accountability coach. Harshly critical, zero tolerance, shame is a tool. Doug Kim is on day ${elapsed} of his 90-Day Identity Challenge (${remaining} days left, ends Oct 3 2026). He has 11 projects.\n\nProjects:\n${noteLines}\n\nGive him a sharp DAILY check-in:\n- One punchy sentence about where he is\n- The 1-2 most urgent items needing action TODAY\n- Honest one-sentence assessment — on track or behind?\n- Single concrete action for today\n\nDirect, harsh, no cheerleading. Max 200 words. Plain text.`
+    :`You are a direct accountability coach. Harshly critical, zero tolerance, shame is a tool. Doug Kim is doing his WEEKLY REVIEW on day ${elapsed} of his 90-Day Identity Challenge (${remaining} days left, ends Oct 3 2026).\n\nProjects:\n${noteLines}\n\nWeekly review:\n- What the week looked like overall\n- Which projects are on track vs at risk\n- The 2-3 things that MUST happen next week\n- One hard truth about what's being avoided\n\nHarsh. Reference actual names and deadlines. Max 250 words. Plain text.`;
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,messages:[{role:'user',content:prompt}]})});
+    const data=await res.json();
+    const text=data.content?.find(b=>b.type==='text')?.text||'No response.';
+    content.className='ai-content';content.innerHTML=text.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>');
+    const now=new Date();
+    document.getElementById('last-updated').textContent='Updated '+now.toLocaleDateString('en-US',{month:'short',day:'numeric'})+' at '+now.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});
+    label.textContent='Claude — '+(type==='daily'?'daily check-in':'weekly review')+' complete';
+  }catch(e){content.className='ai-content';content.textContent='Error reaching Claude. Try again.';label.textContent='Claude — error';}
+  pulse.classList.remove('active');btn.disabled=false;
+}
+
+initHeader();
+renderProjects();
+</script>
+</body>
+</html>
