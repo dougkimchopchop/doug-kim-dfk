@@ -5,11 +5,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>DFK — 90 Days</title>
 <link rel="stylesheet" href="styles.css">
+<style>
+.breadcrumb{font-family:var(--mono);font-size:.65rem;color:var(--ink-soft);margin-bottom:1.4rem;display:flex;align-items:center;gap:.4rem}
+.breadcrumb a{color:var(--ink-soft);text-decoration:none}
+.breadcrumb a:hover{color:var(--ribbon)}
+.breadcrumb-sep{color:var(--oak-soft)}
+</style>
 </head>
 <body>
 <a class="skip-link" href="#main" style="position:absolute;left:-999px;">Skip to content</a>
 <header class="shelf-header">
-  <a class="back" href="https://hub-seven-nu.vercel.app">← Doug Kim</a>
+  <nav class="breadcrumb" aria-label="Breadcrumb"><a href="https://hub-seven-nu.vercel.app" target="_blank" rel="noopener">Doug Kim</a><span class="breadcrumb-sep">/</span><span>DFK — 90 Days</span></nav>
   <span class="eyebrow">Project 02</span>
   <h1>DFK — 90 Days</h1>
   <p id="cycle-meta">Jul 6 – Oct 3, 2026 · <span id="day-count">—</span> days remaining</p>
@@ -17,13 +23,13 @@
 </header>
 <main id="main">
   <section class="shelf" aria-label="DFK tools">
-    <a class="project-card" href="/tracker.html">
+    <a class="project-card" href="/tracker.html" target="_blank" rel="noopener">
       <span class="tag">DAILY</span>
       <h2>Habit Tracker</h2>
       <p class="desc">13 habits, daily score, push-up and weight logs, 90-day graphs, and points system. Synced to Supabase across all devices.</p>
       <span class="go">Open tracker →</span>
     </a>
-    <a class="project-card" href="/doctrine.html">
+    <a class="project-card" href="/doctrine.html" target="_blank" rel="noopener">
       <span class="tag">REFERENCE</span>
       <h2>Doctrine &amp; Projects</h2>
       <p class="desc">11 active projects with deadlines and Notion links, identity doctrine, rules, and AI-powered daily or weekly check-ins.</p>

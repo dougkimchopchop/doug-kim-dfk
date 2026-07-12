@@ -5,11 +5,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>DFK — Habit Tracker</title>
 <link rel="stylesheet" href="styles.css">
+<style>
+.breadcrumb{font-family:var(--mono);font-size:.65rem;color:var(--ink-soft);margin-bottom:1.4rem;display:flex;align-items:center;gap:.4rem}
+.breadcrumb a{color:var(--ink-soft);text-decoration:none}
+.breadcrumb a:hover{color:var(--ribbon)}
+.breadcrumb-sep{color:var(--oak-soft)}
+</style>
 </head>
 <body>
 <div class="page">
 
-<a class="back" href="/">← DFK</a>
+<nav class="breadcrumb" aria-label="Breadcrumb"><a href="https://hub-seven-nu.vercel.app" target="_blank" rel="noopener">Doug Kim</a><span class="breadcrumb-sep">/</span><a href="https://doug-kim-dfk.vercel.app" target="_blank" rel="noopener">DFK</a><span class="breadcrumb-sep">/</span><span>Habit Tracker</span></nav>
 <span class="eyebrow">Daily</span>
 <h1 style="font-family:var(--display);font-weight:600;font-size:clamp(1.6rem,3.5vw,2.2rem);line-height:1.05;margin:0 0 .3rem;">Habit Tracker</h1>
 <p style="font-family:var(--mono);font-size:.68rem;color:var(--ink-soft);margin:0 0 .5rem;" id="hdr-sub">Nothing logged. That's still a choice.</p>
@@ -107,7 +113,11 @@
 <div class="panel" id="panel-points">
 
 <div class="pts-topbar">
-  <div class="pts-wk-range" id="pts-week-range">Week of —</div>
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.5rem;">
+    <button onclick="changePointsWeek(-1)" style="background:transparent;border:1px solid var(--line);border-radius:var(--radius);padding:.2rem .7rem;font-family:var(--mono);font-size:.7rem;cursor:pointer;color:var(--ink-soft);">←</button>
+    <div class="pts-wk-range" id="pts-week-range" style="margin-bottom:0;">Week of —</div>
+    <button onclick="changePointsWeek(1)" id="pts-next-btn" style="background:transparent;border:1px solid var(--line);border-radius:var(--radius);padding:.2rem .7rem;font-family:var(--mono);font-size:.7rem;cursor:pointer;color:var(--ink-soft);">→</button>
+  </div>
   <div style="display:flex;align-items:baseline;gap:.6rem;margin-bottom:.8rem;">
     <div class="pts-total-big" id="pts-total-big">0</div>
     <div style="font-family:var(--mono);font-size:.75rem;color:var(--ink-soft);font-weight:500;">/ 50</div>
@@ -234,7 +244,7 @@
 </div><!-- end page -->
 
 <footer>
-  <span><a href="/" style="color:inherit;">← DFK</a> · <a href="https://hub-seven-nu.vercel.app" style="color:inherit;">Doug Kim</a></span>
+  <span><a href="https://doug-kim-dfk.vercel.app" target="_blank" rel="noopener" style="color:inherit;">← DFK</a> · <a href="https://hub-seven-nu.vercel.app" target="_blank" rel="noopener" style="color:inherit;">Doug Kim</a></span>
   <span id="last-updated"></span>
 </footer>
 
@@ -265,7 +275,7 @@ const SUPABASE_URL='https://rpmxkhgirhlfwqefdopo.supabase.co';
 const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJwbXhraGdpcmhsZndxZWZkb3BvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY2MDUzMTQsImV4cCI6MjA5MjE4MTMxNH0.bAUNydSiWh60mxD23RLYXpSpRxrzt0q2JQ7yDSZmOW4';
 const LS_KEY='dfk_jul6';
 const PUSHUP_GOAL=700;
-let data={},cur=0,saveTimer=null,modalDay=null,modalCat=null,modalRowIdx=null;
+let data={},cur=0,saveTimer=null,modalDay=null,modalCat=null,modalRowIdx=null,ptsWeekOffset=0;
 
 function todayIdx(){return Math.max(0,Math.min(89,Math.floor((Date.now()-START.getTime())/86400000)))}
 function dk(d){return 'd'+d}
@@ -489,7 +499,7 @@ function renderPhases(){
 function jmp(d){if(d<=todayIdx()){cur=d;updateNav();renderGrid();renderStreak();renderPhases();updateHeader();renderNumInputs();}}
 
 /* ── POINTS ── */
-function currentWeekDayIndices(){const today=todayIdx();const dt=dayDate(today);const dow=dt.getDay();const days=[];for(let i=0;i<7;i++)days.push(today-dow+i);return days;}
+function currentWeekDayIndices(){const today=todayIdx();const dt=dayDate(today);const dow=dt.getDay();const base=today-dow+(ptsWeekOffset*7);const days=[];for(let i=0;i<7;i++)days.push(base+i);return days;}function changePointsWeek(dir){const today=todayIdx();const dt=dayDate(today);const dow=dt.getDay();const newOffset=ptsWeekOffset+dir;const newBase=today-dow+(newOffset*7);if(newBase>today)return;if(newOffset<-12)return;ptsWeekOffset=newOffset;const nextBtn=document.getElementById('pts-next-btn');if(nextBtn)nextBtn.style.opacity=ptsWeekOffset===0?'0.3':'1';renderPointsPanel();}
 function getWeekPts(di){const dd=gd(di);return{output:dd.pts_output||0,leverage:dd.pts_leverage||0,exposure:dd.pts_exposure||0,energy:dd.pts_energy||0};}
 
 function openModal(di,cat,rowIdx,btn){
