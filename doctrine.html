@@ -18,7 +18,7 @@
 <nav class="breadcrumb" aria-label="Breadcrumb"><a href="https://hub-seven-nu.vercel.app" target="_blank" rel="noopener">Doug Kim</a><span class="breadcrumb-sep">/</span><a href="https://doug-kim-dfk.vercel.app" target="_blank" rel="noopener">DFK</a><span class="breadcrumb-sep">/</span><span>Doctrine & Projects</span></nav>
 <span class="eyebrow">Reference</span>
 <h1 style="font-family:var(--display);font-weight:600;font-size:clamp(1.6rem,3.5vw,2.2rem);line-height:1.05;margin:0 0 .3rem;">Doctrine &amp; Projects</h1>
-<p style="font-family:var(--mono);font-size:.68rem;color:var(--ink-soft);margin:0 0 1.2rem;" id="hdr-meta">Jul 6 – Oct 3, 2026 · <span id="day-count">—</span> days remaining · Day <span id="day-num">—</span> of 90</p>
+<p style="font-family:var(--mono);font-size:.68rem;color:var(--ink-soft);margin:0 0 1.2rem;" id="hdr-meta">Jul 13 – Oct 10, 2026 · <span id="day-count">—</span> days remaining · Day <span id="day-num">—</span> of 90</p>
 
 <div class="controls">
   <select class="ctrl-select" id="update-type">
@@ -42,7 +42,7 @@
 
 <div class="assessment">
   <div class="assess-hdr" onclick="toggleAssessment()">
-    <span class="assess-title">Cycle restart — Jul 6, 2026</span>
+    <span class="assess-title">Cycle restart — Jul 13, 2026</span>
     <span class="assess-toggle" id="assess-toggle">[ show ]</span>
   </div>
   <div class="assess-body" id="assess-body">
@@ -138,7 +138,7 @@ const PROJECTS=[
   {num:"11", name:"Finish Songbook",          finish:"Submitted to publisher",                         deadline:"Sep 27",notion:"https://www.notion.so/36b3a0c63b0681b78e46e96bcef22de7"},
 ];
 
-const START=new Date('2026-07-06');const END=new Date('2026-10-03');const TODAY=new Date();
+const START=new Date('2026-07-13');const END=new Date('2026-10-10');const TODAY=new Date();
 function daysBetween(a,b){return Math.round((b-a)/86400000)}
 
 function initHeader(){
@@ -155,9 +155,9 @@ function deadlineClass(dStr,urgent){
   if(diff<=21)return'dl-fire';if(diff<=45)return'dl-warn';return'dl-ok';
 }
 
-function getNotes(){try{return JSON.parse(localStorage.getItem('dfk_notes_jul6')||'{}')}catch{return{}}}
-function saveNote(num,val){const n=getNotes();if(val.trim())n[num]=val.trim();else delete n[num];localStorage.setItem('dfk_notes_jul6',JSON.stringify(n));}
-function clearNotes(){if(confirm('Clear all project notes?')){localStorage.removeItem('dfk_notes_jul6');renderProjects();}}
+function getNotes(){try{return JSON.parse(localStorage.getItem('dfk_notes_jul13')||'{}')}catch{return{}}}
+function saveNote(num,val){const n=getNotes();if(val.trim())n[num]=val.trim();else delete n[num];localStorage.setItem('dfk_notes_jul13',JSON.stringify(n));}
+function clearNotes(){if(confirm('Clear all project notes?')){localStorage.removeItem('dfk_notes_jul13');renderProjects();}}
 
 function renderProjects(){
   const notes=getNotes();
