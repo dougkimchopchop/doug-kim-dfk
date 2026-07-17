@@ -506,8 +506,12 @@ function openModal(di,cat,rowIdx,btn){
   modalDay=di;modalCat=cat;modalRowIdx=rowIdx;
   document.getElementById('inc-label').textContent=cat.toUpperCase()+' · '+dayDate(di).toLocaleDateString('en-US',{month:'short',day:'numeric'});
   const modal=document.getElementById('inc-modal');modal.style.display='block';
-  const rect=btn.getBoundingClientRect();const scrollTop=window.scrollY||0;
-  modal.style.top=(rect.bottom+scrollTop+6)+'px';modal.style.left=Math.min(rect.left,window.innerWidth-260)+'px';
+  const rect=btn.getBoundingClientRect();
+  modal.style.position='fixed';
+  const mH=80;const mW=260;
+  const top=rect.bottom+6+mH>window.innerHeight?rect.top-mH-6:rect.bottom+6;
+  const left=Math.min(Math.max(4,rect.left-(mW/2)+(rect.width/2)),window.innerWidth-mW-4);
+  modal.style.top=top+'px';modal.style.left=left+'px';
 }
 
 function closeModal(){document.getElementById('inc-modal').style.display='none';modalDay=null;modalCat=null;modalRowIdx=null;}
