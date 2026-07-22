@@ -4,75 +4,130 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>DFK — The Cliff</title>
-<link rel="stylesheet" href="styles.css">
 <style>
-.breadcrumb{font-family:var(--mono);font-size:.65rem;color:var(--ink-soft);margin-bottom:1.4rem;display:flex;align-items:center;gap:.4rem}
-.breadcrumb a{color:var(--ink-soft);text-decoration:none}
-.breadcrumb a:hover{color:var(--ribbon)}
-.breadcrumb-sep{color:var(--oak-soft)}
+@import url('https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap');
+
+:root{
+  --ink:#15181F;
+  --ink-soft:#5B6472;
+  --paper:#FFFFFF;
+  --panel:#F6F8FB;
+  --blue:#1D4ED8;
+  --blue-soft:#EAF0FE;
+  --orange:#EA580C;
+  --orange-soft:#FDF0E7;
+  --line:#E4E8EF;
+  --radius:6px;
+  --display:'Archivo',sans-serif;
+  --body:'IBM Plex Sans',sans-serif;
+  --mono:'IBM Plex Mono',monospace;
+}
+*{box-sizing:border-box;}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.65;-webkit-font-smoothing:antialiased;}
+.page{max-width:660px;margin:0 auto;padding:3rem 1.5rem 5rem;}
+
+.breadcrumb{font-family:var(--mono);font-size:.72rem;color:var(--ink-soft);margin-bottom:1.6rem;display:flex;gap:.4rem;align-items:center;}
+.breadcrumb a{color:var(--ink-soft);text-decoration:none;}
+.breadcrumb a:hover{color:var(--blue);}
+.breadcrumb-sep{color:var(--line);}
+
+.eyebrow{display:inline-flex;align-items:center;gap:.5rem;font-family:var(--mono);font-size:.72rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--blue);margin-bottom:.8rem;}
+.eyebrow::before{content:"";width:8px;height:8px;background:var(--orange);flex-shrink:0;}
+
+h1{font-family:var(--display);font-weight:800;font-size:clamp(2rem,5vw,2.8rem);line-height:1.02;margin:0 0 .5rem;letter-spacing:-.01em;}
+.subtitle{font-family:var(--body);font-size:1rem;color:var(--ink-soft);margin:0 0 2.5rem;max-width:46ch;}
+
+.sec-lbl{font-family:var(--mono);font-size:.7rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--blue);border-bottom:2px solid var(--blue-soft);padding-bottom:.5rem;margin:2.4rem 0 1rem;}
+
+.diagnosis{border:1px solid var(--line);border-left:4px solid var(--blue);background:var(--blue-soft);border-radius:var(--radius);padding:1.3rem 1.5rem;}
+.diag-line{font-size:.98rem;color:var(--ink);padding:.35rem 0;line-height:1.6;}
+.diag-line strong{color:var(--blue);}
+.diag-line.note{font-style:italic;color:var(--ink-soft);font-size:.88rem;margin-top:.4rem;}
+
+.split{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:1.1rem 1.3rem;}
+.card-lbl{font-family:var(--mono);font-size:.68rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:.5rem;}
+.card.real .card-lbl{color:var(--blue);}
+.card.myth .card-lbl{color:var(--orange);}
+.card-text{font-size:.92rem;color:var(--ink);line-height:1.6;}
+
+.laws{display:flex;flex-direction:column;gap:.6rem;}
+.law{display:flex;gap:1rem;align-items:flex-start;border:1px solid var(--line);border-radius:var(--radius);padding:1rem 1.2rem;background:var(--paper);}
+.law-num{font-family:var(--mono);font-weight:700;font-size:.85rem;color:var(--orange);flex-shrink:0;min-width:22px;}
+.law-text{font-size:.96rem;color:var(--ink);line-height:1.6;}
+
+.exception{background:var(--orange-soft);border:1px solid #F3D3B8;border-left:4px solid var(--orange);border-radius:var(--radius);padding:1.2rem 1.4rem;}
+.law-text b{color:var(--orange);font-weight:700;}
+.exception-text b{color:var(--orange);font-weight:700;}
+.exception-title{font-family:var(--mono);font-size:.7rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--orange);margin-bottom:.5rem;}
+.exception-text{font-size:.92rem;color:var(--ink);line-height:1.6;}
+
+.principle{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:1.3rem 1.5rem;font-size:.96rem;line-height:1.65;color:var(--ink);}
+
+.closing{text-align:center;font-family:var(--body);font-weight:600;font-style:normal;font-size:1.05rem;color:var(--ink-soft);line-height:1.6;margin:2.8rem 0 1rem;padding:0 1rem;}
+.closing span{color:var(--orange);}
+.closing em{font-style:italic;color:var(--ink-soft);}
+.closing b{color:var(--ink);font-weight:700;}
+
+footer{max-width:660px;margin:2rem auto 3rem;padding:1.2rem 1.5rem 0;border-top:1px solid var(--line);font-family:var(--mono);font-size:.72rem;color:var(--ink-soft);display:flex;justify-content:space-between;flex-wrap:wrap;gap:.4rem;}
+footer a{color:var(--blue);text-decoration:none;}
+
+@media(max-width:600px){.split{grid-template-columns:1fr;}}
 </style>
 </head>
 <body>
 <div class="page">
 
-<nav class="breadcrumb" aria-label="Breadcrumb"><a href="https://hub-seven-nu.vercel.app" target="_blank" rel="noopener">Doug Kim</a><span class="breadcrumb-sep">/</span><a href="https://doug-kim-dfk.vercel.app" target="_blank" rel="noopener">DFK</a><span class="breadcrumb-sep">/</span><span>The Cliff</span></nav>
+<nav class="breadcrumb"><a href="https://hub-seven-nu.vercel.app" target="_blank" rel="noopener">Doug Kim</a><span class="breadcrumb-sep">/</span><a href="https://doug-kim-dfk.vercel.app" target="_blank" rel="noopener">DFK</a><span class="breadcrumb-sep">/</span><span>The Cliff</span></nav>
 <span class="eyebrow">Doctrine</span>
-<h1 style="font-family:var(--display);font-weight:600;font-size:clamp(1.6rem,3.5vw,2.2rem);line-height:1.05;margin:0 0 .3rem;">The Cliff</h1>
-<p style="font-family:var(--mono);font-size:.68rem;color:var(--ink-soft);margin:0 0 1.2rem;">Escape hatch removal — not catastrophe, irreversibility</p>
+<h1>The Cliff</h1>
+<p class="subtitle">Escape hatch removal — not catastrophe, irreversibility.</p>
 
 <div class="sec-lbl">The actual diagnosis</div>
-<div class="identity-block">
-  <div class="id-line">You don't have a courage problem. You've proven you'll do hard things.</div>
-  <div class="id-line">You have an <strong>escape hatch problem</strong>. The apartment is always there, always comfortable, always winning.</div>
-  <div class="id-line">A cliff doesn't motivate you. <strong>It simplifies the decision down to zero.</strong> That's the actual mechanism.</div>
-  <div class="id-line" style="margin-top:.5rem;font-size:.83rem;font-style:italic;">Ambiguity wins every morning by default. Not YouTube. Ambiguity.</div>
+<div class="diagnosis">
+  <div class="diag-line">You don't have a courage problem. You've proven you'll do hard things.</div>
+  <div class="diag-line">You have an <strong>escape hatch problem</strong>. The apartment is always there, always comfortable, always winning.</div>
+  <div class="diag-line">A cliff doesn't motivate you. <strong>It simplifies the decision down to zero.</strong> That's the mechanism.</div>
+  <div class="diag-line note">Ambiguity wins every morning by default. Not YouTube. Ambiguity.</div>
 </div>
 
 <div class="sec-lbl">Mechanism vs. mythology</div>
-<div class="doc-grid">
-  <div class="doc-card">
-    <div class="doc-lbl">What's real</div>
-    <div class="doc-text">Binary switches work for you. Removing the option to retreat works for you. Consequence works for you.</div>
+<div class="split">
+  <div class="card real">
+    <div class="card-lbl">What's real</div>
+    <div class="card-text">Binary switches work for you. Removing the option to retreat works for you. Consequence works for you.</div>
   </div>
-  <div class="doc-card">
-    <div class="doc-lbl">What's a story</div>
-    <div class="doc-text">That commitment has to mean destroying your safety net or manufacturing genuine panic. Real desperation narrows your thinking — it makes the work worse. Don't confuse becoming desperate with becoming committed.</div>
+  <div class="card myth">
+    <div class="card-lbl">What's a story</div>
+    <div class="card-text">That commitment has to mean destroying your safety net or manufacturing panic. Real desperation narrows your thinking. Don't confuse desperate with committed.</div>
   </div>
 </div>
 
 <div class="sec-lbl">The constitution — not goals, laws</div>
-<div class="rules-block">
-  <ul class="rules-list">
-    <li>I do not spend daylight hours in the apartment unless I'm sick, working my day job, or it's an explicitly scheduled exception. Sleep, shower, cook, dog care — that's what the apartment is for. Nothing else.</li>
-    <li>I publish every Thursday. Bad essay — publish. Nothing to say — publish. No version of Thursday where nothing goes live.</li>
-    <li>I make one photograph a day I'd sign my name to. Not 200 random frames. One. Every day. No zero days.</li>
-    <li>No laptop, no internet, no lounging at home. Writing, editing, pitching happens outside the apartment.</li>
-    <li>I do not consume before I've created. No scrolling, no YouTube, until today's output already exists.</li>
-    <li>I make myself visible. Send the pitch. Post the unfinished work. Show up. Hiding is the comfort you're addicted to, not the couch.</li>
-  </ul>
+<div class="laws">
+  <div class="law"><span class="law-num">01</span><span class="law-text"><b>No daylight hours in the apartment</b> unless sick, working the day job, or an explicitly scheduled exception. Sleep, shower, cook, dog care — nothing else.</span></div>
+  <div class="law"><span class="law-num">02</span><span class="law-text"><b>Publish every Thursday.</b> Bad essay — publish. Nothing to say — publish. No version of Thursday where nothing goes live.</span></div>
+  <div class="law"><span class="law-num">03</span><span class="law-text">One photograph a day worth signing your name to. Not 200 random frames. One. Every day. <b>No zero days.</b></span></div>
+  <div class="law"><span class="law-num">04</span><span class="law-text"><b>No laptop, no internet, no lounging at home.</b> Writing, editing, pitching happens outside the apartment.</span></div>
+  <div class="law"><span class="law-num">05</span><span class="law-text"><b>No consuming before creating.</b> No scrolling, no YouTube, until today's output already exists.</span></div>
+  <div class="law"><span class="law-num">06</span><span class="law-text"><b>Make yourself visible.</b> Send the pitch. Post the unfinished work. Show up. Hiding is the comfort, not the couch.</span></div>
 </div>
 
-<div class="sec-lbl">Today's exception — logged, not excused</div>
-<div class="consequence-block">
-  <div class="consequence-title">Not a new rule</div>
-  <div class="doc-text">Work deadline and post-guest cleanup. Today the apartment is a workday base, not a hotel. That's a fact about today. Tomorrow the laws resume with zero grace period. Log tonight whether that's true.</div>
+<div class="sec-lbl">Exception protocol — how a skip doesn't become a spiral</div>
+<div class="exception">
+  <div class="exception-title">Declared. Capped. Closed.</div>
+  <div class="exception-text">An exception is <b>declared the night before</b>, not discovered at 2pm when the day's already slipping. If you didn't name it before you needed it, it's not an exception — it's a lapse borrowing the word. A real exception suspends <b>one law, never all six</b>, and it has a hard end time set in advance, not a vague "when things calm down."<br><br>Today's is law 01: work deadline, post-guest cleanup, apartment stays a workday base until both are handled. Laws 02 through 06 still stand — you can still make the photograph, still hold the line on scrolling, still end the day visible. That's the whole trick: an exception narrows to the smallest possible law, not the whole constitution.<br><br>Momentum doesn't break from one skipped law. It breaks when the skip goes <b>unnamed and unclosed</b> — when "just today" quietly becomes the new baseline because nobody wrote down that it was supposed to end. <b>Log it tonight:</b> what got suspended, why, and the exact moment it closed. If you can't answer all three, it wasn't an exception.</div>
 </div>
 
 <div class="sec-lbl">Why this isn't the same as being harder on yourself</div>
-<div class="doc-grid" style="grid-template-columns:1fr;">
-  <div class="doc-card">
-    <div class="doc-text">Shame tells you who you are. A law tells you what you do next. You don't need to feel like DFK to follow law 03 today — you just follow it. The feeling is downstream, not a prerequisite. Stop auditing your motivation and start checking the log.</div>
-  </div>
+<div class="principle">Shame tells you who you are. A law tells you what you do next. You don't need to feel like DFK to follow law 03 today — you just follow it. The feeling is downstream, not a prerequisite. Stop auditing your motivation and start checking the log.</div>
+
+<div class="closing"><em>The cliff was never the danger.</em> <b>It was deleting the thousand small decisions that let you choose comfort.</b> Delete them again — <span>on purpose</span> — and the person who watches YouTube at 9am <b>doesn't get a vote anymore.</b></div>
+
 </div>
-
-<div class="id-line" style="text-align:center;font-style:italic;font-size:.85rem;margin:1.5rem 0;">The cliff was never the danger. It was deleting the thousand small decisions that let you choose comfort. Delete them again — on purpose — and the person who watches YouTube at 9am doesn't get a vote anymore.</div>
-
-</div><!-- end page -->
-
 <footer>
-  <span><a href="https://doug-kim-dfk.vercel.app" target="_blank" rel="noopener" style="color:inherit;">← DFK</a> · <a href="https://hub-seven-nu.vercel.app" target="_blank" rel="noopener" style="color:inherit;">Doug Kim</a></span>
+  <span><a href="https://doug-kim-dfk.vercel.app" target="_blank" rel="noopener">← DFK</a> · <a href="https://hub-seven-nu.vercel.app" target="_blank" rel="noopener">Doug Kim</a></span>
   <span>The Cliff · July 2026</span>
 </footer>
-
 </body>
 </html>
