@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Caught — DFK</title>
+<link rel="stylesheet" href="styles.css">
+<style>
+.breadcrumb{font-family:var(--mono);font-size:.65rem;color:var(--ink-soft);margin-bottom:1.4rem;display:flex;align-items:center;gap:.4rem}
+.breadcrumb a{color:var(--ink-soft);text-decoration:none}
+.breadcrumb a:hover{color:var(--ribbon)}
+.breadcrumb-sep{color:var(--oak-soft)}
+
+.screen{display:none;}
+.screen.active{display:block;}
+
+.cat-grid{display:flex;flex-direction:column;gap:.5rem;margin-top:1rem;}
+.cat-item{display:flex;gap:.9rem;align-items:center;border:1px solid var(--line);border-radius:var(--radius);background:var(--card);padding:.9rem 1.1rem;cursor:pointer;}
+.cat-item:hover{border-color:var(--ribbon);}
+.cat-emoji{font-size:1.4rem;}
+.cat-title{font-weight:600;font-size:.94rem;color:var(--ink);}
+.cat-sub{font-size:.78rem;color:var(--ink-soft);margin-top:.1rem;}
+
+.caught-header{text-align:center;margin:1.5rem 0;}
+.caught-header h2{font-family:var(--display);font-weight:700;font-size:1.8rem;color:var(--ribbon);margin:0;letter-spacing:.02em;}
+.caught-sub{font-size:.88rem;color:var(--ink-soft);text-align:center;margin-bottom:1.4rem;}
+
+.step{display:flex;gap:1rem;align-items:flex-start;border:1px solid var(--line);border-radius:var(--radius);background:var(--card);padding:1rem 1.2rem;margin-bottom:.6rem;opacity:.4;transition:opacity .2s;}
+.step.active{opacity:1;border-color:var(--ribbon);}
+.step.done{opacity:.7;}
+.step-num{font-family:var(--display);font-weight:700;font-size:1.3rem;color:var(--ribbon);min-width:26px;}
+.step-title{font-weight:600;font-size:.92rem;color:var(--ink);}
+.step-body{font-size:.85rem;color:var(--ink-soft);margin-top:.2rem;line-height:1.5;}
+.step-check{margin-left:auto;font-family:var(--mono);font-size:.8rem;color:var(--pass);cursor:pointer;flex-shrink:0;border:1px solid var(--line);border-radius:var(--radius);padding:.3rem .7rem;}
+.step.active .step-check{border-color:var(--pass);}
+.step.done .step-check{background:var(--pass);color:#fff;border-color:var(--pass);}
+
+.outcome-grid{display:flex;flex-direction:column;gap:.5rem;margin-top:1rem;}
+.outcome-item{border:1px solid var(--line);border-radius:var(--radius);background:var(--card);padding:.9rem 1.1rem;cursor:pointer;}
+.outcome-item:hover{border-color:var(--ribbon);}
+.outcome-arrow{font-family:var(--mono);color:var(--ribbon);}
+.outcome-title{font-weight:600;font-size:.9rem;color:var(--ink);}
+.outcome-sub{font-size:.8rem;color:var(--ink-soft);margin-top:.1rem;}
+
+.result-box{text-align:center;padding:2rem 1rem;}
+.result-box h2{font-family:var(--display);font-weight:700;font-size:1.6rem;margin:0 0 .5rem;}
+.result-box.stopped h2{color:var(--pass);}
+.result-box.redirected h2{color:var(--warn);}
+.result-box.continued h2{color:var(--fail);}
+
+.nav-btn{font-family:var(--mono);font-size:.68rem;text-transform:uppercase;letter-spacing:.05em;padding:.5rem 1rem;border:1px solid var(--line);background:none;color:var(--ink-soft);border-radius:var(--radius);cursor:pointer;margin-top:1rem;}
+.nav-btn:hover{border-color:var(--ribbon);color:var(--ribbon);}
+</style>
+</head>
+<body>
+<div class="page">
+
+<nav class="breadcrumb" aria-label="Breadcrumb"><a href="https://hub-seven-nu.vercel.app" target="_blank" rel="noopener">Doug Kim</a><span class="breadcrumb-sep">/</span><a href="https://doug-kim-dfk.vercel.app" target="_blank" rel="noopener">DFK</a><span class="breadcrumb-sep">/</span><span>Caught</span></nav>
+<span class="eyebrow">DFK · Interruption Protocol</span>
+<h1 style="font-family:var(--display);font-weight:600;font-size:clamp(1.6rem,3.5vw,2.2rem);line-height:1.1;margin:0 0 .8rem;">YOU'RE DOING IT AGAIN.</h1>
+<p style="font-size:.9rem;color:var(--ink-soft);margin:0 0 1rem;">You already know what this is. Pick it. Run the pause. Then decide if you keep going.</p>
+
+<!-- SCREEN 1: categories -->
+<div class="screen active" id="screen-categories">
+  <div class="cat-grid" id="cat-grid"></div>
+</div>
+
+<!-- SCREEN 2: caught / pause steps -->
+<div class="screen" id="screen-caught">
+  <div class="caught-header"><h2>CAUGHT</h2></div>
+  <p class="caught-sub" style="font-weight:600;">STOP. RIGHT NOW.</p>
+  <div id="steps-list"></div>
+</div>
+
+<!-- SCREEN 3: outcome choice -->
+<div class="screen" id="screen-outcome">
+  <p class="caught-sub" style="font-weight:600;">You ran the pause. Now choose.</p>
+  <div class="sec-lbl">What happens next?</div>
+  <div class="outcome-grid">
+    <div class="outcome-item" onclick="chooseOutcome('stopped')"><span class="outcome-arrow">↑</span> <span class="outcome-title">Stop. Do the real thing instead.</span><div class="outcome-sub">Walk away and do what DFK actually does.</div></div>
+    <div class="outcome-item" onclick="chooseOutcome('redirected')"><span class="outcome-arrow">→</span> <span class="outcome-title">Redirect. Smaller, acceptable version.</span><div class="outcome-sub">Not the win. Not the loss. The minimum acceptable version.</div></div>
+    <div class="outcome-item" onclick="chooseOutcome('continued')"><span class="outcome-arrow">↓</span> <span class="outcome-title">Keep going anyway.</span><div class="outcome-sub">Say it out loud before you do. Own it completely.</div></div>
+  </div>
+</div>
+
+<!-- SCREEN 4: result -->
+<div class="screen" id="screen-result">
+  <div class="result-box" id="result-box"></div>
+  <div style="text-align:center;">
+    <button class="nav-btn" onclick="goToCategories()">← Back to categories</button>
+    <button class="nav-btn" onclick="runAgain()">Run again</button>
+  </div>
+</div>
+
+<p style="text-align:center;font-family:var(--mono);font-size:.72rem;color:var(--ink-soft);margin-top:2rem;">Doug Fucking Kim · Interruption Protocol</p>
+
+</div><!-- end page -->
+
+<footer>
+  <span><a href="https://doug-kim-dfk.vercel.app" target="_blank" rel="noopener" style="color:inherit;">← DFK</a> · <a href="https://hub-seven-nu.vercel.app" target="_blank" rel="noopener" style="color:inherit;">Doug Kim</a></span>
+  <span>Caught · 2026</span>
+</footer>
+
+<script>
+const CATEGORIES=[
+  {id:'idle', emoji:'🕳', title:'Idle time', sub:'Doing nothing. Staring. Drifting. Not resting — just gone'},
+  {id:'isolation', emoji:'🚪', title:'Choosing isolation', sub:'Staying in when you should be out. Contracting'},
+  {id:'notworking', emoji:'🧱', title:'Not working', sub:'Avoiding the real task. Calling something else work'},
+  {id:'phone', emoji:'📵', title:'Video / phone', sub:'Scrolling, streaming, disappearing into the feed'},
+  {id:'easytask', emoji:'🔩', title:'The tiny easy task', sub:'Busy work. Inbox zero. Reorganizing. Not the thing'},
+  {id:'rest', emoji:'🛋', title:'Choosing to rest', sub:"When it's not earned rest. When it's avoidance wearing pajamas"},
+];
+
+const STEPS=[
+  {title:'Put it down. Step back. Physically.', body:'Phone face down. Tab closed. Body away from the kitchen. Distance before anything else.'},
+  {title:'[Step 2 text unknown — see note below]', body:'The original page did not render this step\'s content when fetched (showed "Loading..." — likely populated by JS after load). Not inventing it. Check the live site or your source file for the real text.'},
+  {title:'Name what you\'re actually running from.', body:'One sentence. Out loud or in your head. "I\'m doing this instead of ___." Name it completely.'},
+  {title:'No rationalization. Say the thing you\'re about to tell yourself — and reject it.', body:'"I deserve this." "Just this once." "I\'ll make up for it." — Say the excuse. Then say: that\'s not DFK talking. That\'s the other guy.'},
+  {title:'Check the pattern honestly.', body:'How many times this week? This month? The pattern is being written right now, in this moment, with this choice. What does it say?'},
+];
+
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function renderCategories(){
+  document.getElementById('cat-grid').innerHTML=CATEGORIES.map(c=>
+    `<div class="cat-item" onclick="startCaught('${c.id}')">
+      <span class="cat-emoji">${c.emoji}</span>
+      <div><div class="cat-title">${c.title}</div><div class="cat-sub">${c.sub}</div></div>
+    </div>`).join('');
+}
+renderCategories();
+
+let stepIndex=0;
+
+function startCaught(catId){
+  stepIndex=0;
+  showScreen('screen-caught');
+  renderSteps();
+}
+
+function renderSteps(){
+  document.getElementById('steps-list').innerHTML=STEPS.map((s,i)=>{
+    let cls='step';
+    if(i<stepIndex) cls+=' done';
+    else if(i===stepIndex) cls+=' active';
+    const checkLabel=i<stepIndex?'✓':(i===stepIndex?'Done':'');
+    const clickable=i===stepIndex?`onclick="advanceStep()"`:'';
+    return `<div class="${cls}">
+      <div class="step-num">${i+1}</div>
+      <div><div class="step-title">${s.title}</div><div class="step-body">${s.body}</div></div>
+      ${i<=stepIndex?`<div class="step-check" ${clickable}>${checkLabel}</div>`:''}
+    </div>`;
+  }).join('');
+}
+
+function advanceStep(){
+  stepIndex++;
+  if(stepIndex>=STEPS.length){
+    showScreen('screen-outcome');
+  } else {
+    renderSteps();
+  }
+}
+
+function chooseOutcome(kind){
+  showScreen('screen-result');
+  const box=document.getElementById('result-box');
+  if(kind==='stopped'){
+    box.className='result-box stopped';
+    box.innerHTML='<h2>You stopped.</h2><p>That\'s the vote.</p>';
+  } else if(kind==='redirected'){
+    box.className='result-box redirected';
+    box.innerHTML='<h2>Redirected.</h2><p>Not the win. Acceptable.</p>';
+  } else {
+    box.className='result-box continued';
+    box.innerHTML='<h2>You kept going.</h2><p>You ran the pause and chose it anyway.</p>';
+  }
+}
+
+function goToCategories(){ showScreen('screen-categories'); }
+function runAgain(){ stepIndex=0; showScreen('screen-caught'); renderSteps(); }
+</script>
+</body>
+</html>

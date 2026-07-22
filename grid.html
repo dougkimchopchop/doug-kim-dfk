@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DFK — Grid</title>
+<link rel="stylesheet" href="styles.css">
+<style>
+.breadcrumb{font-family:var(--mono);font-size:.65rem;color:var(--ink-soft);margin-bottom:1.4rem;display:flex;align-items:center;gap:.4rem}
+.breadcrumb a{color:var(--ink-soft);text-decoration:none}
+.breadcrumb a:hover{color:var(--ribbon)}
+.breadcrumb-sep{color:var(--oak-soft)}
+
+.grid-page{max-width:100%;padding:0 1.5rem 5rem;}
+.grid-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--line);border-radius:var(--radius);background:var(--card);padding:.8rem;}
+table.heat{border-collapse:collapse;min-width:max-content}
+.heat th{font-family:var(--mono);font-size:9px;font-weight:600;color:var(--oak-soft);text-align:center;padding:2px 0;border:none;position:sticky;top:0;background:var(--card);z-index:2}
+.heat th.habit-head{text-align:left;padding-left:6px;position:sticky;left:0;background:var(--card);z-index:3;width:96px;font-size:9px;color:var(--ink-soft);letter-spacing:.06em;text-transform:uppercase}
+.heat td.habit-name{font-family:var(--body);font-size:11px;color:var(--ink);white-space:nowrap;padding:1px 6px 1px 0;position:sticky;left:0;background:var(--card);z-index:1;width:96px;min-width:96px;line-height:1.4}
+.heat td.cell{width:16px;min-width:16px;height:16px;cursor:pointer;border:0.5px solid var(--line);background:#fff;text-align:center;vertical-align:middle;transition:background .1s}
+.heat td.cell:hover{background:var(--line-d)}
+.heat td.cell.done{background:var(--pass);border-color:var(--pass)}
+.heat td.cell.missed{background:var(--fail);border-color:var(--fail)}
+.heat td.cell.future{background:var(--paper);border-color:var(--line);cursor:default}
+.heat td.cell.today{border-color:var(--ribbon) !important;border-width:1.5px}
+.heat td.cell.week-sep{border-left:1px solid var(--oak-soft)}
+.heat .day-num{font-family:var(--mono);font-size:8px;color:var(--oak-soft);line-height:1}
+.heat .day-num.today-num{color:var(--ribbon);font-weight:700}
+.heat .day-num.sun{color:var(--ink-soft)}
+.heat-legend{display:flex;gap:14px;margin-top:.9rem;flex-wrap:wrap}
+.heat-leg{display:flex;align-items:center;gap:5px;font-family:var(--mono);font-size:.65rem;color:var(--ink-soft)}
+.heat-leg-box{width:11px;height:11px;border-radius:2px;flex-shrink:0;border:0.5px solid var(--line)}
+</style>
+</head>
+<body>
+<div class="page grid-page">
+
+<nav class="breadcrumb" aria-label="Breadcrumb"><a href="https://hub-seven-nu.vercel.app" target="_blank" rel="noopener">Doug Kim</a><span class="breadcrumb-sep">/</span><a href="https://doug-kim-dfk.vercel.app" target="_blank" rel="noopener">DFK</a><span class="breadcrumb-sep">/</span><span>Grid</span></nav>
+<span class="eyebrow">Daily</span>
+<h1 style="font-family:var(--display);font-weight:600;font-size:clamp(1.6rem,3.5vw,2.2rem);line-height:1.05;margin:0 0 .3rem;">Grid</h1>
+<p style="font-family:var(--mono);font-size:.68rem;color:var(--ink-soft);margin:0 0 1rem;">90-day heatmap — every habit, every day, one screen. Tap a cell to log it.</p>
+
+<div class="sync-bar">
+  <div class="sync-dot" id="sync-dot"></div>
+  <span class="sync-text" id="sync-text">Connecting…</span>
+</div>
+
+<div class="grid-wrap">
+  <table class="heat" id="grid-table">
+    <thead id="grid-head"></thead>
+    <tbody id="grid-body"></tbody>
+  </table>
+</div>
+
+<div class="heat-legend">
+  <div class="heat-leg"><span class="heat-leg-box" style="background:var(--pass);border-color:var(--pass)"></span>Done</div>
+  <div class="heat-leg"><span class="heat-leg-box" style="background:var(--fail);border-color:var(--fail)"></span>Missed</div>
+  <div class="heat-leg"><span class="heat-leg-box" style="background:#fff"></span>Not logged</div>
+  <div class="heat-leg"><span class="heat-leg-box" style="background:var(--paper)"></span>Future</div>
+</div>
+
+</div><!-- end page -->
+
+<footer>
+  <span><a href="https://doug-kim-dfk.vercel.app" target="_blank" rel="noopener" style="color:inherit;">← DFK</a> · <a href="https://hub-seven-nu.vercel.app" target="_blank" rel="noopener" style="color:inherit;">Doug Kim</a></span>
+  <span id="last-updated">Grid · synced to the same tracker data</span>
+</footer>
+
+<script>
+const HABITS=[
+  'Meditate AM','Meditate PM','Read 1hr','Write 2hrs',
+  'Exercise','Run','Shoot','Nourish','Save','Social','Off / Out','Practice','Finish 3'
+];
+const HABIT_IDS=[
+  'tm_morning','tm_afternoon','reading','writing',
+  'exercise','running','shooting','nourish','saving','social','analogue','practice','finish3'
+];
+const DAYS_SHORT=['S','M','T','W','T','F','S'];
+const MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const START=new Date(2026,6,13);
+const LS_KEY='dfk_jul13';
+const SUPABASE_URL='https://rpmxkhgirhlfwqefdopo.supabase.co';
+const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJwbXhraGdpcmhsZndxZWZkb3BvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY2MDUzMTQsImV4cCI6MjA5MjE4MTMxNH0.bAUNydSiWh60mxD23RLYXpSpRxrzt0q2JQ7yDSZmOW4';
+
+let data={};
+let saveTimer=null;
+
+function dk(d){return 'd'+d}
+function dayDate(d){const dt=new Date(START);dt.setDate(dt.getDate()+d);return dt}
+function todayIdx(){return Math.max(0,Math.min(89,Math.round((new Date()-START)/86400000)))}
+function getDay(d){return data[dk(d)]||{}}
+
+function setSyncStatus(state,text){
+  document.getElementById('sync-dot').className='sync-dot '+state;
+  document.getElementById('sync-text').textContent=text;
+}
+
+async function loadData(){
+  try{
+    const r=await fetch(SUPABASE_URL+'/rest/v1/dfk_tracker?select=data&order=id.desc&limit=1',{
+      headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY}
+    });
+    if(r.ok){
+      const rows=await r.json();
+      if(rows&&rows.length>0&&rows[0].data) data=JSON.parse(rows[0].data);
+      setSyncStatus('ok','Synced · '+new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}));
+    } else throw new Error();
+  } catch(e){
+    const local=localStorage.getItem(LS_KEY);
+    if(local){try{data=JSON.parse(local)}catch(ex){data={}}}
+    setSyncStatus('err','Offline — local data');
+  }
+}
+
+async function saveData(){
+  setSyncStatus('saving','Saving…');
+  const payload=JSON.stringify(data);
+  localStorage.setItem(LS_KEY,payload);
+  try{
+    const r=await fetch(SUPABASE_URL+'/rest/v1/dfk_tracker',{
+      method:'POST',
+      headers:{
+        'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY,
+        'Content-Type':'application/json','Prefer':'resolution=merge-duplicates'
+      },
+      body:JSON.stringify({id:1,data:payload})
+    });
+    if(r.ok) setSyncStatus('ok','Synced · '+new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}));
+    else throw new Error();
+  } catch(e){ setSyncStatus('err','Sync failed — saved locally'); }
+}
+
+function scheduleSave(){clearTimeout(saveTimer);saveTimer=setTimeout(saveData,800)}
+
+function buildGrid(){
+  const today=todayIdx();
+  const head=document.getElementById('grid-head');
+  const body=document.getElementById('grid-body');
+
+  let monthRow='<tr><th class="habit-head">Habit</th>';
+  let dayRow='<tr><th class="habit-head"></th>';
+  let numRow='<tr><th class="habit-head"></th>';
+
+  let lastMonth=-1, monthSpan=0, monthCells=[];
+
+  for(let d=0;d<90;d++){
+    const dt=dayDate(d);
+    const dow=dt.getDay();
+    const mon=dt.getMonth();
+    const isWeekSep=dow===0&&d>0;
+    const cls=(isWeekSep?'week-sep ':'')+'day-col';
+
+    if(mon!==lastMonth){
+      if(lastMonth!==-1) monthCells.push({month:lastMonth,span:monthSpan});
+      lastMonth=mon;monthSpan=0;
+    }
+    monthSpan++;
+    if(d===89) monthCells.push({month:mon,span:monthSpan});
+
+    const isToday=d===today;
+    dayRow+=`<th class="${cls}" style="${isToday?'color:var(--ribbon)':''}">${DAYS_SHORT[dow]}</th>`;
+    numRow+=`<th class="${cls}"><span class="day-num${isToday?' today-num':''}${dow===0?' sun':''}">${dt.getDate()}</span></th>`;
+  }
+
+  monthCells.forEach(mc=>{
+    monthRow+=`<th colspan="${mc.span}" style="text-align:left;font-size:9px;color:var(--oak-soft);padding-left:3px;letter-spacing:.06em;text-transform:uppercase;font-weight:600">${MONTHS[mc.month]}</th>`;
+  });
+
+  head.innerHTML=monthRow+'</tr>'+dayRow+'</tr>'+numRow+'</tr>';
+
+  let bodyHTML='';
+  HABITS.forEach((habit,hi)=>{
+    const hid=HABIT_IDS[hi];
+    bodyHTML+=`<tr class="habit-row" data-hi="${hi}"><td class="habit-name">${habit}</td>`;
+    for(let d=0;d<90;d++){
+      const dt=dayDate(d);
+      const dow=dt.getDay();
+      const isFuture=d>today;
+      const isToday=d===today;
+      const isWeekSep=dow===0&&d>0;
+      const dd=getDay(d);
+      const state=dd[hid];
+      let cls='cell';
+      if(isFuture)cls+=' future';
+      else if(state===true)cls+=' done';
+      else if(state===false)cls+=' missed';
+      if(isToday)cls+=' today';
+      if(isWeekSep)cls+=' week-sep';
+      const clickFn=isFuture?'':'onclick="cycleCell('+hi+','+d+')"';
+      bodyHTML+=`<td class="${cls}" data-hi="${hi}" data-d="${d}" ${clickFn}></td>`;
+    }
+    bodyHTML+='</tr>';
+  });
+  body.innerHTML=bodyHTML;
+}
+
+function cycleCell(hi,d){
+  const hid=HABIT_IDS[hi];
+  if(!data[dk(d)])data[dk(d)]={};
+  const cur=data[dk(d)][hid];
+  if(cur===undefined)data[dk(d)][hid]=true;
+  else if(cur===true)data[dk(d)][hid]=false;
+  else delete data[dk(d)][hid];
+  updateCell(hi,d);
+  scheduleSave();
+}
+
+function updateCell(hi,d){
+  const today=todayIdx();
+  const hid=HABIT_IDS[hi];
+  const td=document.querySelector(`td.cell[data-hi="${hi}"][data-d="${d}"]`);
+  if(!td)return;
+  const state=getDay(d)[hid];
+  const isToday=d===today;
+  const dow=dayDate(d).getDay();
+  let cls='cell';
+  if(state===true)cls+=' done';
+  else if(state===false)cls+=' missed';
+  if(isToday)cls+=' today';
+  if(dow===0&&d>0)cls+=' week-sep';
+  td.className=cls;
+}
+
+async function init(){
+  await loadData();
+  buildGrid();
+}
+init();
+</script>
+</body>
+</html>

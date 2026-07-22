@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>THE DOCTRINE — Doug Fucking Kim</title>
+<link rel="stylesheet" href="styles.css">
+<style>
+.breadcrumb{font-family:var(--mono);font-size:.65rem;color:var(--ink-soft);margin-bottom:1.4rem;display:flex;align-items:center;gap:.4rem}
+.breadcrumb a{color:var(--ink-soft);text-decoration:none}
+.breadcrumb a:hover{color:var(--ribbon)}
+.breadcrumb-sep{color:var(--oak-soft)}
+
+.principle{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:1.1rem 1.3rem;margin-bottom:.7rem;}
+.principle-num{font-family:var(--mono);font-size:.65rem;color:var(--ribbon);letter-spacing:.06em;text-transform:uppercase;margin-bottom:.3rem;}
+.principle-claim{font-family:var(--display);font-weight:600;font-size:1.15rem;line-height:1.3;margin-bottom:.5rem;}
+.principle-body{font-size:.94rem;line-height:1.6;color:var(--ink);}
+.principle-body strong{color:var(--ribbon);}
+
+.lies-list{list-style:none;padding:0;margin:0;}
+.lies-list li{font-style:italic;color:var(--ink-soft);padding:.5rem 0 .5rem 1.4rem;position:relative;border-bottom:1px dashed var(--line);}
+.lies-list li:last-child{border-bottom:none;}
+.lies-list li::before{content:"—";position:absolute;left:0;color:var(--fail);font-style:normal;}
+
+.proof-counter{font-family:var(--mono);font-size:.9rem;color:var(--ink-soft);margin-bottom:.8rem;}
+.proof-counter b{color:var(--ribbon);}
+.proof-list{display:flex;flex-direction:column;gap:.5rem;margin-bottom:.8rem;}
+.proof-item{display:flex;gap:.8rem;align-items:flex-start;border:1px solid var(--line);border-radius:var(--radius);padding:.8rem 1rem;background:var(--card);cursor:pointer;transition:background .15s;}
+.proof-item:hover{background:var(--paper);}
+.proof-item.done{background:var(--pass-bg);border-color:var(--pass);}
+.proof-check{width:16px;height:16px;border-radius:3px;border:1.5px solid var(--oak-soft);flex-shrink:0;margin-top:.15rem;display:flex;align-items:center;justify-content:center;font-size:.7rem;color:transparent;}
+.proof-item.done .proof-check{background:var(--pass);border-color:var(--pass);color:#fff;}
+.proof-title{font-weight:600;font-size:.94rem;color:var(--ink);}
+.proof-item.done .proof-title{text-decoration:line-through;color:var(--ink-soft);}
+.proof-desc{font-size:.82rem;color:var(--ink-soft);margin-top:.15rem;}
+.proof-status{font-family:var(--mono);font-size:.75rem;color:var(--ink-soft);font-style:italic;margin-bottom:.8rem;}
+.proof-reset{font-family:var(--mono);font-size:.68rem;color:var(--ink-soft);background:none;border:1px solid var(--line);border-radius:var(--radius);padding:.4rem .9rem;cursor:pointer;}
+.proof-reset:hover{border-color:var(--ribbon);color:var(--ribbon);}
+</style>
+</head>
+<body>
+<div class="page">
+
+<nav class="breadcrumb" aria-label="Breadcrumb"><a href="https://hub-seven-nu.vercel.app" target="_blank" rel="noopener">Doug Kim</a><span class="breadcrumb-sep">/</span><a href="https://doug-kim-dfk.vercel.app" target="_blank" rel="noopener">DFK</a><span class="breadcrumb-sep">/</span><span>Manifesto</span></nav>
+<span class="eyebrow">Identity · Execution · No Exits</span>
+<h1 style="font-family:var(--display);font-weight:600;font-size:clamp(1.6rem,3.5vw,2.2rem);line-height:1.1;margin:0 0 1.4rem;">Action and hard work is <em>a behavior</em> you do right now.</h1>
+
+<div class="sec-lbl">01 — the only definition that matters</div>
+<div class="principle">
+  <div class="principle-claim">Hard work is starting before you're ready.</div>
+  <div class="principle-body">Grit is not inspiration. It's sitting down and doing the next task when every part of you wants to think about doing it instead. <strong>You are excellent at thinking about doing it.</strong> That is the problem. The hard worker starts. The planner waits for the right moment. The right moment never comes.</div>
+</div>
+
+<div class="sec-lbl">02 — discipline is not a personality trait</div>
+<div class="principle">
+  <div class="principle-claim">Discipline is the gap between "I don't feel like it" and doing it anyway.</div>
+  <div class="principle-body">You don't need to feel disciplined. You need to <strong>act before the feeling has a vote.</strong> The people you think are disciplined aren't motivated. They've just eliminated the negotiation. No one asks themselves "do I feel like brushing my teeth?" You do the habit. The feeling is irrelevant.</div>
+</div>
+
+<div class="sec-lbl">03 — what grit actually is</div>
+<div class="principle">
+  <div class="principle-claim">Grit is choosing discomfort over disappointment.</div>
+  <div class="principle-body">Every day you don't ship, you trade <strong>5 minutes of discomfort</strong> (pressing send, posting the photo, hitting publish) for <strong>24 hours of low-grade self-loathing.</strong> You are already paying the price. You're just paying it for nothing.</div>
+</div>
+
+<div class="sec-lbl">04 — how to become it</div>
+<div class="principle">
+  <div class="principle-claim">You become a hard worker by working hard. Today. Not by understanding it.</div>
+  <div class="principle-body">This question — "what is a hard worker, how do I become one" — is the avoidance. <strong>You are doing it right now.</strong> The search for the answer is the retreat from the answer. The answer is to close this and open a document and write one sentence.</div>
+</div>
+
+<div class="sec-lbl">The lies you're telling yourself right now</div>
+<ul class="lies-list">
+  <li>I need to understand discipline better before I can practice it.</li>
+  <li>I'll start once I feel motivated.</li>
+  <li>Reading about grit is building grit.</li>
+  <li>Today is special. I'll get it together tomorrow.</li>
+  <li>This question deserves a thoughtful answer before I act.</li>
+</ul>
+
+<div class="sec-lbl">Today's proof — tap to close each one out</div>
+<div class="proof-counter"><b id="proof-count">0</b> / 5</div>
+<div class="proof-list" id="proof-list"></div>
+<div class="proof-status" id="proof-status">Nothing closed yet. The question is still rhetorical.</div>
+<button class="proof-reset" onclick="resetProof()">↺ Reset today's tasks</button>
+
+</div><!-- end page -->
+
+<footer>
+  <span><a href="https://doug-kim-dfk.vercel.app" target="_blank" rel="noopener" style="color:inherit;">← DFK</a> · <a href="https://hub-seven-nu.vercel.app" target="_blank" rel="noopener" style="color:inherit;">Doug Kim</a></span>
+  <span>The Doctrine · 2026</span>
+</footer>
+
+<script>
+const TASKS=[
+  {id:'t1', title:'Open a doc and write 3 sentences', desc:"Doesn't matter what. Just 3 sentences. Right now."},
+  {id:'t2', title:'Post one piece of work publicly', desc:'Photo, sentence, paragraph. Anything. Put it somewhere people can see it.'},
+  {id:'t3', title:"Log today's habits in the tracker", desc:'Honest numbers only. No inflation.'},
+  {id:'t4', title:'Send one outreach message to a real person', desc:'Name, ask, send. No drafting. No perfecting.'},
+  {id:'t5', title:'Do not open your phone for the next 30 minutes', desc:'Starting now. The work is the proof.'},
+];
+
+function todayKey(){
+  const d=new Date();
+  return 'dfk_doctrine_proof_'+d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();
+}
+function loadState(){try{return JSON.parse(localStorage.getItem(todayKey())||'{}')}catch(e){return{}}}
+function saveState(s){localStorage.setItem(todayKey(),JSON.stringify(s))}
+
+function render(){
+  const state=loadState();
+  const list=document.getElementById('proof-list');
+  list.innerHTML=TASKS.map(t=>{
+    const done=!!state[t.id];
+    return `<div class="proof-item${done?' done':''}" onclick="toggle('${t.id}')">
+      <div class="proof-check">${done?'✓':''}</div>
+      <div>
+        <div class="proof-title">${t.title}</div>
+        <div class="proof-desc">${t.desc}</div>
+      </div>
+    </div>`;
+  }).join('');
+  const count=TASKS.filter(t=>state[t.id]).length;
+  document.getElementById('proof-count').textContent=count;
+  const statusEl=document.getElementById('proof-status');
+  if(count===0) statusEl.textContent="Nothing closed yet. The question is still rhetorical.";
+  else if(count<5) statusEl.textContent=count+" closed. "+(5-count)+" left standing between you and the answer.";
+  else statusEl.textContent="All five closed. That's the vote, cast.";
+}
+
+function toggle(id){
+  const state=loadState();
+  state[id]=!state[id];
+  saveState(state);
+  render();
+}
+
+function resetProof(){
+  if(confirm("Reset today's proof tasks?")){
+    saveState({});
+    render();
+  }
+}
+
+render();
+</script>
+</body>
+</html>

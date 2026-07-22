@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Your Writing Voice</title>
+<link rel="stylesheet" href="styles.css">
+<style>
+.breadcrumb{font-family:var(--mono);font-size:.65rem;color:var(--ink-soft);margin-bottom:1.4rem;display:flex;align-items:center;gap:.4rem}
+.breadcrumb a{color:var(--ink-soft);text-decoration:none}
+.breadcrumb a:hover{color:var(--ribbon)}
+.breadcrumb-sep{color:var(--oak-soft)}
+
+.dna-grid{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-bottom:.5rem;}
+.dna-item{border:1px solid var(--line);border-radius:var(--radius);background:var(--card);padding:.8rem 1rem;}
+.dna-lbl{font-family:var(--mono);font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ribbon);margin-bottom:.3rem;}
+.dna-body{font-size:.85rem;line-height:1.5;color:var(--ink);}
+.dna-body em{font-style:italic;color:var(--ink-soft);}
+
+.ritual-step{display:flex;gap:.9rem;border-top:1px dashed var(--line);padding:.7rem 0;}
+.ritual-step:first-child{border-top:none;}
+.ritual-num{font-family:var(--display);font-weight:700;color:var(--ribbon);min-width:26px;}
+.ritual-title{font-weight:600;font-size:.9rem;color:var(--ink);}
+.ritual-body{font-size:.84rem;color:var(--ink-soft);margin-top:.15rem;line-height:1.5;}
+
+.check-item{border-top:1px dashed var(--line);padding:.7rem 0;}
+.check-item:first-child{border-top:none;}
+.check-q{font-weight:600;font-size:.9rem;color:var(--ink);}
+.check-a{font-size:.84rem;color:var(--ink-soft);margin-top:.15rem;line-height:1.5;}
+
+.prompt-card{border:1px solid var(--line);border-radius:var(--radius);background:var(--card);padding:.9rem 1.1rem;margin-bottom:.5rem;}
+.prompt-lbl{font-family:var(--mono);font-size:.68rem;color:var(--ribbon);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.4rem;}
+.prompt-text{font-size:.85rem;color:var(--ink);line-height:1.5;font-family:var(--mono);background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:.6rem .8rem;margin-bottom:.4rem;}
+.copy-btn{font-family:var(--mono);font-size:.65rem;text-transform:uppercase;letter-spacing:.05em;padding:.35rem .8rem;border:1px solid var(--line);background:none;color:var(--ink-soft);border-radius:var(--radius);cursor:pointer;}
+.copy-btn:hover{border-color:var(--ribbon);color:var(--ribbon);}
+.copy-btn.copied{border-color:var(--pass);color:var(--pass);}
+
+.technique-card{border:1px solid var(--line);border-radius:var(--radius);background:var(--card);padding:1rem 1.2rem;margin-bottom:.6rem;}
+.technique-num{font-family:var(--mono);font-size:.65rem;color:var(--oak-soft);text-transform:uppercase;letter-spacing:.06em;}
+.technique-title{font-family:var(--display);font-weight:600;font-size:1.02rem;margin:.2rem 0 .5rem;}
+.technique-body{font-size:.87rem;line-height:1.6;color:var(--ink);}
+.woolf-quote{font-style:italic;color:var(--ink-soft);border-left:2px solid var(--oak-soft);padding-left:.8rem;margin:.6rem 0;font-size:.85rem;}
+.your-version{font-size:.85rem;color:var(--ink);margin-top:.5rem;}
+.your-version b{color:var(--ribbon);}
+
+.voice-summary{text-align:center;font-family:var(--display);font-weight:600;font-size:1.1rem;color:var(--ink);line-height:1.6;margin:1.5rem 0;padding:1.2rem;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);}
+</style>
+</head>
+<body>
+<div class="page">
+
+<nav class="breadcrumb" aria-label="Breadcrumb"><a href="https://hub-seven-nu.vercel.app" target="_blank" rel="noopener">Doug Kim</a><span class="breadcrumb-sep">/</span><a href="https://doug-kim-dfk.vercel.app" target="_blank" rel="noopener">DFK</a><span class="breadcrumb-sep">/</span><span>Your Writing Voice</span></nav>
+<span class="eyebrow">Reverse-engineered from Istanbul, the film essay, and Tokyo</span>
+<h1 style="font-family:var(--display);font-weight:600;font-size:clamp(1.6rem,3.5vw,2.2rem);line-height:1.05;margin:0 0 1.2rem;">Your writing voice</h1>
+
+<div class="sec-lbl">Voice DNA</div>
+<div class="dna-grid">
+  <div class="dna-item"><div class="dna-lbl">Rhythm</div><div class="dna-body">Short sentences land the punch. Long ones carry you somewhere. You alternate deliberately.</div></div>
+  <div class="dna-item"><div class="dna-lbl">Entry point</div><div class="dna-body">Concrete image or scene first. Never an idea — always a thing.</div></div>
+  <div class="dna-item"><div class="dna-lbl">The turn</div><div class="dna-body">Physical detail → interior thought. The ferry becomes the metaphor.</div></div>
+  <div class="dna-item"><div class="dna-lbl">Profanity</div><div class="dna-body">Used surgically. It earns its keep because the sentences around it are clean.</div></div>
+  <div class="dna-item"><div class="dna-lbl">Lists as music</div><div class="dna-body">Kadıköy, Karaköy, Ortaköy. Ueno, Taito, Edo. Rhythm breaks, not information.</div></div>
+  <div class="dna-item"><div class="dna-lbl">The exit</div><div class="dna-body">End on image or action. Never on conclusion. Trust the reader.</div></div>
+  <div class="dna-item"><div class="dna-lbl">Fragmented action</div><div class="dna-body"><em>We advance the film. / We bow. / He nods. / We leave.</em> Short lines as slow motion. For moments that earned it.</div></div>
+  <div class="dna-item"><div class="dna-lbl">Direct address</div><div class="dna-body"><em>Moon? Where are you?</em> Talking to places, objects, the city. Intimacy without sentimentality.</div></div>
+  <div class="dna-item"><div class="dna-lbl">Lyricism</div><div class="dna-body">You don't decorate sentences — you build them to sound like something. The engines thrum and hum and rock. Sound is structure.</div></div>
+  <div class="dna-item"><div class="dna-lbl">Evoke the scene</div><div class="dna-body">Specific detail does the placing. You don't tell the reader where they are — you put them there. The sesame seeds. The wind. The Circassian girl gathering her hair.</div></div>
+</div>
+
+<div class="sec-lbl">Anti-overthink ritual — before you write</div>
+<div class="ritual-step"><div class="ritual-num">01</div><div><div class="ritual-title">Read one paragraph you've written that felt right</div><div class="ritual-body">Not to study it. To hear your cadence again. Istanbul works. The film rant works. Tokyo works. Thirty seconds.</div></div></div>
+<div class="ritual-step"><div class="ritual-num">02</div><div><div class="ritual-title">Name the concrete thing you're starting from</div><div class="ritual-body">Not your theme. A thing. A sound. A specific moment. One sentence, no editing. This is your first line or it earns your first line.</div></div></div>
+<div class="ritual-step"><div class="ritual-num">03</div><div><div class="ritual-title">Write 200 words with no backspacing</div><div class="ritual-body">Overthinking happens in the gap between writing and editing. Close the gap. Get the ugly first draft on the page before the editor wakes up.</div></div></div>
+<div class="ritual-step"><div class="ritual-num">04</div><div><div class="ritual-title">Read it out loud once</div><div class="ritual-body">Your ear catches what your eye misses. If a sentence stumbles when spoken, it's wrong. Your best lines have cadence you can feel in your mouth.</div></div></div>
+<div class="ritual-step"><div class="ritual-num">05</div><div><div class="ritual-title">Find the sentence that sounds like a stranger</div><div class="ritual-body">Read back and find the one sentence anyone could have written. Cut it or make it specific. That's where you left yourself.</div></div></div>
+
+<div class="sec-lbl">Voice checklist — before you publish</div>
+<div class="check-item"><div class="check-q">Does it open on a thing, not an idea?</div><div class="check-a">If your first sentence is abstract, find the image underneath it and start there.</div></div>
+<div class="check-item"><div class="check-q">Is there one line that could only be yours?</div><div class="check-a">"The hills and I will not become friends." No one else wrote that. Find your equivalent in every piece.</div></div>
+<div class="check-item"><div class="check-q">Did you end on image or action?</div><div class="check-a">If you ended by explaining what the piece meant, cut those last lines. The ferry closes itself. The film advances itself.</div></div>
+<div class="check-item"><div class="check-q">Is the irreverence earned?</div><div class="check-a">Your wit lands because the writing around it is precise. If it feels forced, the sentences before it are probably soft.</div></div>
+
+<div class="sec-lbl">Prompts to send Claude when stuck</div>
+<div class="prompt-card">
+  <div class="prompt-lbl">Before you start</div>
+  <div class="prompt-text" id="prompt-1">Give me 3 concrete opening images — sensory, specific — for an essay about [topic]. Match the voice of the Istanbul ferry piece or the Tokyo night walk.</div>
+  <button class="copy-btn" onclick="copyPrompt('prompt-1', this)">Copy</button>
+</div>
+<div class="prompt-card">
+  <div class="prompt-lbl">When it sounds wrong</div>
+  <div class="prompt-text" id="prompt-2">Edit this paragraph back into my voice — direct, irreverent, lyrical, observant. Keep my ideas. Match the person who wrote the Istanbul ferry piece and the Tokyo night walk. Here's the paragraph: [paste]</div>
+  <button class="copy-btn" onclick="copyPrompt('prompt-2', this)">Copy</button>
+</div>
+<div class="prompt-card">
+  <div class="prompt-lbl">When you're going generic</div>
+  <div class="prompt-text" id="prompt-3">Is this sentence mine or could anyone have written it? What's the specific thing I'm avoiding saying? Sentence: [paste]</div>
+  <button class="copy-btn" onclick="copyPrompt('prompt-3', this)">Copy</button>
+</div>
+<div class="prompt-card">
+  <div class="prompt-lbl">When you need an ending</div>
+  <div class="prompt-text" id="prompt-4">Give me 3 endings that close visually — image or action, no explanation of what the piece meant. Here's where I am: [paste last paragraph]</div>
+  <button class="copy-btn" onclick="copyPrompt('prompt-4', this)">Copy</button>
+</div>
+
+<div class="sec-lbl">Craft techniques — from Woolf's "Street Haunting"</div>
+
+<div class="technique-card">
+  <div class="technique-num">Technique 01</div>
+  <div class="technique-title">The pretext object</div>
+  <div class="technique-body">Use a small, concrete object as the stated reason for the essay's journey — then let the real subject emerge underneath it. The object gives the piece permission to wander. It also provides a return: the essay closes on the pencil it opened with, and the circle is structural, not sentimental.</div>
+  <div class="woolf-quote">"Really I must buy a pencil" — the whole of London, the dwarf, the quarreling shopkeepers, the bookshop — all of it in service of a pencil that's really about freedom, self, and the pleasure of disappearing.</div>
+  <div class="your-version"><b>Your equivalent:</b> the camera, the roll of film, the lens cap that never came off. An object that holds the essay's real weight.</div>
+</div>
+
+<div class="technique-card">
+  <div class="technique-num">Technique 02</div>
+  <div class="technique-title">General statement → specific scene → back out</div>
+  <div class="technique-body">Make a broad claim about human experience, then immediately ground it in a concrete scene that proves it, then return to the general. This is not abstraction — it's triangulation. The claim earns authority from the scene. The scene earns meaning from the claim. Neither works alone.</div>
+  <div class="woolf-quote">General: "We shed the self our friends know us by." Scene: the bowl from Mantua, the old woman, the quarreling innkeeper, the stars over the courtyard. Back out: all of it collapsing into that single moment "stamped like a coin."</div>
+  <div class="your-version">Your version of this is the abstraction ladder — but Woolf shows you it must go both ways. Up to concept, down to thing, back up. Don't stay at either end.</div>
+</div>
+
+<div class="technique-card">
+  <div class="technique-num">Technique 03</div>
+  <div class="technique-title">The "we" that earns universality</div>
+  <div class="technique-body">Woolf's "we" is not a writing-workshop trick. It works because it comes after she has already established an intensely specific observer. The "we" only lands once the reader trusts the particular eye doing the seeing. Use "we" to invite the reader into an experience — not to avoid committing to your own.</div>
+  <div class="your-version"><b>Rule:</b> the "we" must be purchased by specificity. You can't invite readers into an experience you haven't yet shown them.</div>
+</div>
+
+<div class="technique-card">
+  <div class="technique-num">Technique 04</div>
+  <div class="technique-title">The stranger as mirror</div>
+  <div class="technique-body">Drop a vivid stranger into the essay at its hinge point — someone observed briefly and precisely — whose situation illuminates the narrator's interior. Don't explain the stranger's significance. Render them so exactly that the significance arrives without announcement.</div>
+  <div class="woolf-quote">The dwarf enters the shoe shop. The ecstasy fades the moment she returns to the street. No commentary. The reader does the work.</div>
+  <div class="your-version">You already do this — Farid in Morocco, the old man at the doorstep in Santiago. Trust it. Don't explain what these figures mean. Let them do it themselves.</div>
+</div>
+
+<div class="technique-card">
+  <div class="technique-num">Technique 05</div>
+  <div class="technique-title">The structural return</div>
+  <div class="technique-body">End where you began — not to summarize, but to show the distance traveled. The return is physical (same door, same chair, same object) but the reader arrives changed. The object that opened the essay reappears transformed. This is different from restating your thesis. The object does the work. You say nothing new.</div>
+  <div class="woolf-quote">"Here again is the usual door; here the chair turned as we left it and the china bowl and the brown ring on the carpet. And here... is the only spoil we have retrieved from all the treasures of the city, a lead pencil."</div>
+  <div class="your-version">Let your object just sit there. Don't explain what it means.</div>
+</div>
+
+<div class="voice-summary">A traveler's eye on the specific, a philosopher's instinct for what it means, and just enough irreverence to keep the philosophy honest.</div>
+
+</div><!-- end page -->
+
+<footer>
+  <span><a href="https://doug-kim-dfk.vercel.app" target="_blank" rel="noopener" style="color:inherit;">← DFK</a> · <a href="https://hub-seven-nu.vercel.app" target="_blank" rel="noopener" style="color:inherit;">Doug Kim</a></span>
+  <span>Your Writing Voice · 2026</span>
+</footer>
+
+<script>
+function copyPrompt(id, btn){
+  const text=document.getElementById(id).textContent;
+  navigator.clipboard.writeText(text).then(()=>{
+    const orig=btn.textContent;
+    btn.textContent='Copied';
+    btn.classList.add('copied');
+    setTimeout(()=>{ btn.textContent=orig; btn.classList.remove('copied'); }, 1500);
+  });
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>THE SYSTEM</title>
+<link rel="stylesheet" href="styles.css">
+<style>
+.breadcrumb{font-family:var(--mono);font-size:.65rem;color:var(--ink-soft);margin-bottom:1.4rem;display:flex;align-items:center;gap:.4rem}
+.breadcrumb a{color:var(--ink-soft);text-decoration:none}
+.breadcrumb a:hover{color:var(--ribbon)}
+.breadcrumb-sep{color:var(--oak-soft)}
+
+.identity-banner{background:var(--card);border:1px solid var(--line);border-left:3px solid var(--ribbon);border-radius:var(--radius);padding:1rem 1.3rem;margin-bottom:1.6rem;text-align:center;}
+.identity-banner .lbl{font-family:var(--mono);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:.4rem;}
+.identity-banner .stmt{font-family:var(--display);font-weight:600;font-size:1.15rem;color:var(--ink);}
+
+.module{border:1px solid var(--line);border-radius:var(--radius);background:var(--card);padding:1.1rem 1.3rem;margin-bottom:.9rem;}
+.module-num{font-family:var(--mono);font-size:.68rem;color:var(--ribbon);letter-spacing:.06em;text-transform:uppercase;}
+.module-title{font-family:var(--display);font-weight:600;font-size:1.1rem;margin:.2rem 0 .6rem;}
+.module-body{font-size:.92rem;line-height:1.6;color:var(--ink);}
+.module-quote{font-style:italic;color:var(--ribbon);font-weight:600;margin:.5rem 0;}
+
+.split-cols{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin:.7rem 0;}
+.col-yes,.col-no{border-radius:var(--radius);padding:.7rem .9rem;font-size:.85rem;}
+.col-yes{background:var(--pass-bg);color:var(--pass);}
+.col-no{background:var(--fail-bg);color:var(--fail);}
+.col-yes ul,.col-no ul{margin:.3rem 0 0 1.1rem;padding:0;color:var(--ink);font-style:normal;}
+
+.input-row{display:flex;gap:.5rem;margin-top:.7rem;}
+.input-row input{flex:1;font-family:var(--body);font-size:.9rem;padding:.55rem .8rem;border:1px solid var(--line);border-radius:var(--radius);background:#fff;color:var(--ink);}
+.input-row button{font-family:var(--mono);font-size:.68rem;text-transform:uppercase;letter-spacing:.05em;padding:.55rem 1rem;border:1px solid var(--ribbon);background:var(--ribbon);color:#fff;border-radius:var(--radius);cursor:pointer;}
+.input-row button:hover{opacity:.85;}
+.saved-line{font-family:var(--mono);font-size:.72rem;color:var(--pass);margin-top:.5rem;min-height:1em;}
+
+.area-grid{display:flex;flex-wrap:wrap;gap:.5rem;margin:.7rem 0;}
+.area-chip{font-family:var(--mono);font-size:.72rem;padding:.4rem .8rem;border:1px solid var(--line);border-radius:20px;cursor:pointer;color:var(--ink-soft);}
+.area-chip.selected{background:var(--ribbon);border-color:var(--ribbon);color:#fff;}
+
+.review-q{font-size:.9rem;margin:.5rem 0;}
+.review-q b{color:var(--ribbon);}
+
+.closing-line{text-align:center;font-family:var(--display);font-weight:600;font-size:1.05rem;color:var(--ink);line-height:1.6;margin:1.8rem 0 .6rem;}
+.closing-sub{text-align:center;font-size:.85rem;color:var(--ink-soft);font-style:italic;margin-bottom:1.5rem;}
+.closing-punch{text-align:center;font-family:var(--mono);font-size:.85rem;color:var(--ribbon);letter-spacing:.04em;margin-top:1rem;}
+</style>
+</head>
+<body>
+<div class="page">
+
+<nav class="breadcrumb" aria-label="Breadcrumb"><a href="https://hub-seven-nu.vercel.app" target="_blank" rel="noopener">Doug Kim</a><span class="breadcrumb-sep">/</span><a href="https://doug-kim-dfk.vercel.app" target="_blank" rel="noopener">DFK</a><span class="breadcrumb-sep">/</span><span>The System</span></nav>
+<span class="eyebrow">Anti-Avoidance Protocol</span>
+<h1 style="font-family:var(--display);font-weight:600;font-size:clamp(1.6rem,3.5vw,2.2rem);line-height:1.05;margin:0 0 1.2rem;">THE SYSTEM</h1>
+
+<div class="identity-banner">
+  <div class="lbl">Identity statement — write this somewhere visible</div>
+  <div class="stmt">"I am someone who does the hard thing first."</div>
+</div>
+
+<div class="module">
+  <div class="module-num">01 — One Thing</div>
+  <div class="module-title">Every night — write it down</div>
+  <div class="module-body">The task you'd most avoid tomorrow. Not a list. <strong>One thing.</strong> Everything else is secondary.</div>
+  <div class="input-row">
+    <input type="text" id="one-thing-input" placeholder="Tonight's one thing…">
+    <button onclick="saveOneThing()">Save</button>
+  </div>
+  <div class="saved-line" id="one-thing-saved"></div>
+</div>
+
+<div class="module">
+  <div class="module-num">02 — The Real Work Test</div>
+  <div class="module-title">Ask before every task</div>
+  <div class="module-quote">"Did I produce something or move something forward that did not exist or was not done before I sat down?"</div>
+  <div class="split-cols">
+    <div class="col-yes"><strong>YES</strong> — Real work. Keep going.
+      <ul><li>Words written</li><li>Photo submitted</li><li>Person contacted</li><li>Decision made</li><li>Thing cleaned / fixed / done</li></ul>
+    </div>
+    <div class="col-no"><strong>NO</strong> — Avoidance. Stop. Do the one thing.
+      <ul><li>Planning to do the thing</li><li>Researching how to do the thing</li><li>Organizing tools to do the thing</li><li>Thinking about doing the thing</li><li>Reading about people who do the thing</li></ul>
+    </div>
+  </div>
+  <div class="module-body" style="font-style:italic;color:var(--ink-soft);">Output only counts. Process is invisible.</div>
+</div>
+
+<div class="module">
+  <div class="module-num">02b — The Quality Checkpoint</div>
+  <div class="module-title">Before you cross anything off</div>
+  <div class="module-quote">"Is this the best I am capable of — or did I just get it done to get it done?"</div>
+  <div class="module-body">Sit with that question. Answer it honestly. If you phoned it in: do not cross it off. Do not move on. Find the one thing that would make it genuinely good. Do that thing.<br><br>You know what your best work feels like. You've done it before. Anything without that feeling is not done yet.<br><br><strong>Half-assing is avoidance in disguise.</strong> Crossing off a phoned-in task is lying to yourself. It counts for nothing.</div>
+</div>
+
+<div class="module">
+  <div class="module-num">03 — The Avoidance Interrupt</div>
+  <div class="module-title">When you feel the drift</div>
+  <div class="module-body">Say or write: <span class="module-quote">"I am avoiding ___ right now."</span><br>Then <strong>do 5 minutes of the real thing. Just 5.</strong></div>
+</div>
+
+<div class="module">
+  <div class="module-num">04 — One Frozen Area Per Week</div>
+  <div class="module-title">Pick one. One small action. Specific day + time. Tell someone.</div>
+  <div class="module-body">Not <em>"be more social"</em> → <strong>"Text one person Tuesday at 7pm."</strong></div>
+  <div class="area-grid" id="area-grid"></div>
+  <div class="input-row">
+    <input type="text" id="area-action-input" placeholder="This week's action…">
+    <button onclick="saveAreaAction()">Save</button>
+  </div>
+  <div class="saved-line" id="area-saved"></div>
+</div>
+
+<div class="module">
+  <div class="module-num">05 — Nightly 3-Question Review</div>
+  <div class="module-title">3 minutes. Every night. Non-negotiable.</div>
+  <div class="review-q"><b>1.</b> What did I actually do today?</div>
+  <div class="review-q"><b>2.</b> What did I avoid — and why?</div>
+  <div class="review-q"><b>3.</b> What is the one thing tomorrow?</div>
+</div>
+
+<div class="module">
+  <div class="module-num">06 — The Identity Statement</div>
+  <div class="module-title">Write it somewhere visible</div>
+  <div class="module-quote">"I am someone who does the hard thing first."</div>
+  <div class="module-body">Every action is a vote for or against this. Win the vote over time.</div>
+</div>
+
+<div class="closing-line">The possibility that you could have been great, if only you'd tried —</div>
+<div class="closing-sub">that possibility is worth nothing. It is a lie you are paying for with your actual life.</div>
+<div class="closing-punch">Two minutes. Not the essay. Not the pitch. Not the shoot.<br><strong>Two minutes of the thing.</strong><br>Do not modify. Do not improve. Do not research better versions.<br><br>START TONIGHT.</div>
+
+</div><!-- end page -->
+
+<footer>
+  <span><a href="https://doug-kim-dfk.vercel.app" target="_blank" rel="noopener" style="color:inherit;">← DFK</a> · <a href="https://hub-seven-nu.vercel.app" target="_blank" rel="noopener" style="color:inherit;">Doug Kim</a></span>
+  <span>The System · 2026</span>
+</footer>
+
+<script>
+const AREAS=['Financial decisions','Exercise','Social','Work & career','Dreams & goals','Cleaning & environment'];
+let selectedArea=null;
+
+function renderAreas(){
+  document.getElementById('area-grid').innerHTML=AREAS.map(a=>
+    `<div class="area-chip${a===selectedArea?' selected':''}" onclick="pickArea('${a}')">${a}</div>`
+  ).join('');
+}
+function pickArea(a){ selectedArea=a; renderAreas(); }
+renderAreas();
+
+function saveOneThing(){
+  const val=document.getElementById('one-thing-input').value.trim();
+  const out=document.getElementById('one-thing-saved');
+  if(!val){ out.textContent=''; return; }
+  localStorage.setItem('dfk_system_one_thing', JSON.stringify({text:val, date:new Date().toDateString()}));
+  out.textContent='Saved: "'+val+'"';
+}
+function saveAreaAction(){
+  const val=document.getElementById('area-action-input').value.trim();
+  const out=document.getElementById('area-saved');
+  if(!val||!selectedArea){ out.textContent='Pick an area first.'; return; }
+  localStorage.setItem('dfk_system_area_action', JSON.stringify({area:selectedArea, action:val, week:new Date().toDateString()}));
+  out.textContent='Saved — '+selectedArea+': "'+val+'"';
+}
+
+(function restore(){
+  try{
+    const ot=JSON.parse(localStorage.getItem('dfk_system_one_thing'));
+    if(ot && ot.date===new Date().toDateString()){
+      document.getElementById('one-thing-input').value=ot.text;
+      document.getElementById('one-thing-saved').textContent='Saved: "'+ot.text+'"';
+    }
+  }catch(e){}
+})();
+</script>
+</body>
+</html>
