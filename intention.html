@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Intention</title>
+<link rel="stylesheet" href="styles.css">
+<style>
+.breadcrumb{font-family:var(--mono);font-size:.65rem;color:var(--ink-soft);margin-bottom:1.4rem;display:flex;align-items:center;gap:.4rem}
+.breadcrumb a{color:var(--ink-soft);text-decoration:none}
+.breadcrumb a:hover{color:var(--ribbon)}
+.breadcrumb-sep{color:var(--oak-soft)}
+
+.mantra-grid{display:grid;grid-template-columns:1fr;gap:.6rem;margin-bottom:.5rem;}
+.mantra-card{border:1px solid var(--line);border-radius:var(--radius);background:var(--card);padding:1rem 1.2rem;}
+.mantra-lbl{font-family:var(--mono);font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ribbon);margin-bottom:.4rem;}
+.mantra-text{font-family:var(--display);font-weight:600;font-size:1.15rem;color:var(--ink);line-height:1.4;}
+.mantra-when{font-size:.82rem;color:var(--ink-soft);margin-top:.4rem;}
+
+.technique-card{border:1px solid var(--line);border-radius:var(--radius);background:var(--card);padding:1rem 1.2rem;margin-bottom:.6rem;}
+.technique-num{font-family:var(--mono);font-size:.65rem;color:var(--oak-soft);text-transform:uppercase;letter-spacing:.06em;}
+.technique-title{font-family:var(--display);font-weight:600;font-size:1.02rem;margin:.2rem 0 .6rem;}
+.punch-steps{margin:0;padding:0;list-style:none;counter-reset:step;}
+.punch-steps li{counter-increment:step;position:relative;padding-left:2rem;margin-bottom:.5rem;font-size:.9rem;color:var(--ink);line-height:1.5;}
+.punch-steps li::before{content:counter(step);position:absolute;left:0;top:.05em;font-family:var(--mono);font-size:.68rem;font-weight:700;color:var(--ribbon);border:1px solid var(--oak-soft);width:1.3rem;height:1.3rem;border-radius:50%;display:flex;align-items:center;justify-content:center;}
+
+.closing-summary{text-align:center;font-family:var(--display);font-weight:600;font-size:1.05rem;color:var(--ink);line-height:1.6;margin:1.5rem 0;padding:1.2rem;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);}
+
+.bg-note{font-size:.88rem;color:var(--ink-soft);line-height:1.65;}
+.bg-note a{color:var(--ribbon);}
+</style>
+</head>
+<body>
+<div class="page">
+
+<nav class="breadcrumb" aria-label="Breadcrumb"><a href="https://doug-kim-dfk.vercel.app" target="_blank" rel="noopener">Doug Kim</a><span class="breadcrumb-sep">/</span><span>Intention</span></nav>
+<span class="eyebrow">Writing · Flow State Trigger &amp; Build Process</span>
+<h1 style="font-family:var(--display);font-weight:600;font-size:clamp(1.6rem,3.5vw,2.2rem);line-height:1.1;margin:0 0 .5rem;">Intention</h1>
+<p style="font-size:.94rem;color:var(--ink-soft);line-height:1.6;margin:0 0 1.4rem;">Choose the person. Choose the feeling. Make them feel it. The mantra, the punch list, and the ladder — in order.</p>
+
+<div class="sec-lbl">The Mantra</div>
+<div class="mantra-grid">
+  <div class="mantra-card">
+    <div class="mantra-lbl">Full version</div>
+    <div class="mantra-text">"Choose the person. Choose the feeling. Make them feel it."</div>
+    <div class="mantra-when">Say before sitting down to write.</div>
+  </div>
+  <div class="mantra-card">
+    <div class="mantra-lbl">Quick-trigger version</div>
+    <div class="mantra-text">"One face. One feeling. Go."</div>
+    <div class="mantra-when">Fire this the moment a draft stalls mid-sentence.</div>
+  </div>
+</div>
+
+<div class="sec-lbl">The Punch List</div>
+
+<div class="technique-card">
+  <div class="technique-num">01</div>
+  <div class="technique-title">Before You Sit Down</div>
+  <ol class="punch-steps">
+    <li>Say the mantra: "Choose the person. Choose the feeling. Make them feel it."</li>
+    <li>Pick one real, specific person to write toward — not "an audience"</li>
+  </ol>
+</div>
+
+<div class="technique-card">
+  <div class="technique-num">02</div>
+  <div class="technique-title">Find the Material</div>
+  <ol class="punch-steps" start="3">
+    <li>Dump raw fragments first — no grammar, no shaping</li>
+    <li>Hunt the dump for an accidental pattern or echo</li>
+    <li>Lower the bar — one true, weird, concrete detail is enough</li>
+    <li>No pattern surfacing? Force an arbitrary container (top ten, countdown, Q&amp;A)</li>
+  </ol>
+</div>
+
+<div class="technique-card">
+  <div class="technique-num">03</div>
+  <div class="technique-title">Aim It</div>
+  <ol class="punch-steps" start="7">
+    <li>Fire the quick-trigger the moment a draft stalls: "One face. One feeling. Go."</li>
+    <li>Name the one person and one feeling out loud before the next sentence</li>
+  </ol>
+</div>
+
+<div class="technique-card">
+  <div class="technique-num">04</div>
+  <div class="technique-title">Build It, In Order</div>
+  <ol class="punch-steps" start="9">
+    <li>Write sentence by sentence — don't reach for the paragraph yet</li>
+    <li>Finish the paragraph before advancing — done means it holds weight, not that it's long enough</li>
+    <li>Build out the scene or throughline the paragraph belongs to</li>
+    <li>Move to the next unit — repeat the ladder, don't jump around polishing out of order</li>
+  </ol>
+</div>
+
+<div class="technique-card">
+  <div class="technique-num">05</div>
+  <div class="technique-title">Make It Reader-Facing</div>
+  <ol class="punch-steps" start="13">
+    <li>Address one named, real person for the piece (Baldwin move) — forces stakes</li>
+    <li>Or address the reader as "you," making them complicit (Dawes / Bambara move)</li>
+    <li>Write toward an absent recipient if the material is a letter that was never sent</li>
+  </ol>
+</div>
+
+<div class="technique-card">
+  <div class="technique-num">06</div>
+  <div class="technique-title">Mid-Draft Checks</div>
+  <ol class="punch-steps" start="16">
+    <li>Flat paragraph? Check mood before tone — mood is usually what's missing</li>
+    <li>Spend your best image now — don't save it for later</li>
+    <li>If you're not discovering something, you're executing, not writing — go back to the dump</li>
+  </ol>
+</div>
+
+<div class="closing-summary">The full arc in one line: dump → hunt → mantra → sentence → paragraph → scene → next.<br>Excavation before construction. Discovery before architecture.</div>
+
+<div class="sec-lbl">Background this pulls from</div>
+<p class="bg-note">This is the combined version of two things developed earlier: the "Flow State Trigger &amp; Fabrication Process" (the mantra + dump/hunt steps 1–8) and "Writing by Building" (the sentence→paragraph→scene ladder, steps 9–12). Sections 05 and 06 were added afterward to cover audience-facing technique and mid-draft self-checks. Full process is also saved as a Google Doc: <a href="https://docs.google.com/document/d/1pHzFLMcr9nxxcvd4vZegVx4L1OhZ2SbAlRSESfTfaVc/edit" target="_blank" rel="noopener">Flow State Trigger &amp; Build Process</a>, in the "New Craft Finds (Claude)" Drive folder.</p>
+
+</div><!-- end page -->
+
+<footer>
+  <span><a href="https://doug-kim-dfk.vercel.app" target="_blank" rel="noopener" style="color:inherit;">← Doug Kim</a></span>
+  <span>Intention · 2026</span>
+</footer>
+</body>
+</html>
