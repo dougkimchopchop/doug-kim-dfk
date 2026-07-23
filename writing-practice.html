@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daily Writing Practice — Doug Kim</title>
+<meta name="description" content="A daily practice for converting raw journal material into writing built for a real reader — reader-forcing techniques, a shipping loop, and a finished checklist.">
+<link rel="stylesheet" href="styles.css">
+<style>
+.breadcrumb{font-family:var(--mono);font-size:.65rem;color:var(--ink-soft);margin-bottom:1.4rem;display:flex;align-items:center;gap:.4rem}
+.breadcrumb a{color:var(--ink-soft);text-decoration:none}
+.breadcrumb a:hover{color:var(--ribbon)}
+.breadcrumb-sep{color:var(--oak-soft)}
+
+.stat-row{display:flex;gap:1.6rem;margin:1rem 0 1.6rem;flex-wrap:wrap;}
+.stat{text-align:left;}
+.stat .num{font-family:var(--display);font-weight:700;font-size:1.5rem;color:var(--ribbon);}
+.stat .lbl{font-family:var(--mono);font-size:.68rem;color:var(--ink-soft);}
+
+.loop-step{display:flex;gap:.9rem;border-top:1px dashed var(--line);padding:.7rem 0;}
+.loop-step:first-child{border-top:none;}
+.loop-num{font-family:var(--display);font-weight:700;color:var(--ribbon);min-width:24px;}
+.loop-body{font-size:.9rem;color:var(--ink);line-height:1.55;}
+.finished-note{font-style:italic;color:var(--ink-soft);font-size:.85rem;margin-top:.6rem;}
+
+.tech-card{border:1px solid var(--line);border-radius:var(--radius);background:var(--card);padding:1rem 1.2rem;margin-bottom:.6rem;}
+.tech-source{font-family:var(--mono);font-size:.68rem;color:var(--oak-soft);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.2rem;}
+.tech-title{font-family:var(--display);font-weight:600;font-size:1rem;margin-bottom:.4rem;}
+.tech-body{font-size:.88rem;color:var(--ink);line-height:1.5;}
+.tech-test{font-size:.82rem;color:var(--ink-soft);margin-top:.5rem;padding-top:.5rem;border-top:1px dashed var(--line);}
+.tech-test b{color:var(--ribbon);}
+
+.sec-tag{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:.9rem;flex-wrap:wrap;gap:.4rem;}
+.sec-tag .num-tag{font-family:var(--mono);font-size:.62rem;color:var(--oak-soft);letter-spacing:.1em;text-transform:uppercase;}
+
+.secondary-row{display:flex;gap:1rem;border-top:1px dashed var(--line);padding:.7rem 0;align-items:flex-start;}
+.secondary-row:first-child{border-top:none;}
+.sec-cat{font-family:var(--mono);font-size:.68rem;color:var(--ribbon);text-transform:uppercase;letter-spacing:.05em;min-width:70px;}
+.sec-source{font-weight:600;font-size:.88rem;color:var(--ink);}
+.sec-desc{font-size:.82rem;color:var(--ink-soft);margin-top:.1rem;}
+
+.check-list{display:flex;flex-direction:column;gap:.5rem;margin:.8rem 0;}
+.check-q{border:1px solid var(--line);border-radius:var(--radius);background:var(--card);padding:.7rem 1rem;font-size:.88rem;color:var(--ink);}
+.check-q b{color:var(--ribbon);margin-right:.4rem;}
+.check-final{background:var(--pass-bg);border-left:3px solid var(--pass);border-radius:var(--radius);padding:.8rem 1.1rem;font-size:.9rem;color:var(--ink);margin-top:.6rem;}
+</style>
+</head>
+<body>
+<div class="page">
+
+<nav class="breadcrumb" aria-label="Breadcrumb"><a href="https://doug-kim-dfk.vercel.app" target="_blank" rel="noopener">Doug Kim</a><span class="breadcrumb-sep">/</span><span>Daily Writing Practice</span></nav>
+<span class="eyebrow">Personal practice</span>
+<h1 style="font-family:var(--display);font-weight:600;font-size:clamp(1.6rem,3.5vw,2.2rem);line-height:1.1;margin:0 0 .5rem;">Daily Writing Practice</h1>
+<p style="font-size:.94rem;color:var(--ink-soft);line-height:1.6;margin:0 0 .6rem;">Journaling has no reader in it. This is the daily loop for converting one raw entry into something written for a real person — and shipping it the same day.</p>
+
+<div class="stat-row">
+  <div class="stat"><div class="num">5</div><div class="lbl">reader-forcing techniques</div></div>
+  <div class="stat"><div class="num">1</div><div class="lbl">daily loop</div></div>
+  <div class="stat"><div class="num">4</div><div class="lbl">question finished check</div></div>
+</div>
+
+<div class="sec-lbl">The Loop — run this once a day</div>
+<p style="font-size:.85rem;color:var(--ink-soft);margin-bottom:.6rem;">Twenty to forty minutes, start to finish. The problem isn't craft — journaling has no reader in it, and technique alone doesn't put one there.</p>
+<div class="loop-step"><div class="loop-num">1</div><div class="loop-body">Pull one raw entry — something already journaled, no new material needed.</div></div>
+<div class="loop-step"><div class="loop-num">2</div><div class="loop-body">Name the reader — one real, specific person who doesn't already know what's in your head. Not "an audience."</div></div>
+<div class="loop-step"><div class="loop-num">3</div><div class="loop-body">Pick one technique below and rewrite just the opening or the turn in that shape.</div></div>
+<div class="loop-step"><div class="loop-num">4</div><div class="loop-body">Ship it, same day — send it to that person, or post it with zero ceremony. No editing pass, no sitting on it.</div></div>
+<p class="finished-note"><strong>Finished means</strong> the technique landed — check the four questions at the bottom, not whether it's good.</p>
+
+<div class="sec-tag" style="margin-top:1.8rem;">
+  <div class="sec-lbl" style="margin-bottom:0;">Reader-Forcing Techniques</div>
+  <span class="num-tag">01 · Start Here</span>
+</div>
+<p style="font-size:.85rem;color:var(--ink-soft);margin-bottom:.8rem;">These don't just change the sentence shape — they make writing to yourself structurally impossible, because the reader is built into the grammar. Rotate through all five before touching anything else.</p>
+
+<div class="tech-card">
+  <div class="tech-source">Baldwin — "A Letter to My Nephew"</div>
+  <div class="tech-title">Address one named person directly for the whole piece.</div>
+  <div class="tech-test"><b>Test it</b> Write the hard thing you'd only say to them, using their name.</div>
+</div>
+<div class="tech-card">
+  <div class="tech-source">Dawes — "Death"</div>
+  <div class="tech-title">Address the reader as "you" throughout, folding them into the experience.</div>
+  <div class="tech-test"><b>Test it</b> Rewrite a memory addressed to "you," making the reader complicit.</div>
+</div>
+<div class="tech-card">
+  <div class="tech-source">Bambara — "A Sort of Preface"</div>
+  <div class="tech-title">Breathless run-on sentences addressed to "you," claiming it isn't autobiographical.</div>
+  <div class="tech-test"><b>Test it</b> One long run-on sentence addressed to "you" about a fear of being found out.</div>
+</div>
+<div class="tech-card">
+  <div class="tech-source">Otsuka — "Buddha in the Attic"</div>
+  <div class="tech-title">Speak for a group's shared experience with a collective "we," without naming individuals.</div>
+  <div class="tech-test"><b>Test it</b> Write a scene using only "we," letting it hold many different details inside it.</div>
+</div>
+<div class="tech-card">
+  <div class="tech-source">Walker — "How to Make a Slave"</div>
+  <div class="tech-title">Narrate your own past self at a remove, as second-person imperative instructions.</div>
+  <div class="tech-test"><b>Test it</b> "Gather... Take... Realize..." — narrate a memory as commands to "you."</div>
+</div>
+
+<div class="sec-tag" style="margin-top:1.8rem;">
+  <div class="sec-lbl" style="margin-bottom:0;">Secondary Techniques</div>
+  <span class="num-tag">02 · Once The Reader Is Real</span>
+</div>
+<p style="font-size:.85rem;color:var(--ink-soft);margin-bottom:.6rem;">Use these to shape the piece further, after a reader-forcing technique has already done its job. Full list lives in <a href="https://craft-catalog-snowy.vercel.app" target="_blank" rel="noopener" style="color:var(--ribbon);">The Craft Catalog</a>.</p>
+<div class="secondary-row"><div class="sec-cat">Opening</div><div><div class="sec-source">Baldwin, "Notes of a Native Son"</div><div class="sec-desc">Dated scene, no warm-up, short facts building to emotion.</div></div></div>
+<div class="secondary-row"><div class="sec-cat">Opening</div><div><div class="sec-source">Didion, "Goodbye to All That"</div><div class="sec-desc">General "we" certainty eroding into a doubting "I."</div></div></div>
+<div class="secondary-row"><div class="sec-cat">Lists</div><div><div class="sec-source">Diaz, "Top Ten Reasons..."</div><div class="sec-desc">Numbered list, confident persona, never explain.</div></div></div>
+<div class="secondary-row"><div class="sec-cat">Sentence</div><div><div class="sec-source">Messud, "The Road to Damascus"</div><div class="sec-desc">One clause-stacked sentence, eight-plus clauses, no period.</div></div></div>
+<div class="secondary-row"><div class="sec-cat">Sentence</div><div><div class="sec-source">Lahiri, "In the Sun"</div><div class="sec-desc">"But" as a structural hinge every few sentences.</div></div></div>
+
+<div class="sec-lbl" style="margin-top:1.8rem;">Shipping Mechanics</div>
+<div class="loop-step"><div class="loop-num">·</div><div class="loop-body"><b>Where:</b> a text to the named reader, a shared doc, a public note — the venue doesn't need to be impressive, it needs to exist outside your own head.</div></div>
+<div class="loop-step"><div class="loop-num">·</div><div class="loop-body"><b>When:</b> same day as the rewrite. The gap between draft and out-the-door is what breaks the interior-voice habit.</div></div>
+<div class="loop-step"><div class="loop-num">·</div><div class="loop-body"><b>Cadence:</b> daily journaling stays private. The conversion ships daily or at minimum weekly — don't let it pile up unshipped.</div></div>
+
+<div class="sec-lbl" style="margin-top:1.8rem;">Finished Checklist</div>
+<div class="check-list">
+  <div class="check-q"><b>1.</b>Did I name one real, specific reader?</div>
+  <div class="check-q"><b>2.</b>Does this tell them something they don't already know, instead of processing something I need to expel?</div>
+  <div class="check-q"><b>3.</b>Did the technique's specific move actually land — yes or no?</div>
+  <div class="check-q"><b>4.</b>Did I cut anything that only makes sense if the reader already knows my internal context?</div>
+</div>
+<div class="check-final"><strong>All four yes?</strong> It's finished. Ship it.</div>
+
+<p style="text-align:center;font-family:var(--mono);font-size:.72rem;color:var(--ink-soft);margin-top:1.8rem;">Daily Writing Practice — a personal loop, paired with The Craft Catalog</p>
+
+</div><!-- end page -->
+
+<footer>
+  <span><a href="https://doug-kim-dfk.vercel.app" target="_blank" rel="noopener" style="color:inherit;">← Doug Kim</a></span>
+  <span>Daily Writing Practice · 2026</span>
+</footer>
+</body>
+</html>
