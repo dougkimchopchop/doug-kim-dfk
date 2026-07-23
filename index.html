@@ -3,113 +3,158 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DFK — 90 Days</title>
+<title>Doug Kim</title>
+<meta name="description" content="A shelf of standalone projects and references.">
 <link rel="stylesheet" href="styles.css">
 <style>
-.breadcrumb{font-family:var(--mono);font-size:.65rem;color:var(--ink-soft);margin-bottom:1.4rem;display:flex;align-items:center;gap:.4rem}
-.breadcrumb a{color:var(--ink-soft);text-decoration:none}
-.breadcrumb a:hover{color:var(--ribbon)}
-.breadcrumb-sep{color:var(--oak-soft)}
+.top-eyebrow{display:inline-flex;align-items:center;gap:.5rem;font-family:var(--mono);font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:var(--ribbon);margin-bottom:.7rem;}
+.top-eyebrow::before{content:"";width:.45rem;height:.45rem;border-radius:50%;background:var(--ribbon);display:inline-block;}
+.intro-sub{color:var(--ink-soft);font-family:var(--mono);font-size:.72rem;margin:0 0 1.4rem;}
+
+.sec-block{max-width:760px;margin:2.4rem auto 0;padding:0 1.5rem;}
+.sec-block:first-of-type{margin-top:1.6rem;}
+.sec-block .sec-lbl{margin-bottom:.9rem;}
+
+.dfk-meta{font-family:var(--mono);font-size:.68rem;color:var(--ink-soft);margin:0 0 1rem;}
+.dfk-meta b{color:var(--ribbon);}
 </style>
 </head>
 <body>
 <a class="skip-link" href="#main" style="position:absolute;left:-999px;">Skip to content</a>
+
 <header class="shelf-header">
-  <nav class="breadcrumb" aria-label="Breadcrumb"><a href="https://hub-seven-nu.vercel.app" target="_blank" rel="noopener">Doug Kim</a><span class="breadcrumb-sep">/</span><span>DFK — 90 Days</span></nav>
-  <span class="eyebrow">Project 02</span>
-  <h1>DFK — 90 Days</h1>
-  <p id="cycle-meta">Jul 13 – Oct 10, 2026 · <span id="day-count">—</span> days remaining</p>
-  <div class="timeline"><div class="timeline-fill" id="timeline-fill"></div></div>
+  <span class="top-eyebrow">Personal site</span>
+  <h1>Doug Kim</h1>
+  <p class="intro-sub">A shelf of standalone projects and references, each living in its own room.</p>
 </header>
+
 <main id="main">
-  <section class="sec-lbl" style="max-width:760px;margin:1.5rem auto 0;padding:0 1.5rem;">Daily</section>
-  <section class="shelf" aria-label="Daily tools">
-    <a class="project-card" href="/tracker.html" target="_blank" rel="noopener">
-      <span class="tag">DAILY</span>
-      <h2>Habit Tracker</h2>
-      <p class="desc">13 habits, daily score, push-up and weight logs, 90-day graphs, and points system. Synced to Supabase across all devices.</p>
-      <span class="go">Open tracker →</span>
-    </a>
-    <a class="project-card" href="/grid.html" target="_blank" rel="noopener">
-      <span class="tag">DAILY</span>
-      <h2>Grid</h2>
-      <p class="desc">90-day heatmap — every habit, every day, one screen. Synced to the same tracker data.</p>
-      <span class="go">Open the grid →</span>
-    </a>
-    <a class="project-card" href="/caught.html" target="_blank" rel="noopener">
-      <span class="tag">DAILY</span>
-      <h2>Caught</h2>
-      <p class="desc">Interruption protocol — catch the pattern, run the pause, choose what happens next.</p>
-      <span class="go">Open caught →</span>
-    </a>
-  </section>
 
-  <section class="sec-lbl" style="max-width:760px;margin:2.2rem auto 0;padding:0 1.5rem;">Doctrine</section>
-  <section class="shelf" aria-label="Doctrine">
-    <a class="project-card" href="/doctrine.html" target="_blank" rel="noopener">
-      <span class="tag">REFERENCE</span>
-      <h2>Doctrine &amp; Projects</h2>
-      <p class="desc">11 active projects with deadlines and Notion links, identity doctrine, rules, and AI-powered daily or weekly check-ins.</p>
-      <span class="go">Open doctrine →</span>
-    </a>
-    <a class="project-card" href="/manifesto.html" target="_blank" rel="noopener">
-      <span class="tag">DOCTRINE</span>
-      <h2>The Manifesto</h2>
-      <p class="desc">Identity, execution, no exits. Four principles and a daily proof checklist.</p>
-      <span class="go">Open the manifesto →</span>
-    </a>
-    <a class="project-card" href="/cliff.html" target="_blank" rel="noopener">
-      <span class="tag">DOCTRINE</span>
-      <h2>The Cliff</h2>
-      <p class="desc">Escape hatch removal — the constitution page. Laws, not goals, plus the exception log.</p>
-      <span class="go">Open the cliff →</span>
-    </a>
-    <a class="project-card" href="/system.html" target="_blank" rel="noopener">
-      <span class="tag">DOCTRINE</span>
-      <h2>The System</h2>
-      <p class="desc">Anti-avoidance protocol — one thing, the real work test, nightly review.</p>
-      <span class="go">Open the system →</span>
-    </a>
-    <a class="project-card" href="/underachiever.html" target="_blank" rel="noopener">
-      <span class="tag">REFERENCE</span>
-      <h2>Kill the Underachiever</h2>
-      <p class="desc">A diagnostic framework — 15 behavioral patterns plus the clinical literature behind them.</p>
-      <span class="go">Open the framework →</span>
-    </a>
-  </section>
+  <div class="sec-block">
+    <div class="sec-lbl">Projects</div>
+    <section class="shelf" aria-label="Projects">
+      <a class="project-card" href="https://craft-catalog-snowy.vercel.app" target="_blank" rel="noopener">
+        <span class="tag">PROJECT 01</span>
+        <h2>The Craft Catalog</h2>
+        <p class="desc">A card-catalog reference for literary craft technique — structural patterns, a full technique playbook, and outside published examples, built from Writers Studio materials and open reading.</p>
+        <span class="go">Enter →</span>
+      </a>
+      <a class="project-card" href="#dfk-section">
+        <span class="tag">PROJECT 02</span>
+        <h2>DFK — 90 Days</h2>
+        <p class="desc">Daily habit tracker, points system, and doctrine for the Jul 13 – Oct 10, 2026 identity challenge. Synced across devices via Supabase.</p>
+        <span class="go">See below ↓</span>
+      </a>
+      <a class="project-card" href="https://hub-seven-nu.vercel.app/writing-practice/" target="_blank" rel="noopener">
+        <span class="tag">PROJECT 03</span>
+        <h2>Daily Writing Practice</h2>
+        <p class="desc">A daily loop for converting raw journal entries into writing built for a real reader — five reader-forcing techniques, a shipping cadence, and a finished checklist.</p>
+        <span class="go">Enter →</span>
+      </a>
+    </section>
+  </div>
 
-  <section class="sec-lbl" style="max-width:760px;margin:2.2rem auto 0;padding:0 1.5rem;">Writing</section>
-  <section class="shelf" aria-label="Writing">
-    <a class="project-card" href="/writing-voice.html" target="_blank" rel="noopener">
-      <span class="tag">REFERENCE</span>
-      <h2>Your Writing Voice</h2>
-      <p class="desc">Reverse-engineered style guide, Claude prompts, and Woolf craft techniques for the Substack.</p>
-      <span class="go">Open the guide →</span>
-    </a>
-  </section>
+  <div class="sec-block" id="dfk-section">
+    <div class="sec-lbl">DFK — 90 Days</div>
+    <p class="dfk-meta">Jul 13 – Oct 10, 2026 · <b id="day-count">—</b> days remaining · Phase 1: Output → Phase 2: Get Paid → Phase 3: Raise Everything</p>
+  </div>
 
-  <section class="sec-lbl" style="max-width:760px;margin:2.2rem auto 0;padding:0 1.5rem;">Health</section>
-  <section class="shelf" aria-label="Health">
-    <a class="project-card" href="/brain-rebuild.html" target="_blank" rel="noopener">
-      <span class="tag">REFERENCE</span>
-      <h2>Brain Rebuild Protocol</h2>
-      <p class="desc">The cognitive recovery prescription — sleep, cardio, meditation, screen rules, in order of impact.</p>
-      <span class="go">Open the protocol →</span>
-    </a>
-  </section>
+  <div class="sec-block">
+    <div class="sec-lbl">Daily</div>
+    <section class="shelf" aria-label="Daily tools">
+      <a class="project-card" href="/tracker.html" target="_blank" rel="noopener">
+        <span class="tag">DAILY</span>
+        <h2>Habit Tracker</h2>
+        <p class="desc">13 habits, daily score, push-up and weight logs, 90-day graphs, and points system. Synced to Supabase across all devices.</p>
+        <span class="go">Open tracker →</span>
+      </a>
+      <a class="project-card" href="/grid.html" target="_blank" rel="noopener">
+        <span class="tag">DAILY</span>
+        <h2>Grid</h2>
+        <p class="desc">90-day heatmap — every habit, every day, one screen. Synced to the same tracker data.</p>
+        <span class="go">Open the grid →</span>
+      </a>
+      <a class="project-card" href="/caught.html" target="_blank" rel="noopener">
+        <span class="tag">DAILY</span>
+        <h2>Caught</h2>
+        <p class="desc">Interruption protocol — catch the pattern, run the pause, choose what happens next.</p>
+        <span class="go">Open caught →</span>
+      </a>
+    </section>
+  </div>
+
+  <div class="sec-block">
+    <div class="sec-lbl">Doctrine</div>
+    <section class="shelf" aria-label="Doctrine">
+      <a class="project-card" href="/doctrine.html" target="_blank" rel="noopener">
+        <span class="tag">REFERENCE</span>
+        <h2>Doctrine &amp; Projects</h2>
+        <p class="desc">11 active projects with deadlines and Notion links, identity doctrine, rules, and AI-powered daily or weekly check-ins.</p>
+        <span class="go">Open doctrine →</span>
+      </a>
+      <a class="project-card" href="/manifesto.html" target="_blank" rel="noopener">
+        <span class="tag">DOCTRINE</span>
+        <h2>The Manifesto</h2>
+        <p class="desc">Identity, execution, no exits. Four principles and a daily proof checklist.</p>
+        <span class="go">Open the manifesto →</span>
+      </a>
+      <a class="project-card" href="/cliff.html" target="_blank" rel="noopener">
+        <span class="tag">DOCTRINE</span>
+        <h2>The Cliff</h2>
+        <p class="desc">Escape hatch removal — the constitution page. Laws, not goals, plus the exception log.</p>
+        <span class="go">Open the cliff →</span>
+      </a>
+      <a class="project-card" href="/system.html" target="_blank" rel="noopener">
+        <span class="tag">DOCTRINE</span>
+        <h2>The System</h2>
+        <p class="desc">Anti-avoidance protocol — one thing, the real work test, nightly review.</p>
+        <span class="go">Open the system →</span>
+      </a>
+      <a class="project-card" href="/underachiever.html" target="_blank" rel="noopener">
+        <span class="tag">REFERENCE</span>
+        <h2>Kill the Underachiever</h2>
+        <p class="desc">A diagnostic framework — 15 behavioral patterns plus the clinical literature behind them.</p>
+        <span class="go">Open the framework →</span>
+      </a>
+    </section>
+  </div>
+
+  <div class="sec-block">
+    <div class="sec-lbl">Writing</div>
+    <section class="shelf" aria-label="Writing">
+      <a class="project-card" href="/writing-voice.html" target="_blank" rel="noopener">
+        <span class="tag">REFERENCE</span>
+        <h2>Your Writing Voice</h2>
+        <p class="desc">Reverse-engineered style guide, Claude prompts, and Woolf craft techniques for the Substack.</p>
+        <span class="go">Open the guide →</span>
+      </a>
+    </section>
+  </div>
+
+  <div class="sec-block">
+    <div class="sec-lbl">Health</div>
+    <section class="shelf" aria-label="Health">
+      <a class="project-card" href="/brain-rebuild.html" target="_blank" rel="noopener">
+        <span class="tag">REFERENCE</span>
+        <h2>Brain Rebuild Protocol</h2>
+        <p class="desc">The cognitive recovery prescription — sleep, cardio, meditation, screen rules, in order of impact.</p>
+        <span class="go">Open the protocol →</span>
+      </a>
+    </section>
+  </div>
+
 </main>
+
 <footer>
-  Jul 13 – Oct 10, 2026 · Phase 1: Output → Phase 2: Get Paid → Phase 3: Raise Everything
+  <span>doug kim — updated 2026</span>
 </footer>
+
 <script>
 const START=new Date('2026-07-13');
 const END=new Date('2026-10-10');
 const today=new Date();
 const remaining=Math.max(0,Math.round((END-today)/86400000));
-const elapsed=Math.max(0,Math.round((today-START)/86400000));
-const total=Math.round((END-START)/86400000);
 document.getElementById('day-count').textContent=remaining;
-document.getElementById('timeline-fill').style.width=Math.min(100,elapsed/total*100)+'%';
 </script>
 </body>
 </html>
