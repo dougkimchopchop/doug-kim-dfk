@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="My List">
+<title>My List — Doug Kim</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink:#2A2622; --ink-soft:#5B5142;
+    --paper:#EFE6D3; --card:#F6EFDD;
+    --oak:#6B4A2F; --oak-soft:#B79A78;
+    --brass:#9C7A32; --ribbon:#7A2E2E;
+    --line: rgba(42,38,34,0.16); --line-d: rgba(42,38,34,0.28);
+    --radius: 3px;
+    --fires: var(--ribbon);
+    --today: var(--brass);
+    --week: var(--oak);
+    --backlog: var(--ink-soft);
+    --accent: var(--ribbon);
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body {
+    margin: 0; background: var(--paper); color: var(--ink);
+    font-family: 'Source Serif 4', serif;
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 40px 20px 56px; }
+  .crumb {
+    font-family: 'Space Mono', monospace; font-size: 12px; letter-spacing: .03em;
+    color: var(--ink-soft); margin-bottom: 28px;
+  }
+  .crumb a { color: var(--ink-soft); text-decoration: none; border-bottom: 1px solid var(--line-d); }
+  .crumb a:hover { color: var(--ribbon); border-color: var(--ribbon); }
+  header { margin-bottom: 6px; }
+  h1 {
+    font-family: 'Fraunces', serif; font-weight: 600;
+    font-size: 22px; letter-spacing: .01em; margin: 0; color: var(--ink);
+  }
+  .stamp { font-family: 'Space Mono', monospace; color: var(--ink-soft); font-size: 12px; margin-top: 5px; letter-spacing: .03em; }
+  #status { font-family: 'Space Mono', monospace; color: var(--ink-soft); font-size: 12px; min-height: 15px; margin: 10px 0 0; }
+  section { margin-top: 28px; }
+  section:first-of-type { margin-top: 18px; }
+  .sec-head { display: flex; align-items: center; gap: 9px; margin-bottom: 12px; padding-bottom: 9px; border-bottom: 1px solid var(--oak-soft); }
+  .dot { width: 8px; height: 8px; border-radius: 50%; flex: none; }
+  h2 {
+    font-family: 'Space Mono', monospace; font-size: 12px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: .08em; margin: 0; color: var(--ink-soft);
+  }
+  ul { list-style: none; margin: 0; padding: 0; }
+  li { display: flex; align-items: flex-start; gap: 12px; padding: 7px 0; font-size: 16px; line-height: 1.5; }
+  li a { color: var(--ribbon); }
+  .chk {
+    appearance: none; -webkit-appearance: none;
+    width: 19px; height: 19px; margin-top: 2px; flex: none;
+    border: 2px solid var(--oak-soft); border-radius: 50%;
+    cursor: pointer; position: relative; transition: all .15s; background: var(--card);
+  }
+  .chk:checked { background: var(--accent); border-color: var(--accent); }
+  .chk:checked::after {
+    content: ""; position: absolute; left: 5px; top: 1px;
+    width: 5px; height: 10px; border: solid var(--card); border-width: 0 2px 2px 0; transform: rotate(45deg);
+  }
+  li.doing { opacity: .4; text-decoration: line-through; }
+  .txt { flex: 1; }
+  .add-row { display: flex; align-items: center; gap: 12px; padding: 7px 0; }
+  .add-btn {
+    width: 19px; height: 19px; flex: none; border-radius: 50%;
+    border: 1.5px dashed var(--oak-soft); background: none; color: var(--ink-soft);
+    font-size: 13px; line-height: 1; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .add-btn:active { color: var(--ribbon); border-color: var(--ribbon); }
+  .add-row input {
+    flex: 1; background: none; border: none; outline: none;
+    color: var(--ink); font-size: 16px; font-family: 'Source Serif 4', serif; padding: 2px 0;
+  }
+  .add-row input::placeholder { color: var(--ink-soft); opacity: .7; }
+  .fires .dot { background: var(--fires); }
+  .today .dot { background: var(--today); }
+  .week .dot { background: var(--week); }
+  .backlog .dot { background: var(--backlog); }
+  footer {
+    margin-top: 56px; padding-top: 18px; border-top: 1px solid var(--line);
+    font-family: 'Space Mono', monospace; font-size: 12px; color: var(--ink-soft);
+    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px;
+  }
+  footer a { color: var(--ink-soft); text-decoration: none; border-bottom: 1px solid var(--line-d); }
+  footer a:hover { color: var(--ribbon); border-color: var(--ribbon); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="crumb"><a href="https://doug-kim-dfk.vercel.app">Doug Kim</a> / My List</div>
+  <header>
+    <h1>My List</h1>
+    <div class="stamp" id="stamp"></div>
+  </header>
+  <div id="status">Loading…</div>
+
+  <section class="fires"><div class="sec-head"><span class="dot"></span><h2>Fires</h2></div><ul data-sec="fires"></ul></section>
+  <section class="today"><div class="sec-head"><span class="dot"></span><h2>Today</h2></div><ul data-sec="today"></ul></section>
+  <section class="week"><div class="sec-head"><span class="dot"></span><h2>This Week</h2></div><ul data-sec="week"></ul></section>
+  <section class="backlog"><div class="sec-head"><span class="dot"></span><h2>Backlog</h2></div><ul data-sec="backlog"></ul></section>
+
+  <footer>
+    <a href="https://doug-kim-dfk.vercel.app">← Doug Kim</a>
+    <span>My List · 2026</span>
+  </footer>
+</div>
+
+<script>
+const BUCKETS = ['fires','today','week','backlog'];
+const PLACE = { fires:'Add a fire…', today:'Add a task…', week:'Add a task…', backlog:'Add a task…' };
+const statusEl = document.getElementById('status');
+
+let appKey = localStorage.getItem('dlkey') || '';
+function headers() {
+  const h = { 'Content-Type': 'application/json' };
+  if (appKey) h['x-app-key'] = appKey;
+  return h;
+}
+async function ensureKeyThen(fn) {
+  try { return await fn(); }
+  catch (e) {
+    if (String(e.message).includes('401')) {
+      const k = prompt('Enter your list passcode:');
+      if (k) { appKey = k; localStorage.setItem('dlkey', k); return fn(); }
+    }
+    throw e;
+  }
+}
+
+function esc(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function linkify(s){ return esc(s).replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" rel="noopener">$1</a>'); }
+
+function setStamp() {
+  const d = new Date();
+  document.getElementById('stamp').textContent =
+    d.toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' });
+}
+
+async function api(path, opts) {
+  const res = await fetch(path, opts);
+  if (!res.ok) throw new Error(res.status + '');
+  return res.json();
+}
+
+function render(data) {
+  BUCKETS.forEach((b) => {
+    const ul = document.querySelector('ul[data-sec="' + b + '"]');
+    const items = data[b] || [];
+    ul.innerHTML = '';
+    items.forEach((it) => {
+      const li = document.createElement('li');
+      li.innerHTML = '<input type="checkbox" class="chk"><span class="txt">' + linkify(it.text) + '</span>';
+      li.querySelector('.chk').addEventListener('change', () => complete(li, it.id));
+      ul.appendChild(li);
+    });
+    const addLi = document.createElement('li');
+    addLi.className = 'add-row';
+    addLi.innerHTML = '<button class="add-btn">+</button><input placeholder="' + PLACE[b] + '">';
+    const input = addLi.querySelector('input');
+    const btn = addLi.querySelector('.add-btn');
+    const go = () => addItem(b, input);
+    btn.addEventListener('click', go);
+    input.addEventListener('keydown', (e) => { if (e.key === 'Enter') go(); });
+    ul.appendChild(addLi);
+  });
+}
+
+async function load() {
+  statusEl.textContent = 'Loading…';
+  try {
+    const data = await ensureKeyThen(() => api('/api/list', { headers: headers() }));
+    render(data);
+    statusEl.textContent = '';
+  } catch (e) {
+    statusEl.textContent = 'Error loading: ' + e.message;
+  }
+}
+
+async function complete(li, id) {
+  li.classList.add('doing');
+  try {
+    await ensureKeyThen(() => api('/api/done', { method:'POST', headers: headers(), body: JSON.stringify({ id }) }));
+    li.remove();
+  } catch (e) {
+    li.classList.remove('doing');
+    li.querySelector('.chk').checked = false;
+    statusEl.textContent = 'Could not complete: ' + e.message;
+  }
+}
+
+async function addItem(bucket, input) {
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = '';
+  try {
+    await ensureKeyThen(() => api('/api/add', { method:'POST', headers: headers(), body: JSON.stringify({ bucket, text }) }));
+    load();
+  } catch (e) {
+    input.value = text;
+    statusEl.textContent = 'Could not add: ' + e.message;
+  }
+}
+
+setStamp();
+load();
+</script>
+</body>
+</html>
