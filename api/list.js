@@ -64,16 +64,23 @@ module.exports = async (req, res) => {
     const sections = [];
     const byKey = {};
     let cur = null;
+    let pendingDivider = null;
     for (const b of blocks) {
+      if (b.type === 'heading_1') {
+        pendingDivider = plain(b.heading_1.rich_text).trim() || null;
+        continue;
+      }
       if (b.type === 'heading_2') {
         const label = plain(b.heading_2.rich_text).trim();
         if (!label) { cur = null; continue; }
         const key = slugify(label);
         if (!byKey[key]) {
           byKey[key] = { key, label, items: [] };
+          if (pendingDivider) byKey[key].divider = pendingDivider;
           sections.push(byKey[key]);
         }
         cur = byKey[key];
+        pendingDivider = null;
       } else if (cur) {
         const item = itemFromBlock(b);
         if (item) cur.items.push(item);

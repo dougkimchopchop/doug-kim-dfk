@@ -17,10 +17,17 @@
     --paper:#EFE6D3; --card:#F6EFDD;
     --oak:#6B4A2F; --oak-soft:#B79A78;
     --brass:#9C7A32; --ribbon:#7A2E2E;
+    --bright-red:#E5484D;
     --line: rgba(42,38,34,0.16); --line-d: rgba(42,38,34,0.28);
     --radius: 3px;
     --accent: var(--ribbon);
   }
+  .divider {
+    font-family: 'Fraunces', serif; font-weight: 600;
+    font-size: 19px; letter-spacing: .01em; color: var(--ink);
+    margin: 40px 0 6px; padding-top: 24px; border-top: 1px solid var(--oak-soft);
+  }
+  section:first-of-type .divider { margin-top: 18px; }
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   body {
     margin: 0; background: var(--paper); color: var(--ink);
@@ -147,10 +154,14 @@ async function api(path, opts) {
 function render(data) {
   const sections = data.sections || [];
   sectionsEl.innerHTML = '';
-  sections.forEach((sec, i) => {
+  let cycleIndex = 0;
+  sections.forEach((sec) => {
     const section = document.createElement('section');
-    const color = DOT_COLORS[i % DOT_COLORS.length];
+    const isPhase = /^phase\b/i.test(sec.label);
+    const color = isPhase ? 'var(--bright-red)' : DOT_COLORS[cycleIndex++ % DOT_COLORS.length];
+    const dividerHtml = sec.divider ? '<div class="divider">' + esc(sec.divider) + '</div>' : '';
     section.innerHTML =
+      dividerHtml +
       '<div class="sec-head"><span class="dot" style="background:' + color + '"></span><h2>' + esc(sec.label) + '</h2></div>' +
       '<ul data-key="' + sec.key + '"></ul>';
     sectionsEl.appendChild(section);
