@@ -4,7 +4,7 @@ export default async function handler(req) {
   if (req.method === 'OPTIONS') {
     return new Response(null, {
       headers: {
-        'Access-Control-Allow-Origin': 'https://doug-kim-dfk.vercel.app',
+        'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Methods': 'POST, OPTIONS',
         'Access-Control-Allow-Headers': 'Content-Type',
       },
@@ -17,10 +17,20 @@ export default async function handler(req) {
 
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) {
-    return new Response('API key not configured', { status: 500 });
+    return new Response(JSON.stringify({error:'API key not configured'}), {
+      status: 500,
+      headers: {'Content-Type':'application/json','Access-Control-Allow-Origin':'*'}
+    });
   }
 
-  const body = await req.json();
+  let body;
+  try { body = await req.json(); }
+  catch(e) {
+    return new Response(JSON.stringify({error:'Invalid JSON body'}), {
+      status: 400,
+      headers: {'Content-Type':'application/json','Access-Control-Allow-Origin':'*'}
+    });
+  }
 
   const response = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
@@ -38,7 +48,7 @@ export default async function handler(req) {
     status: response.status,
     headers: {
       'Content-Type': 'application/json',
-      'Access-Control-Allow-Origin': 'https://doug-kim-dfk.vercel.app',
+      'Access-Control-Allow-Origin': '*',
     },
   });
 }
