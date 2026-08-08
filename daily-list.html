@@ -73,6 +73,7 @@
   }
   li.doing { opacity: .4; text-decoration: line-through; }
   .txt { flex: 1; }
+  .txt.urgent { color: var(--bright-red); }
   .add-row { display: flex; align-items: center; gap: 12px; padding: 7px 0; }
   .add-btn {
     width: 19px; height: 19px; flex: none; border-radius: 50%;
@@ -139,6 +140,24 @@ async function ensureKeyThen(fn) {
 function esc(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 function linkify(s){ return esc(s).replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" rel="noopener">$1</a>'); }
 
+const MONTHS = { Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,Jul:6,Aug:7,Sep:8,Oct:9,Nov:10,Dec:11 };
+// Matches a trailing "— Mon D" (optionally followed by more text like "— deadline").
+// Returns a Date for the current year, or null if no date-like suffix is found.
+function extractDueDate(text) {
+  const m = text.match(/[—-]\s*([A-Z][a-z]{2})\s+(\d{1,2})(?:\D|$)/);
+  if (!m || !(m[1] in MONTHS)) return null;
+  const now = new Date();
+  return new Date(now.getFullYear(), MONTHS[m[1]], parseInt(m[2], 10));
+}
+function isDueSoon(text) {
+  const due = extractDueDate(text);
+  if (!due) return false;
+  const today = new Date();
+  today.setHours(0,0,0,0);
+  const diffDays = Math.round((due - today) / 86400000);
+  return diffDays <= 7; // overdue or due within the next 7 days
+}
+
 function setStamp() {
   const d = new Date();
   document.getElementById('stamp').textContent =
@@ -169,7 +188,8 @@ function render(data) {
     const ul = section.querySelector('ul');
     sec.items.forEach((it) => {
       const li = document.createElement('li');
-      li.innerHTML = '<input type="checkbox" class="chk"><span class="txt">' + linkify(it.text) + '</span>';
+      const urgent = isDueSoon(it.text);
+      li.innerHTML = '<input type="checkbox" class="chk"><span class="txt' + (urgent ? ' urgent' : '') + '">' + linkify(it.text) + '</span>';
       li.querySelector('.chk').addEventListener('change', () => complete(li, it.id));
       ul.appendChild(li);
     });
