@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Octavia Butler's Notes — Doug Kim</title>
+<link rel="stylesheet" href="styles.css">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:wght@600&family=Source+Serif+4&family=Space+Mono&display=swap');
+  body {
+    background: var(--paper);
+    margin: 0;
+  }
+  nav.breadcrumb {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    color: var(--ink-soft);
+    background: var(--oak);
+    padding: 12px 20px;
+  }
+  nav.breadcrumb a {
+    color: var(--paper);
+    text-decoration: none;
+  }
+  nav.breadcrumb a:hover { text-decoration: underline; }
+  footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 24px 20px 48px;
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    color: var(--ink-soft);
+    border-top: 1px solid var(--line);
+  }
+  footer a {
+    color: var(--ribbon);
+    text-decoration: none;
+  }
+  footer a:hover { text-decoration: underline; }
+  .ob-header {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 24px 20px 8px;
+  }
+  .ob-header .eyebrow {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--brass);
+  }
+  .ob-header .eyebrow::before {
+    content: "● ";
+    color: var(--ribbon);
+  }
+  .ob-header h1 {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 32px;
+    color: var(--ink);
+    margin: 8px 0 6px;
+  }
+  .ob-header p {
+    font-family: 'Source Serif 4', serif;
+    color: var(--ink-soft);
+    font-size: 16px;
+    line-height: 1.5;
+    max-width: 640px;
+  }
+  .ob-grid {
+    max-width: 1100px;
+    margin: 24px auto 60px;
+    padding: 0 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 22px;
+  }
+  .ob-card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 10px;
+    box-shadow: 0 2px 6px rgba(42,38,34,0.08);
+    transition: box-shadow 0.15s ease, transform 0.15s ease;
+  }
+  .ob-card:hover {
+    box-shadow: 0 4px 14px rgba(42,38,34,0.14);
+    transform: translateY(-2px);
+  }
+  .ob-card a {
+    display: block;
+    line-height: 0;
+  }
+  .ob-card img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 2px;
+    cursor: zoom-in;
+  }
+  .ob-card .cap {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-soft);
+    letter-spacing: 0.03em;
+    padding: 8px 4px 2px;
+  }
+
+  /* lightbox */
+  .lightbox {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(20,17,14,0.92);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+    padding: 32px;
+  }
+  .lightbox.open { display: flex; }
+  .lightbox img {
+    max-width: 100%;
+    max-height: 100%;
+    border-radius: 2px;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+  }
+  .lightbox-close {
+    position: absolute;
+    top: 20px;
+    right: 28px;
+    color: var(--paper);
+    font-family: 'Space Mono', monospace;
+    font-size: 14px;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    border: 1px solid rgba(239,230,211,0.4);
+    padding: 6px 12px;
+    border-radius: var(--radius);
+  }
+  .lightbox-close:hover { border-color: var(--paper); }
+</style>
+</head>
+<body>
+
+<nav class="breadcrumb">
+  <a href="https://doug-kim-dfk.vercel.app">Doug Kim</a> / Octavia Butler's Notes
+</nav>
+
+<div class="ob-header">
+  <div class="eyebrow">Reference · Writing</div>
+  <h1>Octavia Butler's Notes to Herself</h1>
+  <p>Her handwritten writing doctrine and self-affirmations — saved here so they're on hand wherever, whenever. Source: @makelithappen on TikTok.</p>
+</div>
+
+<div class="ob-grid">
+  <div class="ob-card">
+    <a href="octavia-notes-images/01-cover.jpeg" class="lb-trigger"><img src="octavia-notes-images/01-cover.jpeg" alt="Octavia Butler portrait — notes to herself"></a>
+    <div class="cap">01 · Cover</div>
+  </div>
+  <div class="ob-card">
+    <a href="octavia-notes-images/02-emotional-drive-1.jpeg" class="lb-trigger"><img src="octavia-notes-images/02-emotional-drive-1.jpeg" alt="Emotional Drive note, dirt background"></a>
+    <div class="cap">02 · Emotional Drive</div>
+  </div>
+  <div class="ob-card">
+    <a href="octavia-notes-images/03-emotional-drive-2.jpeg" class="lb-trigger"><img src="octavia-notes-images/03-emotional-drive-2.jpeg" alt="Tell stories filled with facts / Make people feel"></a>
+    <div class="cap">03 · Tell Stories, Make People Feel</div>
+  </div>
+  <div class="ob-card">
+    <a href="octavia-notes-images/04-wordweaver.jpeg" class="lb-trigger"><img src="octavia-notes-images/04-wordweaver.jpeg" alt="Wordweaver Worldmaker Storyteller Bestseller — spiral notebook"></a>
+    <div class="cap">04 · Wordweaver, Worldmaker</div>
+  </div>
+  <div class="ob-card">
+    <a href="octavia-notes-images/05-use-detail.jpeg" class="lb-trigger"><img src="octavia-notes-images/05-use-detail.jpeg" alt="Use Detail — build suspense, regulate pacing, create mood and tone"></a>
+    <div class="cap">05 · Use Detail</div>
+  </div>
+  <div class="ob-card">
+    <a href="octavia-notes-images/06-bestselling-writer.jpeg" class="lb-trigger"><img src="octavia-notes-images/06-bestselling-writer.jpeg" alt="I am a Bestselling Writer — affirmations"></a>
+    <div class="cap">06 · I Am a Bestselling Writer</div>
+  </div>
+  <div class="ob-card">
+    <a href="octavia-notes-images/07-essentials-of-success.jpeg" class="lb-trigger"><img src="octavia-notes-images/07-essentials-of-success.jpeg" alt="Napoleon Hill quote and Essentials of Success list"></a>
+    <div class="cap">07 · Essentials of Success</div>
+  </div>
+  <div class="ob-card">
+    <a href="octavia-notes-images/08-research-dramatize.jpeg" class="lb-trigger"><img src="octavia-notes-images/08-research-dramatize.jpeg" alt="Research is vital to realism / Dramatize action, dramatize struggle"></a>
+    <div class="cap">08 · Dramatize Action &amp; Struggle</div>
+  </div>
+  <div class="ob-card">
+    <a href="octavia-notes-images/09-write-visually.jpeg" class="lb-trigger"><img src="octavia-notes-images/09-write-visually.jpeg" alt="Write Visually, Publicize Yourself, Strive for Excellence"></a>
+    <div class="cap">09 · Write Visually, Publicize Yourself</div>
+  </div>
+</div>
+
+<div class="lightbox" id="lightbox">
+  <div class="lightbox-close" id="lightboxClose">CLOSE ✕</div>
+  <img id="lightboxImg" src="" alt="">
+</div>
+
+<footer>
+  <a href="https://doug-kim-dfk.vercel.app">← Doug Kim</a>
+  <span>Octavia Butler's Notes · 2026</span>
+</footer>
+
+<script>
+  var lb = document.getElementById('lightbox');
+  var lbImg = document.getElementById('lightboxImg');
+  document.querySelectorAll('.lb-trigger').forEach(function(el) {
+    el.addEventListener('click', function(e) {
+      e.preventDefault();
+      lbImg.src = el.getAttribute('href');
+      lb.classList.add('open');
+    });
+  });
+  document.getElementById('lightboxClose').addEventListener('click', function() {
+    lb.classList.remove('open');
+    lbImg.src = '';
+  });
+  lb.addEventListener('click', function(e) {
+    if (e.target === lb) {
+      lb.classList.remove('open');
+      lbImg.src = '';
+    }
+  });
+</script>
+
+</body>
+</html>
