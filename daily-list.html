@@ -7,6 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="My List">
 <title>My List — Doug Kim</title>
+<link rel="apple-touch-icon" href="/icons/icon-daily-list.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -18,10 +19,6 @@
     --brass:#9C7A32; --ribbon:#7A2E2E;
     --line: rgba(42,38,34,0.16); --line-d: rgba(42,38,34,0.28);
     --radius: 3px;
-    --fires: var(--ribbon);
-    --today: var(--brass);
-    --week: var(--oak);
-    --backlog: var(--ink-soft);
     --accent: var(--ribbon);
   }
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -82,10 +79,6 @@
     color: var(--ink); font-size: 16px; font-family: 'Source Serif 4', serif; padding: 2px 0;
   }
   .add-row input::placeholder { color: var(--ink-soft); opacity: .7; }
-  .fires .dot { background: var(--fires); }
-  .today .dot { background: var(--today); }
-  .week .dot { background: var(--week); }
-  .backlog .dot { background: var(--backlog); }
   footer {
     margin-top: 56px; padding-top: 18px; border-top: 1px solid var(--line);
     font-family: 'Space Mono', monospace; font-size: 12px; color: var(--ink-soft);
@@ -94,7 +87,6 @@
   footer a { color: var(--ink-soft); text-decoration: none; border-bottom: 1px solid var(--line-d); }
   footer a:hover { color: var(--ribbon); border-color: var(--ribbon); }
 </style>
-  <link rel="apple-touch-icon" href="/icons/icon-daily-list.png">
 </head>
 <body>
 <div class="wrap">
@@ -105,10 +97,7 @@
   </header>
   <div id="status">Loading…</div>
 
-  <section class="fires"><div class="sec-head"><span class="dot"></span><h2>Fires</h2></div><ul data-sec="fires"></ul></section>
-  <section class="today"><div class="sec-head"><span class="dot"></span><h2>Today</h2></div><ul data-sec="today"></ul></section>
-  <section class="week"><div class="sec-head"><span class="dot"></span><h2>This Week</h2></div><ul data-sec="week"></ul></section>
-  <section class="backlog"><div class="sec-head"><span class="dot"></span><h2>Backlog</h2></div><ul data-sec="backlog"></ul></section>
+  <div id="sections"></div>
 
   <footer>
     <a href="https://doug-kim-dfk.vercel.app">← Doug Kim</a>
@@ -117,9 +106,11 @@
 </div>
 
 <script>
-const BUCKETS = ['fires','today','week','backlog'];
-const PLACE = { fires:'Add a fire…', today:'Add a task…', week:'Add a task…', backlog:'Add a task…' };
+// Any dot color from the site's palette, cycled per section in the order
+// they appear on the Notion page — not tied to fixed section names.
+const DOT_COLORS = ['#7A2E2E', '#9C7A32', '#6B4A2F', '#5B5142', '#B79A78'];
 const statusEl = document.getElementById('status');
+const sectionsEl = document.getElementById('sections');
 
 let appKey = localStorage.getItem('dlkey') || '';
 function headers() {
@@ -154,22 +145,30 @@ async function api(path, opts) {
 }
 
 function render(data) {
-  BUCKETS.forEach((b) => {
-    const ul = document.querySelector('ul[data-sec="' + b + '"]');
-    const items = data[b] || [];
-    ul.innerHTML = '';
-    items.forEach((it) => {
+  const sections = data.sections || [];
+  sectionsEl.innerHTML = '';
+  sections.forEach((sec, i) => {
+    const section = document.createElement('section');
+    const color = DOT_COLORS[i % DOT_COLORS.length];
+    section.innerHTML =
+      '<div class="sec-head"><span class="dot" style="background:' + color + '"></span><h2>' + esc(sec.label) + '</h2></div>' +
+      '<ul data-key="' + sec.key + '"></ul>';
+    sectionsEl.appendChild(section);
+
+    const ul = section.querySelector('ul');
+    sec.items.forEach((it) => {
       const li = document.createElement('li');
       li.innerHTML = '<input type="checkbox" class="chk"><span class="txt">' + linkify(it.text) + '</span>';
       li.querySelector('.chk').addEventListener('change', () => complete(li, it.id));
       ul.appendChild(li);
     });
+
     const addLi = document.createElement('li');
     addLi.className = 'add-row';
-    addLi.innerHTML = '<button class="add-btn">+</button><input placeholder="' + PLACE[b] + '">';
+    addLi.innerHTML = '<button class="add-btn">+</button><input placeholder="Add to ' + esc(sec.label) + '…">';
     const input = addLi.querySelector('input');
     const btn = addLi.querySelector('.add-btn');
-    const go = () => addItem(b, input);
+    const go = () => addItem(sec.key, input);
     btn.addEventListener('click', go);
     input.addEventListener('keydown', (e) => { if (e.key === 'Enter') go(); });
     ul.appendChild(addLi);
@@ -199,12 +198,12 @@ async function complete(li, id) {
   }
 }
 
-async function addItem(bucket, input) {
+async function addItem(sectionKey, input) {
   const text = input.value.trim();
   if (!text) return;
   input.value = '';
   try {
-    await ensureKeyThen(() => api('/api/add', { method:'POST', headers: headers(), body: JSON.stringify({ bucket, text }) }));
+    await ensureKeyThen(() => api('/api/add', { method:'POST', headers: headers(), body: JSON.stringify({ section: sectionKey, text }) }));
     load();
   } catch (e) {
     input.value = text;

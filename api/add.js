@@ -1,10 +1,10 @@
-// POST /api/add  { bucket, text }  -> appends a bullet under the right heading
-const PAGE_ID = process.env.NOTION_PAGE_ID;   // set this to your personal "My List" page id
+// POST /api/add  { section, text }  -> appends under the matching heading_2
+// `section` can be the slug ("the-fucking-hard-things") or the exact label
+// ("The Fucking Hard Things") — matched case-insensitively either way.
+const PAGE_ID = process.env.NOTION_PAGE_ID;
 const TOKEN = process.env.NOTION_TOKEN;
 const APP_KEY = process.env.APP_KEY || '';
 const NV = '2022-06-28';
-
-const LABELS = { fires: 'Fires', today: 'Today', week: 'This Week', backlog: 'Backlog' };
 
 async function notion(path, opts = {}) {
   const res = await fetch('https://api.notion.com/v1' + path, {
@@ -36,10 +36,8 @@ function plain(rich) {
   return (rich || []).map((r) => r.plain_text).join('');
 }
 
-function matchBucket(text) {
-  const t = (text || '').trim().toLowerCase();
-  for (const k in LABELS) if (t === LABELS[k].toLowerCase()) return k;
-  return null;
+function slugify(label) {
+  return label.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') || 'section';
 }
 
 function readBody(req) {
@@ -67,23 +65,25 @@ module.exports = async (req, res) => {
     if (req.method !== 'POST') { res.status(405).json({ error: 'POST only' }); return; }
 
     const body = await readBody(req);
-    const bucket = String(body.bucket || 'today').toLowerCase();
+    const wantedRaw = String(body.section || body.bucket || '').trim();
+    const wanted = slugify(wantedRaw);
     const text = String(body.text || '').trim();
-    if (!LABELS[bucket]) { res.status(400).json({ error: 'bad bucket' }); return; }
+    if (!wanted) { res.status(400).json({ error: 'missing section' }); return; }
     if (!text) { res.status(400).json({ error: 'empty text' }); return; }
 
     const blocks = await getAllChildren(PAGE_ID);
     let inSection = false, headingId = null, afterId = null;
     for (const b of blocks) {
       if (b.type === 'heading_2') {
-        const key = matchBucket(plain(b.heading_2.rich_text));
-        if (key === bucket) { inSection = true; headingId = b.id; afterId = b.id; }
+        const label = plain(b.heading_2.rich_text).trim();
+        const key = slugify(label);
+        if (key === wanted) { inSection = true; headingId = b.id; afterId = b.id; }
         else if (inSection) { inSection = false; }
-      } else if (inSection && b.type === 'bulleted_list_item') {
+      } else if (inSection && (b.type === 'bulleted_list_item' || b.type === 'to_do')) {
         afterId = b.id;
       }
     }
-    if (!headingId) { res.status(404).json({ error: 'section heading not found' }); return; }
+    if (!headingId) { res.status(404).json({ error: 'section not found: ' + wantedRaw }); return; }
 
     await notion('/blocks/' + PAGE_ID + '/children', {
       method: 'PATCH',

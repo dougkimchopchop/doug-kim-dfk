@@ -1,15 +1,9 @@
-// GET /api/list  ->  { fires:[{id,text}], today:[...], week:[...], backlog:[...] }
-const PAGE_ID = process.env.NOTION_PAGE_ID;   // set this to your personal "My List" page id
+// GET /api/list  ->  { sections: [ { key, label, items:[{id,text}] }, ... ] }
+// Any heading_2 on the page becomes a section automatically — no hardcoded bucket list.
+const PAGE_ID = process.env.NOTION_PAGE_ID;
 const TOKEN = process.env.NOTION_TOKEN;
 const APP_KEY = process.env.APP_KEY || '';
 const NV = '2022-06-28';
-
-const BUCKETS = [
-  { key: 'fires', label: 'Fires' },
-  { key: 'today', label: 'Today' },
-  { key: 'week', label: 'This Week' },
-  { key: 'backlog', label: 'Backlog' },
-];
 
 async function notion(path, opts = {}) {
   const res = await fetch('https://api.notion.com/v1' + path, {
@@ -41,9 +35,20 @@ function plain(rich) {
   return (rich || []).map((r) => r.plain_text).join('');
 }
 
-function matchBucket(text) {
-  const t = (text || '').trim().toLowerCase();
-  for (const b of BUCKETS) if (t === b.label.toLowerCase()) return b.key;
+function slugify(label) {
+  return label.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') || 'section';
+}
+
+// Extract text + checked-state from either block type. to_do items that are
+// already checked in Notion are skipped (treated as done/archived already).
+function itemFromBlock(b) {
+  if (b.type === 'bulleted_list_item') {
+    return { id: b.id, text: plain(b.bulleted_list_item.rich_text) };
+  }
+  if (b.type === 'to_do') {
+    if (b.to_do.checked) return null;
+    return { id: b.id, text: plain(b.to_do.rich_text) };
+  }
   return null;
 }
 
@@ -56,17 +61,26 @@ module.exports = async (req, res) => {
       return;
     }
     const blocks = await getAllChildren(PAGE_ID);
-    const out = { fires: [], today: [], week: [], backlog: [] };
+    const sections = [];
+    const byKey = {};
     let cur = null;
     for (const b of blocks) {
       if (b.type === 'heading_2') {
-        cur = matchBucket(plain(b.heading_2.rich_text));
-      } else if (b.type === 'bulleted_list_item' && cur) {
-        out[cur].push({ id: b.id, text: plain(b.bulleted_list_item.rich_text) });
+        const label = plain(b.heading_2.rich_text).trim();
+        if (!label) { cur = null; continue; }
+        const key = slugify(label);
+        if (!byKey[key]) {
+          byKey[key] = { key, label, items: [] };
+          sections.push(byKey[key]);
+        }
+        cur = byKey[key];
+      } else if (cur) {
+        const item = itemFromBlock(b);
+        if (item) cur.items.push(item);
       }
     }
     res.setHeader('Cache-Control', 'no-store');
-    res.status(200).json(out);
+    res.status(200).json({ sections });
   } catch (e) {
     res.status(500).json({ error: String((e && e.message) || e) });
   }
