@@ -179,6 +179,84 @@
     .lightbox-prev { left: 8px; }
     .lightbox-next { right: 8px; }
   }
+
+  .ob-punchlist {
+    max-width: 900px;
+    margin: 0 auto 60px;
+    padding: 0 20px;
+  }
+  .ob-punchlist .inner {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 28px 32px 32px;
+    box-shadow: 0 2px 6px rgba(42,38,34,0.08);
+  }
+  .ob-punchlist .eyebrow {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--brass);
+  }
+  .ob-punchlist .eyebrow::before {
+    content: "● ";
+    color: var(--ribbon);
+  }
+  .ob-punchlist h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 22px;
+    color: var(--ink);
+    margin: 8px 0 4px;
+  }
+  .ob-punchlist .pl-intro {
+    font-family: 'Source Serif 4', serif;
+    color: var(--ink-soft);
+    font-size: 15px;
+    line-height: 1.5;
+    margin: 0 0 18px;
+  }
+  .pl-list {
+    list-style: none;
+    counter-reset: pl;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 14px;
+  }
+  .pl-list li {
+    counter-increment: pl;
+    font-family: 'Source Serif 4', serif;
+    color: var(--ink);
+    font-size: 15px;
+    line-height: 1.55;
+    padding-left: 36px;
+    position: relative;
+  }
+  .pl-list li::before {
+    content: counter(pl, decimal-leading-zero);
+    position: absolute;
+    left: 0;
+    top: 0;
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    color: var(--ribbon);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 2px 5px;
+  }
+  .pl-list li b { color: var(--oak); }
+  .pl-source {
+    margin: 20px 0 0;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-soft);
+    border-top: 1px solid var(--line);
+    padding-top: 12px;
+  }
+  .pl-source a { color: var(--ribbon); text-decoration: none; }
+  .pl-source a:hover { text-decoration: underline; }
 </style>
 </head>
 <body>
@@ -229,6 +307,25 @@
   <div class="ob-card">
     <a href="octavia-notes-images/09-write-visually.jpeg" class="lb-trigger"><img src="octavia-notes-images/09-write-visually.jpeg" alt="Write Visually, Publicize Yourself, Strive for Excellence"></a>
     <div class="cap">09 · Write Visually, Publicize Yourself</div>
+  </div>
+</div>
+
+<div class="ob-punchlist">
+  <div class="inner">
+    <div class="eyebrow">Punch List</div>
+    <h2>Butler's Rules, Distilled</h2>
+    <p class="pl-intro">The craft instruction across these pages, pulled into one working checklist.</p>
+    <ol class="pl-list">
+      <li><b>Chase emotional drive.</b> Strive always — in all ways, at all times — for utter intensity: cold or hot, hard or soft, gut-wrenching or deeply stilling.</li>
+      <li><b>Make people feel, not just know.</b> Tell stories filled with facts, then make people touch, taste, and know — make people feel.</li>
+      <li><b>Use detail on purpose.</b> Detail builds suspense, regulates pacing, and creates mood and tone — build a world with selected detail, not exhaustive detail.</li>
+      <li><b>Research before you invent.</b> Extrapolate ("if this goes on..."), speculate ("what if...?"), project (take an incident from history and project it into the future).</li>
+      <li><b>Dramatize action, dramatize struggle.</b> Characters must act, move, do — dramatized action and struggle is always suspenseful.</li>
+      <li><b>Write visually.</b> Consciously write vivid word pictures and powerful, vividly alive characters, plus action and struggle.</li>
+      <li><b>Publicize yourself.</b> Seize, with tenacity, every opportunity for good print publicity — short stories, articles, op-eds — the same discipline as the writing itself.</li>
+      <li><b>Write the outcome as already true.</b> Draft self-affirmations in the present tense, stacked with specifics, and close each one the same way: "So be it. See to it."</li>
+    </ol>
+    <p class="pl-source">Distilled from the notebook pages above · also catalogued in <a href="https://craft-catalog.vercel.app/playbook.html">The Craft Catalog</a></p>
   </div>
 </div>
 
