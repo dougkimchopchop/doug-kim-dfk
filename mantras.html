@@ -10,6 +10,8 @@
 
 :root{
   --bg:#0e0d0b;
+  --card:#17140f;
+  --card-soft:rgba(193,80,46,0.07);
   --ink:#f0ead9;
   --ink-soft:#9a9384;
   --line:#3a362e;
@@ -37,27 +39,43 @@ body{font-family:var(--body);-webkit-font-smoothing:antialiased;line-height:1.5;
 h1{font-family:var(--display);font-weight:700;font-size:clamp(2rem,6vw,2.9rem);line-height:1.02;margin:.3rem 0 .3rem;letter-spacing:.2px;}
 .subhead{font-family:var(--body);font-style:italic;font-size:1rem;color:var(--ink-soft);margin:0 0 1.2rem;}
 
-.rule-strong{border:none;border-top:1.5px solid var(--accent);width:46px;margin:1.2rem 0 1.5rem;}
-.rule{border:none;border-top:1px solid var(--line);margin:1.3rem 0 1.5rem;}
+.rule-strong{border:none;border-top:1.5px solid var(--accent);width:46px;margin:1.2rem 0 1.6rem;}
 
 .label{font-family:var(--mono);font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);font-weight:700;margin-bottom:.7rem;}
 
-section{margin-bottom:.6rem;}
-p.line{font-size:1.05rem;line-height:1.55;margin:0 0 .7rem;color:var(--ink);}
+section{margin-bottom:2rem;}
+section:last-of-type{margin-bottom:0;}
+
+.card{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:1.3rem 1.5rem;}
+
+p.line{font-size:1.03rem;line-height:1.55;margin:0 0 .7rem;color:var(--ink);}
+p.line:last-child{margin-bottom:0;}
 p.line b{color:#ffffff;}
 .refrain{font-style:italic;color:var(--refrain);}
 
+.claim-card{background:var(--card-soft);border:1px solid var(--accent);border-radius:8px;padding:1.1rem 1.4rem;margin-bottom:1rem;}
+.claim-card p.line{margin-bottom:0;font-size:1.15rem;}
+
+.support-grid{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;}
+.support-card{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:.9rem 1.1rem;}
+.support-lbl{font-family:var(--mono);font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:.4rem;}
+.support-text{font-size:.9rem;line-height:1.5;color:var(--ink);}
+.support-text b{color:#ffffff;}
+
 .rules-list{margin:0;padding:0;list-style:none;}
-.rules-list li{font-size:.98rem;line-height:1.5;margin-bottom:.55rem;padding-left:1.1rem;position:relative;color:var(--ink);}
+.rules-list li{font-size:.98rem;line-height:1.5;margin-bottom:.6rem;padding-left:1.1rem;position:relative;color:var(--ink);}
+.rules-list li:last-child{margin-bottom:0;}
 .rules-list li::before{content:"—";position:absolute;left:0;color:var(--accent);}
+
+.verdict-card{background:var(--card-soft);border:1.5px solid var(--accent);border-radius:8px;padding:1.3rem 1.5rem;}
+.verdict{font-family:var(--display);font-weight:700;font-size:1.35rem;line-height:1.3;margin:.3rem 0 .5rem;color:var(--ink);}
+.verdict-sub{font-family:var(--mono);font-size:.72rem;letter-spacing:.02em;color:var(--ink-soft);}
 
 .footer-nav{max-width:700px;margin:0 auto;padding:1.6rem 1.5rem 0;border-top:1px dashed var(--line);font-family:var(--mono);font-size:.65rem;color:var(--ink-soft);display:flex;justify-content:space-between;flex-wrap:wrap;gap:.4rem;}
 .footer-nav a{color:var(--ink-soft);text-decoration:none;}
 .footer-nav a:hover{color:var(--accent);}
 
-.verdict-wrap{border-top:1.5px solid var(--accent);margin-top:1.6rem;padding-top:1.1rem;}
-.verdict{font-family:var(--display);font-weight:700;font-size:1.35rem;line-height:1.3;margin:.3rem 0 .5rem;color:var(--ink);}
-.verdict-sub{font-family:var(--mono);font-size:.72rem;letter-spacing:.02em;color:var(--ink-soft);}
+@media(max-width:560px){.support-grid{grid-template-columns:1fr;}}
 </style>
 </head>
 <body>
@@ -76,42 +94,60 @@ p.line b{color:#ffffff;}
 
 <section>
   <div class="label">Who Shows Up</div>
-  <p class="line"><b>I am Doug Fucking Kim.</b> Not becoming him &mdash; being him, starting this morning. <span class="refrain">So be it. See to it.</span></p>
-  <p class="line">I am a working photographer. The camera leaves the apartment. The invoices get paid. <span class="refrain">So be it. See to it.</span></p>
-  <p class="line">I am a published writer. The essay goes out whether or not it feels ready, and the rejections don't slow down the next one. <span class="refrain">So be it. See to it.</span></p>
-  <p class="line">I build this life with my own hands &mdash; one shoot, one essay, one ask at a time &mdash; and it adds up to more than anyone, including me, currently believes. <span class="refrain">So be it. See to it.</span></p>
-  <p class="line">Every morning I complete is a vote for him. Every morning I skip is a vote for the man who ran out of time. There is no neutral.</p>
+  <div class="card">
+    <p class="line"><b>I am Doug Fucking Kim.</b> Not becoming him &mdash; being him, starting this morning. <span class="refrain">So be it. See to it.</span></p>
+    <p class="line">I am a working photographer. The camera leaves the apartment. The invoices get paid. <span class="refrain">So be it. See to it.</span></p>
+    <p class="line">I am a published writer. The essay goes out whether or not it feels ready, and the rejections don't slow down the next one. <span class="refrain">So be it. See to it.</span></p>
+    <p class="line">I build this life with my own hands &mdash; one shoot, one essay, one ask at a time &mdash; and it adds up to more than anyone, including me, currently believes. <span class="refrain">So be it. See to it.</span></p>
+    <p class="line">Every morning I complete is a vote for him. Every morning I skip is a vote for the man who ran out of time. There is no neutral.</p>
+  </div>
 </section>
-
-<hr class="rule">
 
 <section>
   <div class="label">The Only Rule</div>
-  <p class="line"><b>Stop fucking ruminating. Ship it.</b></p>
-  <p class="line">Two minutes. Open the doc and write one bad sentence. Open the bag and take the camera out. Open the contacts and find one name. That's the whole task &mdash; not the essay, not the pitch, not the shoot. Two minutes.</p>
-  <p class="line">The rehearsal in your head doesn't count. Nothing counts until it leaves your skull and lands somewhere real.</p>
-  <p class="line">Done and posted beats perfect and buried, every time it's tried.</p>
-  <p class="line">Ship the ugly draft. Ship the underexposed frame. Ship the awkward ask. Ship it anyway.</p>
+  <div class="claim-card">
+    <p class="line"><b>Stop fucking ruminating. Ship it.</b> Two minutes. Open the doc and write one bad sentence. Open the bag and take the camera out. Open the contacts and find one name. That's the whole task &mdash; not the essay, not the pitch, not the shoot. Two minutes.</p>
+  </div>
+  <div class="support-grid">
+    <div class="support-card">
+      <div class="support-lbl">The rehearsal doesn't count</div>
+      <div class="support-text">Nothing counts until it leaves your skull and lands somewhere real.</div>
+    </div>
+    <div class="support-card">
+      <div class="support-lbl">Done beats perfect</div>
+      <div class="support-text">Done and posted beats perfect and buried, every time it's tried.</div>
+    </div>
+    <div class="support-card">
+      <div class="support-lbl">Ship it anyway</div>
+      <div class="support-text">Ship the ugly draft. Ship the underexposed frame. Ship the awkward ask.</div>
+    </div>
+    <div class="support-card">
+      <div class="support-lbl">The block isn't real</div>
+      <div class="support-text">It's fear wearing a work shirt. <b>Clock in anyway.</b></div>
+    </div>
+  </div>
 </section>
-
-<hr class="rule">
 
 <section>
   <div class="label">What I Don't Negotiate With</div>
-  <ul class="rules-list">
-    <li>Morning is non-negotiable &mdash; meditate, write, workout. By 7am I've already won the day.</li>
-    <li>Thursday the work goes live. Ready or not.</li>
-    <li>Every shoot is content &mdash; behind-the-scenes, finals, the story. Post all of it.</li>
-    <li>No outreach, no customers. The pipeline is empty because I didn't fill it &mdash; so today, I fill it.</li>
-    <li>One bad day is a data point. Two is a pattern. It doesn't get to be three.</li>
-  </ul>
+  <div class="card">
+    <ul class="rules-list">
+      <li>Morning is non-negotiable &mdash; meditate, write, workout. By 7am I've already won the day.</li>
+      <li>Thursday the work goes live. Ready or not.</li>
+      <li>Every shoot is content &mdash; behind-the-scenes, finals, the story. Post all of it.</li>
+      <li>No outreach, no customers. The pipeline is empty because I didn't fill it &mdash; so today, I fill it.</li>
+      <li>One bad day is a data point. Two is a pattern. It doesn't get to be three.</li>
+    </ul>
+  </div>
 </section>
 
-<div class="verdict-wrap">
+<section>
   <div class="label">Tonight, 10:30pm</div>
-  <div class="verdict">Did Doug Fucking Kim show up today? Yes or no.</div>
-  <div class="verdict-sub">No elaboration. Ninety nights of yes, and this stops being a challenge &mdash; it's just who I am.</div>
-</div>
+  <div class="verdict-card">
+    <div class="verdict">Did Doug Fucking Kim show up today? Yes or no.</div>
+    <div class="verdict-sub">No elaboration. Ninety nights of yes, and this stops being a challenge &mdash; it's just who I am.</div>
+  </div>
+</section>
 
 </div><!-- end page -->
 
