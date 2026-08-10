@@ -1,11 +1,13 @@
-// POST /api/done  { id }  -> deletes (completes) that bullet block, logs a completion
+// POST /api/done  { id, major }  -> deletes (completes) that bullet block, logs a completion
 const TOKEN = process.env.NOTION_TOKEN;
 const APP_KEY = process.env.APP_KEY || '';
 const NV = '2022-06-28';
 
 // Same Supabase project + anon key already embedded client-side in tracker.html.
 // We reuse the single dfk_tracker row (id=1) and add a "task_log" map of
-// { "YYYY-MM-DD": count } alongside the existing habit-tracker fields.
+// { "YYYY-MM-DD": { total, major } } alongside the existing habit-tracker fields.
+// "major" = items from a section that sits under a heading_1 divider (currently
+// just "The Fucking Hard Things" / the 90-day Phase lists) — flagged by the client.
 const SUPABASE_URL = 'https://rpmxkhgirhlfwqefdopo.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJwbXhraGdpcmhsZndxZWZkb3BvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY2MDUzMTQsImV4cCI6MjA5MjE4MTMxNH0.bAUNydSiWh60mxD23RLYXpSpRxrzt0q2JQ7yDSZmOW4';
 
@@ -24,7 +26,7 @@ async function notion(path, opts = {}) {
 }
 
 // Best-effort; a logging failure should never block the completion itself.
-async function logCompletion() {
+async function logCompletion(isMajor) {
   try {
     const today = new Date().toISOString().slice(0, 10);
     const r = await fetch(
@@ -39,7 +41,13 @@ async function logCompletion() {
       }
     }
     if (!data.task_log) data.task_log = {};
-    data.task_log[today] = (data.task_log[today] || 0) + 1;
+    let entry = data.task_log[today];
+    // migrate old plain-number entries (pre-"major" split) into the new shape
+    if (typeof entry === 'number') entry = { total: entry, major: 0 };
+    if (!entry) entry = { total: 0, major: 0 };
+    entry.total = (entry.total || 0) + 1;
+    if (isMajor) entry.major = (entry.major || 0) + 1;
+    data.task_log[today] = entry;
     await fetch(SUPABASE_URL + '/rest/v1/dfk_tracker', {
       method: 'POST',
       headers: {
@@ -79,9 +87,10 @@ module.exports = async (req, res) => {
     if (req.method !== 'POST') { res.status(405).json({ error: 'POST only' }); return; }
     const body = await readBody(req);
     const id = String(body.id || '');
+    const isMajor = !!body.major;
     if (!id) { res.status(400).json({ error: 'no id' }); return; }
     await notion('/blocks/' + id, { method: 'DELETE' });
-    await logCompletion();
+    await logCompletion(isMajor);
     res.status(200).json({ ok: true });
   } catch (e) {
     res.status(500).json({ error: String((e && e.message) || e) });

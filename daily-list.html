@@ -127,7 +127,11 @@
   <div class="counter" id="counter" style="display:none">
     <div class="counter-today">
       <div class="counter-num" id="counter-today-num">0</div>
-      <div class="counter-lbl">Completed today</div>
+      <div class="counter-lbl">Tasks completed today</div>
+    </div>
+    <div class="counter-today" style="border-left:1px solid var(--line);padding-left:18px;">
+      <div class="counter-num" id="counter-major-num">0</div>
+      <div class="counter-lbl">Major DFK today</div>
     </div>
     <div class="counter-hist" id="counter-hist"></div>
   </div>
@@ -213,11 +217,12 @@ function render(data) {
     sectionsEl.appendChild(section);
 
     const ul = section.querySelector('ul');
+    const isMajor = !!sec.divider;
     sec.items.forEach((it) => {
       const li = document.createElement('li');
       const urgent = isDueSoon(it.text);
       li.innerHTML = '<input type="checkbox" class="chk"><span class="txt' + (urgent ? ' urgent' : '') + '">' + linkify(it.text) + '</span>';
-      li.querySelector('.chk').addEventListener('change', () => complete(li, it.id));
+      li.querySelector('.chk').addEventListener('change', () => complete(li, it.id, isMajor));
       ul.appendChild(li);
     });
 
@@ -244,10 +249,10 @@ async function load() {
   }
 }
 
-async function complete(li, id) {
+async function complete(li, id, isMajor) {
   li.classList.add('doing');
   try {
-    await ensureKeyThen(() => api('/api/done', { method:'POST', headers: headers(), body: JSON.stringify({ id }) }));
+    await ensureKeyThen(() => api('/api/done', { method:'POST', headers: headers(), body: JSON.stringify({ id, major: !!isMajor }) }));
     li.remove();
     loadCounter();
   } catch (e) {
@@ -278,11 +283,19 @@ async function loadCounter() {
     if (rows && rows[0] && rows[0].data) { try { data = JSON.parse(rows[0].data); } catch { data = {}; } }
     const log = data.task_log || {};
     const today = new Date().toISOString().slice(0,10);
-    document.getElementById('counter-today-num').textContent = log[today] || 0;
+    const todayEntry = log[today];
+    const todayTotal = typeof todayEntry === 'number' ? todayEntry : (todayEntry && todayEntry.total) || 0;
+    const todayMajor = (todayEntry && typeof todayEntry === 'object' && todayEntry.major) || 0;
+    document.getElementById('counter-today-num').textContent = todayTotal;
+    document.getElementById('counter-major-num').textContent = todayMajor;
 
     const days = Object.keys(log).sort().reverse().slice(0, 7).filter(d => d !== today);
     document.getElementById('counter-hist').innerHTML = days
-      .map(d => fmtDay(d) + ' <span class="day">' + log[d] + '</span>')
+      .map(d => {
+        const e = log[d];
+        const t = typeof e === 'number' ? e : (e && e.total) || 0;
+        return fmtDay(d) + ' <span class="day">' + t + '</span>';
+      })
       .join(' &nbsp;·&nbsp; ');
     document.getElementById('counter').style.display = 'flex';
   } catch (e) {
