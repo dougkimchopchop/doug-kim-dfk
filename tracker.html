@@ -289,17 +289,6 @@ footer a:hover{color:var(--ribbon)}
   </div>
 </div>
 
-<div class="sec-lbl">Weight — logged every morning</div>
-<div class="num-card" style="margin-bottom:1.2rem;">
-  <div class="num-card-title">Weight <span class="num-card-target" id="weight-note"></span></div>
-  <div class="num-input-row">
-    <input type="number" id="weight-input" min="0" max="500" step="0.1" placeholder="0">
-    <span class="num-unit">lbs</span>
-  </div>
-  <div class="num-pass" id="weight-trend"></div>
-  <svg id="weight-chart" width="100%" height="60" style="margin-top:.6rem;display:block;"></svg>
-</div>
-
 <div class="sec-lbl">Ship 3 — set in the morning, check at night</div>
 <div class="ship3-card">
   <div class="ship3-item">
@@ -314,6 +303,17 @@ footer a:hover{color:var(--ribbon)}
     <div class="ship3-check" id="ship3-check-2" onclick="toggleShip3(2)"></div>
     <input type="text" class="ship3-input" id="ship3-text-2" placeholder="" oninput="saveShip3()">
   </div>
+</div>
+
+<div class="sec-lbl">Weight — logged every morning</div>
+<div class="num-card" style="margin-bottom:1.2rem;">
+  <div class="num-card-title">Weight <span class="num-card-target" id="weight-note"></span></div>
+  <div class="num-input-row">
+    <input type="number" id="weight-input" min="0" max="500" step="0.1" placeholder="0">
+    <span class="num-unit">lbs</span>
+  </div>
+  <div class="num-pass" id="weight-trend"></div>
+  <svg id="weight-chart" width="100%" height="60" style="margin-top:.6rem;display:block;"></svg>
 </div>
 
 <div class="score-row">
