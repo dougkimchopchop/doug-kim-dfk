@@ -5,92 +5,119 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Mantras &amp; Affirmations — Doug Fucking Kim</title>
 <meta name="description" content="Daily read-aloud mantras and affirmations for the 90-day identity challenge.">
-<link rel="stylesheet" href="styles.css">
 <style>
-.breadcrumb{font-family:var(--mono);font-size:.65rem;color:var(--ink-soft);margin-bottom:1.4rem;display:flex;align-items:center;gap:.4rem}
-.breadcrumb a{color:var(--ink-soft);text-decoration:none}
-.breadcrumb a:hover{color:var(--ribbon)}
-.breadcrumb-sep{color:var(--oak-soft)}
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&family=Space+Mono:wght@400;700&display=swap');
 
-.day-meta{font-family:var(--mono);font-size:.68rem;color:var(--ink-soft);margin:0 0 1.4rem;}
-.day-meta b{color:var(--ribbon);}
+:root{
+  --bg:#0e0d0b;
+  --ink:#f0ead9;
+  --ink-soft:#9a9384;
+  --line:#3a362e;
+  --accent:#c1502e;
+  --refrain:#d9b48f;
+  --display:'Fraunces',serif;
+  --body:'Source Serif 4',Georgia,serif;
+  --mono:'Space Mono',monospace;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;background:var(--bg);color:var(--ink);}
+body{font-family:var(--body);-webkit-font-smoothing:antialiased;line-height:1.5;}
 
-.refrain{font-style:italic;color:var(--ribbon);}
+.page{max-width:700px;margin:0 auto;padding:2.6rem 1.5rem 3.5rem;}
 
-.rule-callout{background:var(--card);border:1px solid var(--line);border-left:2px solid var(--ribbon);border-radius:var(--radius);padding:1.1rem 1.3rem;margin-bottom:.7rem;}
-.rule-callout .rule-claim{font-family:var(--display);font-weight:600;font-size:1.15rem;line-height:1.3;margin-bottom:.5rem;color:var(--ink);}
-.rule-callout .rule-body{font-size:.94rem;line-height:1.6;color:var(--ink-soft);}
+.topline{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:.5rem;margin-bottom:.6rem;}
+.eyebrow{font-family:var(--mono);font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);font-weight:700;}
+.datehead{font-family:var(--mono);font-size:.68rem;letter-spacing:.06em;color:var(--ink-soft);}
 
-.verdict-block{background:var(--fail-bg);border:1px solid var(--ribbon);border-radius:var(--radius);padding:1.1rem 1.3rem;margin-top:.4rem;}
-.verdict-title{font-family:var(--mono);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--fail);margin-bottom:.5rem;}
-.verdict-q{font-family:var(--display);font-weight:600;font-size:1.25rem;line-height:1.35;color:var(--ink);margin-bottom:.5rem;}
-.verdict-sub{font-size:.86rem;color:var(--ink-soft);line-height:1.5;}
+.breadcrumb{font-family:var(--mono);font-size:.65rem;color:var(--ink-soft);margin-bottom:1.2rem;display:flex;align-items:center;gap:.4rem;}
+.breadcrumb a{color:var(--ink-soft);text-decoration:none;}
+.breadcrumb a:hover{color:var(--accent);}
+.breadcrumb-sep{color:var(--line);}
+
+h1{font-family:var(--display);font-weight:700;font-size:clamp(2rem,6vw,2.9rem);line-height:1.02;margin:.3rem 0 .3rem;letter-spacing:.2px;}
+.subhead{font-family:var(--body);font-style:italic;font-size:1rem;color:var(--ink-soft);margin:0 0 1.2rem;}
+
+.rule-strong{border:none;border-top:1.5px solid var(--accent);width:46px;margin:1.2rem 0 1.5rem;}
+.rule{border:none;border-top:1px solid var(--line);margin:1.3rem 0 1.5rem;}
+
+.label{font-family:var(--mono);font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);font-weight:700;margin-bottom:.7rem;}
+
+section{margin-bottom:.6rem;}
+p.line{font-size:1.05rem;line-height:1.55;margin:0 0 .7rem;color:var(--ink);}
+p.line b{color:#ffffff;}
+.refrain{font-style:italic;color:var(--refrain);}
+
+.rules-list{margin:0;padding:0;list-style:none;}
+.rules-list li{font-size:.98rem;line-height:1.5;margin-bottom:.55rem;padding-left:1.1rem;position:relative;color:var(--ink);}
+.rules-list li::before{content:"—";position:absolute;left:0;color:var(--accent);}
+
+.footer-nav{max-width:700px;margin:0 auto;padding:1.6rem 1.5rem 0;border-top:1px dashed var(--line);font-family:var(--mono);font-size:.65rem;color:var(--ink-soft);display:flex;justify-content:space-between;flex-wrap:wrap;gap:.4rem;}
+.footer-nav a{color:var(--ink-soft);text-decoration:none;}
+.footer-nav a:hover{color:var(--accent);}
+
+.verdict-wrap{border-top:1.5px solid var(--accent);margin-top:1.6rem;padding-top:1.1rem;}
+.verdict{font-family:var(--display);font-weight:700;font-size:1.35rem;line-height:1.3;margin:.3rem 0 .5rem;color:var(--ink);}
+.verdict-sub{font-family:var(--mono);font-size:.72rem;letter-spacing:.02em;color:var(--ink-soft);}
 </style>
 </head>
 <body>
 <div class="page">
 
 <nav class="breadcrumb" aria-label="Breadcrumb"><a href="https://doug-kim-dfk.vercel.app" target="_blank" rel="noopener">Doug Kim</a><span class="breadcrumb-sep">/</span><span>Mantras</span></nav>
-<span class="eyebrow">Doctrine · Read Aloud Every Morning</span>
-<h1 style="font-family:var(--display);font-weight:600;font-size:clamp(1.6rem,3.5vw,2.2rem);line-height:1.1;margin:0 0 .5rem;">Mantras &amp; Affirmations</h1>
-<p class="day-meta">Day 1 of 90 &middot; <b>Aug 10 &ndash; Nov 7, 2026</b> &middot; to be read out loud, no skimming.</p>
 
-<div class="sec-lbl">Who shows up</div>
-<div class="identity-block">
-  <div class="id-line"><strong>I am Doug Fucking Kim.</strong> Not becoming him &mdash; being him, starting this morning. <span class="refrain">So be it. See to it.</span></div>
-  <div class="id-line">I am a working photographer. The camera leaves the apartment. The invoices get paid. <span class="refrain">So be it. See to it.</span></div>
-  <div class="id-line">I am a published writer. The essay goes out whether or not it feels ready, and the rejections don't slow down the next one. <span class="refrain">So be it. See to it.</span></div>
-  <div class="id-line">I build this life with my own hands &mdash; one shoot, one essay, one ask at a time &mdash; and it adds up to more than anyone, including me, currently believes. <span class="refrain">So be it. See to it.</span></div>
-  <div class="id-line" style="margin-top:.5rem;font-size:.83rem;font-style:italic;">Every morning I complete is a vote for him. Every morning I skip is a vote for the man who ran out of time. There is no neutral.</div>
+<div class="topline">
+  <span class="eyebrow">DFK &middot; Day 1 of 90</span>
+  <span class="datehead">August 10 &mdash; November 7, 2026</span>
 </div>
+<h1>Mantras &amp; Affirmations</h1>
+<p class="subhead">To be read out loud. Every morning. No skimming.</p>
 
-<div class="sec-lbl">The only rule</div>
-<div class="rule-callout">
-  <div class="rule-claim">Stop fucking ruminating. Ship it.</div>
-  <div class="rule-body">Two minutes. Open the doc and write one bad sentence. Open the bag and take the camera out. Open the contacts and find one name. That's the whole task &mdash; not the essay, not the pitch, not the shoot. Two minutes.</div>
-</div>
-<div class="doc-grid">
-  <div class="doc-card">
-    <div class="doc-lbl">The rehearsal doesn't count</div>
-    <div class="doc-text">Nothing counts until it leaves your skull and lands somewhere real. <strong>Thinking about it is not doing it.</strong></div>
-  </div>
-  <div class="doc-card">
-    <div class="doc-lbl">Done beats perfect</div>
-    <div class="doc-text">Done and posted beats perfect and buried, every time it's tried. <strong>Ship the ugly draft.</strong></div>
-  </div>
-  <div class="doc-card">
-    <div class="doc-lbl">Ship it anyway</div>
-    <div class="doc-text">Ship the underexposed frame. Ship the awkward ask. <strong>Ship it anyway.</strong></div>
-  </div>
-  <div class="doc-card">
-    <div class="doc-lbl">The block isn't real</div>
-    <div class="doc-text">It's fear wearing a work shirt. <strong>Clock in anyway.</strong></div>
-  </div>
-</div>
+<hr class="rule-strong">
 
-<div class="sec-lbl">What I don't negotiate with</div>
-<div class="rules-block">
-  <ol class="rules-list">
+<section>
+  <div class="label">Who Shows Up</div>
+  <p class="line"><b>I am Doug Fucking Kim.</b> Not becoming him &mdash; being him, starting this morning. <span class="refrain">So be it. See to it.</span></p>
+  <p class="line">I am a working photographer. The camera leaves the apartment. The invoices get paid. <span class="refrain">So be it. See to it.</span></p>
+  <p class="line">I am a published writer. The essay goes out whether or not it feels ready, and the rejections don't slow down the next one. <span class="refrain">So be it. See to it.</span></p>
+  <p class="line">I build this life with my own hands &mdash; one shoot, one essay, one ask at a time &mdash; and it adds up to more than anyone, including me, currently believes. <span class="refrain">So be it. See to it.</span></p>
+  <p class="line">Every morning I complete is a vote for him. Every morning I skip is a vote for the man who ran out of time. There is no neutral.</p>
+</section>
+
+<hr class="rule">
+
+<section>
+  <div class="label">The Only Rule</div>
+  <p class="line"><b>Stop fucking ruminating. Ship it.</b></p>
+  <p class="line">Two minutes. Open the doc and write one bad sentence. Open the bag and take the camera out. Open the contacts and find one name. That's the whole task &mdash; not the essay, not the pitch, not the shoot. Two minutes.</p>
+  <p class="line">The rehearsal in your head doesn't count. Nothing counts until it leaves your skull and lands somewhere real.</p>
+  <p class="line">Done and posted beats perfect and buried, every time it's tried.</p>
+  <p class="line">Ship the ugly draft. Ship the underexposed frame. Ship the awkward ask. Ship it anyway.</p>
+</section>
+
+<hr class="rule">
+
+<section>
+  <div class="label">What I Don't Negotiate With</div>
+  <ul class="rules-list">
     <li>Morning is non-negotiable &mdash; meditate, write, workout. By 7am I've already won the day.</li>
     <li>Thursday the work goes live. Ready or not.</li>
     <li>Every shoot is content &mdash; behind-the-scenes, finals, the story. Post all of it.</li>
     <li>No outreach, no customers. The pipeline is empty because I didn't fill it &mdash; so today, I fill it.</li>
     <li>One bad day is a data point. Two is a pattern. It doesn't get to be three.</li>
-  </ol>
-</div>
+  </ul>
+</section>
 
-<div class="sec-lbl">Tonight, 10:30pm</div>
-<div class="verdict-block">
-  <div class="verdict-title">The only question that matters</div>
-  <div class="verdict-q">Did Doug Fucking Kim show up today? Yes or no.</div>
+<div class="verdict-wrap">
+  <div class="label">Tonight, 10:30pm</div>
+  <div class="verdict">Did Doug Fucking Kim show up today? Yes or no.</div>
   <div class="verdict-sub">No elaboration. Ninety nights of yes, and this stops being a challenge &mdash; it's just who I am.</div>
 </div>
 
 </div><!-- end page -->
 
-<footer>
-  <span><a href="https://doug-kim-dfk.vercel.app" target="_blank" rel="noopener" style="color:inherit;">&larr; Doug Kim</a></span>
+<div class="footer-nav">
+  <span><a href="https://doug-kim-dfk.vercel.app" target="_blank" rel="noopener">&larr; Doug Kim</a></span>
   <span>Mantras &amp; Affirmations &middot; Day 1 of 90</span>
-</footer>
+</div>
 </body>
 </html>
