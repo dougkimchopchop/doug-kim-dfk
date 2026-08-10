@@ -94,6 +94,25 @@
   }
   footer a { color: var(--ink-soft); text-decoration: none; border-bottom: 1px solid var(--line-d); }
   footer a:hover { color: var(--ribbon); border-color: var(--ribbon); }
+
+  .counter {
+    display: flex; align-items: center; gap: 18px; margin-top: 18px;
+    padding: 12px 16px; background: var(--card); border: 1px solid var(--line);
+    border-radius: var(--radius);
+  }
+  .counter-today { display: flex; flex-direction: column; }
+  .counter-num {
+    font-family: 'Fraunces', serif; font-weight: 600; font-size: 26px; color: var(--ink); line-height: 1;
+  }
+  .counter-lbl {
+    font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: .08em;
+    text-transform: uppercase; color: var(--ink-soft); margin-top: 3px;
+  }
+  .counter-hist {
+    display: flex; gap: 8px; flex-wrap: wrap; flex: 1;
+    font-family: 'Space Mono', monospace; font-size: 11px; color: var(--ink-soft);
+  }
+  .counter-hist span.day { color: var(--ink); font-weight: 700; }
 </style>
 </head>
 <body>
@@ -104,6 +123,14 @@
     <div class="stamp" id="stamp"></div>
   </header>
   <div id="status">Loading…</div>
+
+  <div class="counter" id="counter" style="display:none">
+    <div class="counter-today">
+      <div class="counter-num" id="counter-today-num">0</div>
+      <div class="counter-lbl">Completed today</div>
+    </div>
+    <div class="counter-hist" id="counter-hist"></div>
+  </div>
 
   <div id="sections"></div>
 
@@ -222,10 +249,44 @@ async function complete(li, id) {
   try {
     await ensureKeyThen(() => api('/api/done', { method:'POST', headers: headers(), body: JSON.stringify({ id }) }));
     li.remove();
+    loadCounter();
   } catch (e) {
     li.classList.remove('doing');
     li.querySelector('.chk').checked = false;
     statusEl.textContent = 'Could not complete: ' + e.message;
+  }
+}
+
+// Completed-per-day counter — reads the same Supabase row the habit tracker
+// writes to (tracker.html), under a separate "task_log" key it doesn't touch.
+const SUPABASE_URL = 'https://rpmxkhgirhlfwqefdopo.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJwbXhraGdpcmhsZndxZWZkb3BvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY2MDUzMTQsImV4cCI6MjA5MjE4MTMxNH0.bAUNydSiWh60mxD23RLYXpSpRxrzt0q2JQ7yDSZmOW4';
+
+function fmtDay(iso) {
+  const [y,m,d] = iso.split('-').map(Number);
+  return new Date(y, m-1, d).toLocaleDateString('en-US', { month:'short', day:'numeric' });
+}
+
+async function loadCounter() {
+  try {
+    const r = await fetch(SUPABASE_URL + '/rest/v1/dfk_tracker?select=data&order=id.desc&limit=1', {
+      headers: { apikey: SUPABASE_KEY, Authorization: 'Bearer ' + SUPABASE_KEY }
+    });
+    if (!r.ok) return;
+    const rows = await r.json();
+    let data = {};
+    if (rows && rows[0] && rows[0].data) { try { data = JSON.parse(rows[0].data); } catch { data = {}; } }
+    const log = data.task_log || {};
+    const today = new Date().toISOString().slice(0,10);
+    document.getElementById('counter-today-num').textContent = log[today] || 0;
+
+    const days = Object.keys(log).sort().reverse().slice(0, 7).filter(d => d !== today);
+    document.getElementById('counter-hist').innerHTML = days
+      .map(d => fmtDay(d) + ' <span class="day">' + log[d] + '</span>')
+      .join(' &nbsp;·&nbsp; ');
+    document.getElementById('counter').style.display = 'flex';
+  } catch (e) {
+    // silent — counter is a nice-to-have, not critical
   }
 }
 
@@ -244,6 +305,7 @@ async function addItem(sectionKey, input) {
 
 setStamp();
 load();
+loadCounter();
 </script>
 </body>
 </html>
