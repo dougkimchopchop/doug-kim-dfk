@@ -75,6 +75,7 @@ h1{font-family:var(--display);font-weight:600;font-size:clamp(1.8rem,4vw,2.4rem)
 /* Habit grid */
 .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line-d);margin-bottom:1.2rem}
 .hc{background:var(--card);padding:.9rem .5rem;cursor:pointer;user-select:none;text-align:center;display:flex;flex-direction:column;align-items:center;gap:.4rem}
+.grid .hc:last-child:nth-child(3n+1){grid-column:2}
 .hc:hover{background:var(--paper)}
 .hc.done{background:var(--pass-bg)}
 .hc.missed{background:var(--fail-bg)}
@@ -406,6 +407,7 @@ const HABITS=[
   {id:'outreach',  name:'Social / Outreach'},
   {id:'social_irl',name:'Social Physical'},
   {id:'off_out',   name:'Off / Out'},
+  {id:'practice',  name:'Practice — Guitar (20min)'},
 ];
 
 const WRITE_PASS=2; const READ_PASS=1;
