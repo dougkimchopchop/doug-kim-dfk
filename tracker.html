@@ -289,6 +289,17 @@ footer a:hover{color:var(--ribbon)}
   </div>
 </div>
 
+<div class="sec-lbl">Weight — logged every morning</div>
+<div class="num-card" style="margin-bottom:1.2rem;">
+  <div class="num-card-title">Weight <span class="num-card-target" id="weight-note"></span></div>
+  <div class="num-input-row">
+    <input type="number" id="weight-input" min="0" max="500" step="0.1" placeholder="0">
+    <span class="num-unit">lbs</span>
+  </div>
+  <div class="num-pass" id="weight-trend"></div>
+  <svg id="weight-chart" width="100%" height="60" style="margin-top:.6rem;display:block;"></svg>
+</div>
+
 <div class="sec-lbl">Ship 3 — set in the morning, check at night</div>
 <div class="ship3-card">
   <div class="ship3-item">
@@ -548,6 +559,52 @@ document.getElementById('read-input').addEventListener('input',function(){
   if(v>0)data[dk(cur)].read_hrs=v;else delete data[dk(cur)].read_hrs;
   updateReadPass(v);scheduleSave();updateScore();renderStreak();updateHeader();updateStats();
 });
+document.getElementById('weight-input').addEventListener('input',function(){
+  const v=parseFloat(this.value);
+  if(!data[dk(cur)])data[dk(cur)]={};
+  if(!isNaN(v)&&this.value!=='')data[dk(cur)].weight=v;else delete data[dk(cur)].weight;
+  scheduleSave();renderWeightChart();
+});
+
+/* Weight — daily input + 7-day sparkline ending on the currently viewed day */
+function renderWeightInput(){
+  const dd=gd(cur);
+  document.getElementById('weight-input').value=(dd.weight!==undefined)?dd.weight:'';
+  renderWeightChart();
+}
+
+function renderWeightChart(){
+  const start=Math.max(0,cur-6);
+  const days=[];for(let i=start;i<=cur;i++)days.push(i);
+  const series=days.map(d=>({d,v:gd(d).weight})).filter(p=>p.v!==undefined&&p.v!==null&&p.v!=='');
+  const svg=document.getElementById('weight-chart');
+  const trendEl=document.getElementById('weight-trend');
+  if(series.length<2){
+    svg.innerHTML='';
+    trendEl.textContent=series.length===1?(series[0].v+' lbs logged — a few more mornings to see the trend'):'';
+    trendEl.className='num-pass';
+    return;
+  }
+  const w=300,h=60,pad=8;
+  const vals=series.map(p=>p.v);
+  const minV=Math.min(...vals),maxV=Math.max(...vals);
+  const range=(maxV-minV)||1;
+  const stepX=series.length>1?(w-2*pad)/(series.length-1):0;
+  const coords=series.map((p,i)=>{
+    const x=pad+i*stepX;
+    const y=h-pad-((p.v-minV)/range)*(h-2*pad);
+    return {x,y,today:p.d===cur};
+  });
+  const pointsAttr=coords.map(c=>c.x.toFixed(1)+','+c.y.toFixed(1)).join(' ');
+  const dots=coords.map(c=>'<circle cx="'+c.x.toFixed(1)+'" cy="'+c.y.toFixed(1)+'" r="'+(c.today?3:2)+'" fill="'+(c.today?'#7A2E2E':'#9C7A32')+'"/>').join('');
+  svg.setAttribute('viewBox','0 0 '+w+' '+h);
+  svg.innerHTML='<polyline points="'+pointsAttr+'" fill="none" stroke="#9C7A32" stroke-width="1.5"/>'+dots;
+  const first=series[0].v,last=series[series.length-1].v;
+  const delta=last-first;
+  const sign=delta>0?'+':'';
+  trendEl.textContent=last.toFixed(1)+' lbs · '+sign+delta.toFixed(1)+' over '+series.length+' mornings';
+  trendEl.className='num-pass '+(delta<0?'pass':delta>0?'warn':'');
+}
 
 /* Ship 3 */
 function renderShip3(){
@@ -609,7 +666,7 @@ function updateStats(){
   document.getElementById('sc-pdays').textContent=ph.days;
 }
 
-function cd(d){cur=Math.max(0,Math.min(todayIdx(),cur+d));updateNav();renderGrid();renderNumInputs();renderShip3();renderStreak();renderPhases();updateHeader();}
+function cd(d){cur=Math.max(0,Math.min(todayIdx(),cur+d));updateNav();renderGrid();renderNumInputs();renderWeightInput();renderShip3();renderStreak();renderPhases();updateHeader();}
 
 function updateNav(){
   document.getElementById('nav-lbl').textContent='Day '+(cur+1)+' of 90 · '+dayDate(cur).toLocaleDateString('en-US',{month:'short',day:'numeric'});
@@ -631,7 +688,7 @@ function renderPhases(){
   document.getElementById('phases').innerHTML=PHASES.map(p=>`<div class="ph${cur>=p.start&&cur<=p.end?' active':''}"><div class="ph-name">${p.name}</div><div class="ph-dates">${p.dates}</div></div>`).join('');
 }
 
-function jmp(d){if(d<=todayIdx()){cur=d;updateNav();renderGrid();renderNumInputs();renderShip3();renderStreak();renderPhases();updateHeader();}}
+function jmp(d){if(d<=todayIdx()){cur=d;updateNav();renderGrid();renderNumInputs();renderWeightInput();renderShip3();renderStreak();renderPhases();updateHeader();}}
 
 /* ── WEEKLY ── */
 function renderWeekly(){
@@ -795,7 +852,7 @@ document.getElementById('hdr-date').textContent=new Date().toLocaleDateString('e
 
 async function init(){
   await loadData();cur=todayIdx();
-  updateNav();renderGrid();renderNumInputs();renderShip3();renderStreak();renderPhases();updateHeader();updateStats();
+  updateNav();renderGrid();renderNumInputs();renderWeightInput();renderShip3();renderStreak();renderPhases();updateHeader();updateStats();
   document.getElementById('last-updated').textContent='Synced '+new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
 }
 init();
