@@ -273,7 +273,7 @@ footer a:hover{color:var(--ribbon)}
 <div class="sec-lbl">Write &amp; Read</div>
 <div class="num-inputs">
   <div class="num-card">
-    <div class="num-card-title">Write <span class="num-card-target">≥2hrs pass · target 4hrs</span></div>
+    <div class="num-card-title">Write <span class="num-card-target">≥1hr pass · target 4hrs</span></div>
     <div class="num-input-row">
       <input type="number" id="write-input" min="0" max="12" step="0.5" placeholder="0">
       <span class="num-unit">hrs</span>
@@ -410,7 +410,7 @@ const HABITS=[
   {id:'practice',  name:'Practice — Guitar (20min)'},
 ];
 
-const WRITE_PASS=2; const READ_PASS=1;
+const WRITE_PASS=1; const READ_PASS=1;
 const TOTAL_CHECKS=HABITS.length+2; // +Write +Read
 
 const PHASES=[
@@ -539,8 +539,8 @@ function updateWritePass(v){
   const el=document.getElementById('write-pass');
   if(!v){el.textContent='';el.className='num-pass';return;}
   if(v>=4){el.textContent='✓ 4hrs — full score';el.className='num-pass pass';}
-  else if(v>=2){el.textContent='✓ Pass ('+v+'hrs)';el.className='num-pass pass';}
-  else{el.textContent='✗ Below 2hrs';el.className='num-pass warn';}
+  else if(v>=1){el.textContent='✓ Pass ('+v+'hrs)';el.className='num-pass pass';}
+  else{el.textContent='✗ Below 1hr';el.className='num-pass warn';}
 }
 function updateReadPass(v){
   const el=document.getElementById('read-pass');
