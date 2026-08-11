@@ -72,8 +72,28 @@
     width: 5px; height: 10px; border: solid var(--card); border-width: 0 2px 2px 0; transform: rotate(45deg);
   }
   li.doing { opacity: .4; text-decoration: line-through; }
-  .txt { flex: 1; }
+  li.dragging { opacity: .35; }
+  .txt { flex: 1; cursor: text; border-radius: 2px; }
+  .txt:hover { background: rgba(42,38,34,0.05); }
   .txt.urgent { color: var(--bright-red); }
+  .edit-input {
+    flex: 1; background: var(--card); border: 1px solid var(--brass); border-radius: 2px;
+    color: var(--ink); font-size: 16px; font-family: 'Source Serif 4', serif;
+    padding: 2px 6px; margin: -2px 0; outline: none;
+  }
+  .drag-handle {
+    flex: none; width: 16px; margin-top: 2px; cursor: grab; color: var(--ink-soft);
+    opacity: .45; font-size: 14px; line-height: 1; text-align: center; user-select: none;
+    touch-action: none; /* stop iOS from scrolling the page instead of starting the drag */
+  }
+  .drag-handle:hover { opacity: .9; }
+  .drag-handle:active { cursor: grabbing; }
+  ul.drag-over { outline: 1.5px dashed var(--brass); outline-offset: 4px; border-radius: var(--radius); }
+  .drag-ghost {
+    position: fixed; top: 0; left: 0; z-index: 9999; pointer-events: none;
+    opacity: .92; background: var(--card); box-shadow: 0 6px 18px rgba(42,38,34,.28);
+    border-radius: var(--radius); list-style: none;
+  }
   .add-row { display: flex; align-items: center; gap: 12px; padding: 7px 0; }
   .add-btn {
     width: 19px; height: 19px; flex: none; border-radius: 50%;
@@ -221,8 +241,16 @@ function render(data) {
     sec.items.forEach((it) => {
       const li = document.createElement('li');
       const urgent = isDueSoon(it.text);
-      li.innerHTML = '<input type="checkbox" class="chk"><span class="txt' + (urgent ? ' urgent' : '') + '">' + linkify(it.text) + '</span>';
+      li.innerHTML =
+        '<span class="drag-handle" title="Drag to move">⠿</span>' +
+        '<input type="checkbox" class="chk">' +
+        '<span class="txt' + (urgent ? ' urgent' : '') + '">' + linkify(it.text) + '</span>';
       li.querySelector('.chk').addEventListener('change', () => complete(li, it.id, isMajor));
+      li.querySelector('.txt').addEventListener('click', (e) => {
+        if (e.target.tagName === 'A') return; // let links navigate, don't start editing
+        startEdit(li, it, urgent);
+      });
+      wireDrag(li, it, sec);
       ul.appendChild(li);
     });
 
@@ -236,6 +264,143 @@ function render(data) {
     input.addEventListener('keydown', (e) => { if (e.key === 'Enter') go(); });
     ul.appendChild(addLi);
   });
+}
+
+/* ── Inline edit ── */
+function startEdit(li, it, urgent) {
+  if (li.querySelector('.edit-input')) return; // already editing
+  const span = li.querySelector('.txt');
+  const input = document.createElement('input');
+  input.className = 'edit-input';
+  input.value = it.text;
+  li.replaceChild(input, span);
+  input.focus();
+  input.setSelectionRange(input.value.length, input.value.length);
+
+  let done = false;
+  const finish = (save) => {
+    if (done) return;
+    done = true;
+    if (save) saveEdit(li, it, urgent, input.value.trim());
+    else restoreSpan(li, it, urgent);
+  };
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') { e.preventDefault(); finish(true); }
+    else if (e.key === 'Escape') { e.preventDefault(); finish(false); }
+  });
+  input.addEventListener('blur', () => finish(true));
+}
+
+function restoreSpan(li, it, urgent) {
+  const input = li.querySelector('.edit-input');
+  if (!input) return;
+  const span = document.createElement('span');
+  span.className = 'txt' + (urgent ? ' urgent' : '');
+  span.innerHTML = linkify(it.text);
+  li.replaceChild(span, input);
+  span.addEventListener('click', (e) => {
+    if (e.target.tagName === 'A') return;
+    startEdit(li, it, urgent);
+  });
+}
+
+function updateSpanContent(li, it, urgent) {
+  const span = li.querySelector('.txt');
+  if (!span) return;
+  span.className = 'txt' + (urgent ? ' urgent' : '');
+  span.innerHTML = linkify(it.text);
+}
+
+async function saveEdit(li, it, urgent, newText) {
+  if (!newText || newText === it.text) { restoreSpan(li, it, urgent); return; }
+  const prev = it.text;
+  it.text = newText; // optimistic
+  restoreSpan(li, it, isDueSoon(newText));
+  try {
+    await ensureKeyThen(() => api('/api/edit', { method: 'POST', headers: headers(), body: JSON.stringify({ id: it.id, text: newText, type: it.type }) }));
+  } catch (e) {
+    it.text = prev;
+    updateSpanContent(li, it, urgent); // input is already gone at this point — update the span in place, not restoreSpan
+    statusEl.textContent = 'Could not save edit: ' + e.message;
+  }
+}
+
+/* ── Drag and drop between sections ──
+   Uses Pointer Events (not the HTML5 drag-and-drop API) because this app
+   runs as an iPhone home-screen web app, and native HTML5 DnD does not fire
+   on touch in Safari. Pointer Events cover mouse + touch + pen uniformly. */
+function wireDrag(li, it, sec) {
+  const handle = li.querySelector('.drag-handle');
+  handle.addEventListener('pointerdown', (e) => startDrag(e, li, it, sec));
+}
+
+function startDrag(e, li, it, sec) {
+  e.preventDefault();
+  const handle = e.currentTarget;
+  try { handle.setPointerCapture(e.pointerId); } catch (_) {}
+
+  const startX = e.clientX, startY = e.clientY;
+  const rect = li.getBoundingClientRect();
+  const offX = startX - rect.left, offY = startY - rect.top;
+  let dragging = false, ghost = null, currentUl = null;
+
+  function onMove(ev) {
+    const dx = ev.clientX - startX, dy = ev.clientY - startY;
+    if (!dragging) {
+      if (Math.hypot(dx, dy) < 6) return; // ignore tiny jitter / simple taps
+      dragging = true;
+      li.classList.add('dragging');
+      ghost = li.cloneNode(true);
+      ghost.classList.add('drag-ghost');
+      ghost.style.width = rect.width + 'px';
+      document.body.appendChild(ghost);
+    }
+    ghost.style.left = (ev.clientX - offX) + 'px';
+    ghost.style.top = (ev.clientY - offY) + 'px';
+    const prevDisplay = ghost.style.display;
+    ghost.style.display = 'none'; // don't let the ghost occlude elementFromPoint
+    const elUnder = document.elementFromPoint(ev.clientX, ev.clientY);
+    ghost.style.display = prevDisplay;
+    const ul = elUnder && elUnder.closest && elUnder.closest('ul[data-key]');
+    if (ul !== currentUl) {
+      if (currentUl) currentUl.classList.remove('drag-over');
+      currentUl = ul;
+      if (currentUl) currentUl.classList.add('drag-over');
+    }
+  }
+
+  function cleanup() {
+    document.removeEventListener('pointermove', onMove);
+    document.removeEventListener('pointerup', onUp);
+    document.removeEventListener('pointercancel', cleanup);
+    li.classList.remove('dragging');
+    if (ghost) ghost.remove();
+    if (currentUl) currentUl.classList.remove('drag-over');
+  }
+
+  function onUp() {
+    const toKey = currentUl && currentUl.dataset.key;
+    const wasDragging = dragging;
+    cleanup();
+    if (wasDragging && toKey && toKey !== sec.key) {
+      moveItem({ id: it.id, text: it.text, type: it.type }, toKey);
+    }
+  }
+
+  document.addEventListener('pointermove', onMove);
+  document.addEventListener('pointerup', onUp);
+  document.addEventListener('pointercancel', cleanup);
+}
+
+async function moveItem(payload, toKey) {
+  statusEl.textContent = 'Moving…';
+  try {
+    await ensureKeyThen(() => api('/api/move', { method: 'POST', headers: headers(), body: JSON.stringify({ id: payload.id, text: payload.text, type: payload.type, toSection: toKey }) }));
+    statusEl.textContent = '';
+    load();
+  } catch (e) {
+    statusEl.textContent = 'Could not move: ' + e.message;
+  }
 }
 
 async function load() {

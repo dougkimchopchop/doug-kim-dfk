@@ -43,11 +43,11 @@ function slugify(label) {
 // already checked in Notion are skipped (treated as done/archived already).
 function itemFromBlock(b) {
   if (b.type === 'bulleted_list_item') {
-    return { id: b.id, text: plain(b.bulleted_list_item.rich_text) };
+    return { id: b.id, text: plain(b.bulleted_list_item.rich_text), type: 'bulleted_list_item' };
   }
   if (b.type === 'to_do') {
     if (b.to_do.checked) return null;
-    return { id: b.id, text: plain(b.to_do.rich_text) };
+    return { id: b.id, text: plain(b.to_do.rich_text), type: 'to_do' };
   }
   return null;
 }
