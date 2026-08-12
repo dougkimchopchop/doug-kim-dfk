@@ -1,0 +1,113 @@
+// POST /api/reorder  { id, text, type, section, afterId }
+// Reorders an item within its own section. Notion's API has no native
+// "move block within parent" call, so — same trick as /api/move — this
+// appends a fresh block with the same text/type right after the requested
+// sibling block, then deletes the original. If afterId is empty, the item
+// is placed right after the section's heading_2 block (i.e. first in the
+// section). The item gets a new block id as a result — the client reloads
+// after a successful call.
+const PAGE_ID = process.env.NOTION_PAGE_ID;
+const TOKEN = process.env.NOTION_TOKEN;
+const APP_KEY = process.env.APP_KEY || '';
+const NV = '2022-06-28';
+
+async function notion(path, opts = {}) {
+  const res = await fetch('https://api.notion.com/v1' + path, {
+    ...opts,
+    headers: {
+      Authorization: 'Bearer ' + TOKEN,
+      'Notion-Version': NV,
+      'Content-Type': 'application/json',
+      ...(opts.headers || {}),
+    },
+  });
+  if (!res.ok) throw new Error('Notion ' + res.status + ': ' + (await res.text()));
+  return res.json();
+}
+
+async function getAllChildren(blockId) {
+  let results = [];
+  let cursor = null;
+  do {
+    const q = cursor ? '?page_size=100&start_cursor=' + cursor : '?page_size=100';
+    const data = await notion('/blocks/' + blockId + '/children' + q);
+    results = results.concat(data.results);
+    cursor = data.has_more ? data.next_cursor : null;
+  } while (cursor);
+  return results;
+}
+
+function plain(rich) {
+  return (rich || []).map((r) => r.plain_text).join('');
+}
+
+function slugify(label) {
+  return label.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') || 'section';
+}
+
+function readBody(req) {
+  return new Promise((resolve) => {
+    if (req.body) {
+      if (typeof req.body === 'string') {
+        try { return resolve(JSON.parse(req.body)); } catch { return resolve({}); }
+      }
+      return resolve(req.body);
+    }
+    let data = '';
+    req.on('data', (c) => (data += c));
+    req.on('end', () => { try { resolve(JSON.parse(data || '{}')); } catch { resolve({}); } });
+  });
+}
+
+const ALLOWED_TYPES = ['bulleted_list_item', 'to_do'];
+
+module.exports = async (req, res) => {
+  try {
+    if (!TOKEN) throw new Error('NOTION_TOKEN env var not set');
+    if (!PAGE_ID) throw new Error('NOTION_PAGE_ID env var not set');
+    if (APP_KEY && req.headers['x-app-key'] !== APP_KEY) {
+      res.status(401).json({ error: 'unauthorized' });
+      return;
+    }
+    if (req.method !== 'POST') { res.status(405).json({ error: 'POST only' }); return; }
+
+    const body = await readBody(req);
+    const id = String(body.id || '');
+    const text = String(body.text || '').trim();
+    const type = ALLOWED_TYPES.includes(body.type) ? body.type : 'bulleted_list_item';
+    const section = slugify(String(body.section || ''));
+    const afterId = body.afterId ? String(body.afterId) : null;
+    if (!id) { res.status(400).json({ error: 'no id' }); return; }
+    if (!text) { res.status(400).json({ error: 'empty text' }); return; }
+    if (!section) { res.status(400).json({ error: 'missing section' }); return; }
+
+    let insertAfter = afterId;
+    if (!insertAfter) {
+      // No sibling given -> item goes first in the section, so insert right
+      // after that section's heading_2 block.
+      const blocks = await getAllChildren(PAGE_ID);
+      let headingId = null;
+      for (const b of blocks) {
+        if (b.type === 'heading_2' && slugify(plain(b.heading_2.rich_text)) === section) {
+          headingId = b.id;
+          break;
+        }
+      }
+      if (!headingId) { res.status(404).json({ error: 'section not found: ' + section }); return; }
+      insertAfter = headingId;
+    }
+
+    const blockPayload = type === 'to_do'
+      ? { object: 'block', type: 'to_do', to_do: { rich_text: [{ type: 'text', text: { content: text } }], checked: false } }
+      : { object: 'block', type: 'bulleted_list_item', bulleted_list_item: { rich_text: [{ type: 'text', text: { content: text } }] } };
+
+    await notion('/blocks/' + PAGE_ID + '/children', {
+      method: 'PATCH',
+      body: JSON.stringify({ after: insertAfter, children: [blockPayload] }),
+    });
+    await notion('/blocks/' + id, { method: 'DELETE' });
+    res.status(200).json({ ok: true });
+  } catch (e) {
+    res.status(500).json({ error: String((e && e.message) || e) });
+  }
+};

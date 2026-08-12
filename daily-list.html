@@ -240,6 +240,7 @@ function render(data) {
     const isMajor = !!sec.divider;
     sec.items.forEach((it) => {
       const li = document.createElement('li');
+      li.dataset.id = it.id;
       const urgent = isDueSoon(it.text);
       li.innerHTML =
         '<span class="drag-handle" title="Drag to move">⠿</span>' +
@@ -325,13 +326,38 @@ async function saveEdit(li, it, urgent, newText) {
   }
 }
 
-/* ── Drag and drop between sections ──
+/* ── Drag and drop ──
    Uses Pointer Events (not the HTML5 drag-and-drop API) because this app
    runs as an iPhone home-screen web app, and native HTML5 DnD does not fire
-   on touch in Safari. Pointer Events cover mouse + touch + pen uniformly. */
+   on touch in Safari. Pointer Events cover mouse + touch + pen uniformly.
+
+   Two behaviors share this one gesture:
+   - Within the item's own section: the li is live-repositioned in the DOM
+     as it's dragged over siblings, then persisted via /api/reorder on drop.
+   - Dragged into a different section's list: unchanged from before — just
+     highlights that list and appends the item there on drop (server-side
+     always at the end; the item's own section list is unaffected). */
 function wireDrag(li, it, sec) {
   const handle = li.querySelector('.drag-handle');
   handle.addEventListener('pointerdown', (e) => startDrag(e, li, it, sec));
+}
+
+function siblingItemId(el) {
+  return el && el.tagName === 'LI' && !el.classList.contains('add-row') ? el.dataset.id : null;
+}
+
+// Live-reposition `li` inside `ul` (its own section's list) to match where
+// the pointer currently is, without ever moving it past the trailing add-row.
+function positionInList(ul, li, clientY) {
+  const addRow = ul.querySelector('.add-row');
+  const items = Array.from(ul.children).filter((el) => el !== li && el.tagName === 'LI' && !el.classList.contains('add-row'));
+  let ref = null; // insert before this element; null = insert at the end (before add-row)
+  for (const item of items) {
+    const r = item.getBoundingClientRect();
+    if (clientY < r.top + r.height / 2) { ref = item; break; }
+  }
+  const target = ref || addRow || null;
+  if (li.nextElementSibling !== target) ul.insertBefore(li, target);
 }
 
 function startDrag(e, li, it, sec) {
@@ -342,6 +368,8 @@ function startDrag(e, li, it, sec) {
   const startX = e.clientX, startY = e.clientY;
   const rect = li.getBoundingClientRect();
   const offX = startX - rect.left, offY = startY - rect.top;
+  const sourceUl = li.parentElement;
+  const startAfterId = siblingItemId(li.previousElementSibling);
   let dragging = false, ghost = null, currentUl = null;
 
   function onMove(ev) {
@@ -367,6 +395,7 @@ function startDrag(e, li, it, sec) {
       currentUl = ul;
       if (currentUl) currentUl.classList.add('drag-over');
     }
+    if (ul === sourceUl) positionInList(sourceUl, li, ev.clientY);
   }
 
   function cleanup() {
@@ -379,11 +408,18 @@ function startDrag(e, li, it, sec) {
   }
 
   function onUp() {
-    const toKey = currentUl && currentUl.dataset.key;
     const wasDragging = dragging;
+    const toKey = currentUl && currentUl.dataset.key;
     cleanup();
-    if (wasDragging && toKey && toKey !== sec.key) {
+    if (!wasDragging) return;
+    if (!currentUl) return; // dropped outside any list — leave everything as-is
+    if (toKey !== sec.key) {
       moveItem({ id: it.id, text: it.text, type: it.type }, toKey);
+      return;
+    }
+    const finalAfterId = siblingItemId(li.previousElementSibling);
+    if (finalAfterId !== startAfterId) {
+      reorderItem(it, sec.key, finalAfterId);
     }
   }
 
@@ -400,6 +436,18 @@ async function moveItem(payload, toKey) {
     load();
   } catch (e) {
     statusEl.textContent = 'Could not move: ' + e.message;
+  }
+}
+
+async function reorderItem(it, sectionKey, afterId) {
+  statusEl.textContent = 'Reordering…';
+  try {
+    await ensureKeyThen(() => api('/api/reorder', { method: 'POST', headers: headers(), body: JSON.stringify({ id: it.id, text: it.text, type: it.type, section: sectionKey, afterId: afterId || null }) }));
+    statusEl.textContent = '';
+    load();
+  } catch (e) {
+    statusEl.textContent = 'Could not reorder: ' + e.message;
+    load(); // resync the list in case the drag left stale positions on screen
   }
 }
 
