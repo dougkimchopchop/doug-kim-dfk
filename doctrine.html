@@ -19,7 +19,7 @@
 <nav class="breadcrumb" aria-label="Breadcrumb"><a href="https://hub-seven-nu.vercel.app" target="_blank" rel="noopener">Doug Kim</a><span class="breadcrumb-sep">/</span><a href="https://doug-kim-dfk.vercel.app" target="_blank" rel="noopener">DFK</a><span class="breadcrumb-sep">/</span><span>Doctrine & Projects</span></nav>
 <span class="eyebrow">Reference</span>
 <h1 style="font-family:var(--display);font-weight:600;font-size:clamp(1.6rem,3.5vw,2.2rem);line-height:1.05;margin:0 0 .3rem;">Doctrine &amp; Projects</h1>
-<p style="font-family:var(--mono);font-size:.68rem;color:var(--ink-soft);margin:0 0 1.2rem;" id="hdr-meta">Aug 10 – Nov 7, 2026 · <span id="day-count">—</span> days remaining · Day <span id="day-num">—</span> of 90</p>
+<p style="font-family:var(--mono);font-size:.68rem;color:var(--ink-soft);margin:0 0 1.2rem;" id="hdr-meta">Aug 17 – Nov 15, 2026 · <span id="day-count">—</span> days remaining · Day <span id="day-num">—</span> of 91</p>
 
 <div class="controls">
   <select class="ctrl-select" id="update-type">
@@ -43,7 +43,7 @@
 
 <div class="assessment">
   <div class="assess-hdr" onclick="toggleAssessment()">
-    <span class="assess-title">Cycle restart — Aug 10, 2026</span>
+    <span class="assess-title">Cycle restart — Aug 17, 2026</span>
     <span class="assess-toggle" id="assess-toggle">[ show ]</span>
   </div>
   <div class="assess-body" id="assess-body">
@@ -126,20 +126,20 @@
 
 <script>
 const PROJECTS=[
-  {num:"1",  name:"10 Shoots",               finish:"10 shoots logged, camera left the apartment",    deadline:"Nov 7",notion:"https://www.notion.so/34d3a0c63b068149b5e5d2bd69156475"},
-  {num:"1b", name:"5 Paid Shoots",            finish:"5 invoices sent, 5 payments received",           deadline:"Nov 7",notion:"https://www.notion.so/34d3a0c63b0681868096dc698f74c21b"},
+  {num:"1",  name:"10 Shoots",               finish:"10 shoots logged, camera left the apartment",    deadline:"Nov 15",notion:"https://www.notion.so/34d3a0c63b068149b5e5d2bd69156475"},
+  {num:"1b", name:"5 Paid Shoots",            finish:"5 invoices sent, 5 payments received",           deadline:"Nov 15",notion:"https://www.notion.so/34d3a0c63b0681868096dc698f74c21b"},
   {num:"2",  name:"Istanbul Essay",           finish:"Submitted to 10 publications",                   deadline:"Sep 2", urgent:true,notion:"https://www.notion.so/34d3a0c63b068154a907e8d4581026da"},
-  {num:"3",  name:"Publish Photos, 10 Editors",finish:"Photos published, submitted to 10 editors",    deadline:"Nov 7",notion:"https://www.notion.so/36b3a0c63b0681489767dab7d1b3bd59"},
-  {num:"4",  name:"250 Substack Subscribers", finish:"Account at 250+ subscribers",                    deadline:"Nov 7",notion:"https://www.notion.so/34d3a0c63b06813e916fca0ae2872aff"},
-  {num:"5",  name:"Reach 190 lbs",            finish:"Scale reads 190 or below",                      deadline:"Nov 7",notion:"https://www.notion.so/34d3a0c63b0681afac70e4d3aa17aaf3"},
-  {num:"6",  name:"Run 10 Miles",             finish:"One continuous 10-mile run completed",           deadline:"Nov 7",notion:"https://www.notion.so/34d3a0c63b0681d88219d658a22467a3"},
+  {num:"3",  name:"Publish Photos, 10 Editors",finish:"Photos published, submitted to 10 editors",    deadline:"Nov 15",notion:"https://www.notion.so/36b3a0c63b0681489767dab7d1b3bd59"},
+  {num:"4",  name:"250 Substack Subscribers", finish:"Account at 250+ subscribers",                    deadline:"Nov 15",notion:"https://www.notion.so/34d3a0c63b06813e916fca0ae2872aff"},
+  {num:"5",  name:"Reach 190 lbs",            finish:"Scale reads 190 or below",                      deadline:"Nov 15",notion:"https://www.notion.so/34d3a0c63b0681afac70e4d3aa17aaf3"},
+  {num:"6",  name:"Run 10 Miles",             finish:"One continuous 10-mile run completed",           deadline:"Nov 15",notion:"https://www.notion.so/34d3a0c63b0681d88219d658a22467a3"},
   {num:"8",  name:"First PM Contract",        finish:"Signed contract or first paid hour logged",      deadline:"Oct 17",notion:"https://www.notion.so/34d3a0c63b068191bc9cc9c95661a3c1"},
-  {num:"9",  name:"Determine the Side Hustle",finish:"Decision made, plan in place",                   deadline:"Nov 7",notion:"https://www.notion.so/3623a0c63b068110b57bd84de86c1708"},
+  {num:"9",  name:"Determine the Side Hustle",finish:"Decision made, plan in place",                   deadline:"Nov 15",notion:"https://www.notion.so/3623a0c63b068110b57bd84de86c1708"},
   {num:"10", name:"Back Taxes Filed",         finish:"Filed, plan active, first payment sent",         deadline:"Sep 2",urgent:true,notion:"https://www.notion.so/34d3a0c63b0681b39632dcab3200ed00"},
-  {num:"11", name:"Finish Songbook",          finish:"Submitted to publisher",                         deadline:"Nov 7",notion:"https://www.notion.so/36b3a0c63b0681b78e46e96bcef22de7"},
+  {num:"11", name:"Finish Songbook",          finish:"Submitted to publisher",                         deadline:"Nov 15",notion:"https://www.notion.so/36b3a0c63b0681b78e46e96bcef22de7"},
 ];
 
-const START=new Date('2026-08-10');const END=new Date('2026-11-07');const TODAY=new Date();
+const START=new Date('2026-08-17');const END=new Date('2026-11-15');const TODAY=new Date();
 function daysBetween(a,b){return Math.round((b-a)/86400000)}
 
 function initHeader(){
@@ -207,8 +207,8 @@ async function generateUpdate(){
   const notes=getNotes();const elapsed=daysBetween(START,TODAY);const remaining=daysBetween(TODAY,END);
   const noteLines=PROJECTS.map(p=>`  #${p.num} ${p.name} (due ${p.deadline})${notes[p.num]?' — note: '+notes[p.num]:' — no update logged'}`).join('\n');
   const prompt=type==='daily'
-    ?`You are a direct accountability coach. Harshly critical, zero tolerance, shame is a tool. Doug Kim is on day ${elapsed} of his 90-Day Identity Challenge (${remaining} days left, ends Nov 7, 2026). He has 11 projects.\n\nProjects:\n${noteLines}\n\nGive him a sharp DAILY check-in:\n- One punchy sentence about where he is\n- The 1-2 most urgent items needing action TODAY\n- Honest one-sentence assessment — on track or behind?\n- Single concrete action for today\n\nDirect, harsh, no cheerleading. Max 200 words. Plain text.`
-    :`You are a direct accountability coach. Harshly critical, zero tolerance, shame is a tool. Doug Kim is doing his WEEKLY REVIEW on day ${elapsed} of his 90-Day Identity Challenge (${remaining} days left, ends Nov 7, 2026).\n\nProjects:\n${noteLines}\n\nWeekly review:\n- What the week looked like overall\n- Which projects are on track vs at risk\n- The 2-3 things that MUST happen next week\n- One hard truth about what's being avoided\n\nHarsh. Reference actual names and deadlines. Max 250 words. Plain text.`;
+    ?`You are a direct accountability coach. Harshly critical, zero tolerance, shame is a tool. Doug Kim is on day ${elapsed} of his 90-Day Identity Challenge (${remaining} days left, ends Nov 15, 2026). He has 11 projects.\n\nProjects:\n${noteLines}\n\nGive him a sharp DAILY check-in:\n- One punchy sentence about where he is\n- The 1-2 most urgent items needing action TODAY\n- Honest one-sentence assessment — on track or behind?\n- Single concrete action for today\n\nDirect, harsh, no cheerleading. Max 200 words. Plain text.`
+    :`You are a direct accountability coach. Harshly critical, zero tolerance, shame is a tool. Doug Kim is doing his WEEKLY REVIEW on day ${elapsed} of his 90-Day Identity Challenge (${remaining} days left, ends Nov 15, 2026).\n\nProjects:\n${noteLines}\n\nWeekly review:\n- What the week looked like overall\n- Which projects are on track vs at risk\n- The 2-3 things that MUST happen next week\n- One hard truth about what's being avoided\n\nHarsh. Reference actual names and deadlines. Max 250 words. Plain text.`;
   try{
     const res=await fetch('/api/claude',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,messages:[{role:'user',content:prompt}]})});
     const data=await res.json();
