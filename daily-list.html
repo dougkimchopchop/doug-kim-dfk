@@ -246,7 +246,7 @@ function render(data) {
         '<span class="drag-handle" title="Drag to move">⠿</span>' +
         '<input type="checkbox" class="chk">' +
         '<span class="txt' + (urgent ? ' urgent' : '') + '">' + linkify(it.text) + '</span>';
-      li.querySelector('.chk').addEventListener('change', () => complete(li, it.id, isMajor));
+      li.querySelector('.chk').addEventListener('change', () => complete(li, it, isMajor));
       li.querySelector('.txt').addEventListener('click', (e) => {
         if (e.target.tagName === 'A') return; // let links navigate, don't start editing
         startEdit(li, it, urgent);
@@ -462,10 +462,10 @@ async function load() {
   }
 }
 
-async function complete(li, id, isMajor) {
+async function complete(li, it, isMajor) {
   li.classList.add('doing');
   try {
-    await ensureKeyThen(() => api('/api/done', { method:'POST', headers: headers(), body: JSON.stringify({ id, major: !!isMajor }) }));
+    await ensureKeyThen(() => api('/api/done', { method:'POST', headers: headers(), body: JSON.stringify({ id: it.id, type: it.type, major: !!isMajor }) }));
     li.remove();
     loadCounter();
   } catch (e) {

@@ -88,8 +88,20 @@ module.exports = async (req, res) => {
     const body = await readBody(req);
     const id = String(body.id || '');
     const isMajor = !!body.major;
+    const type = String(body.type || '');
     if (!id) { res.status(400).json({ error: 'no id' }); return; }
-    await notion('/blocks/' + id, { method: 'DELETE' });
+    // to_do blocks (e.g. The Fucking Hard Things) get checked off instead of
+    // deleted — keeps a permanent, visible record of what's been crossed off
+    // right in Notion. Blocks without a checked state (plain bulleted items,
+    // like the Fires/Today/This Week lists) still get removed on completion.
+    if (type === 'to_do') {
+      await notion('/blocks/' + id, {
+        method: 'PATCH',
+        body: JSON.stringify({ to_do: { checked: true } }),
+      });
+    } else {
+      await notion('/blocks/' + id, { method: 'DELETE' });
+    }
     await logCompletion(isMajor);
     res.status(200).json({ ok: true });
   } catch (e) {
