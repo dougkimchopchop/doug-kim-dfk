@@ -1,5 +1,14 @@
-// POST /api/done  { id, major }  -> deletes (completes) that bullet block, logs a completion
+// POST /api/done  { id, type, text, major }  -> completes that block, logs completion
+//
+// to_do blocks (The Fucking Hard Things) get archived: a checked, date-stamped
+// copy is appended to a "## Completed" section at the bottom of the My List
+// page, then the original block is deleted. That gives a permanent, visible,
+// chronological record of what's been crossed off, right in Notion.
+//
+// Plain bulleted items (Fires/Today/This Week/Backlog) have no checked state
+// to preserve and aren't archived — they're just deleted, same as before.
 const TOKEN = process.env.NOTION_TOKEN;
+const PAGE_ID = process.env.NOTION_PAGE_ID;
 const APP_KEY = process.env.APP_KEY || '';
 const NV = '2022-06-28';
 
@@ -25,12 +34,60 @@ async function notion(path, opts = {}) {
   return res.json();
 }
 
+function plain(rich) {
+  return (rich || []).map((r) => r.plain_text).join('');
+}
+
+async function getAllChildren(blockId) {
+  let results = [];
+  let cursor = null;
+  do {
+    const q = cursor ? '?page_size=100&start_cursor=' + cursor : '?page_size=100';
+    const data = await notion('/blocks/' + blockId + '/children' + q);
+    results = results.concat(data.results);
+    cursor = data.has_more ? data.next_cursor : null;
+  } while (cursor);
+  return results;
+}
+
+let completedSectionId = null;
+async function getOrCreateCompletedSection() {
+  if (completedSectionId) return completedSectionId;
+  const children = await getAllChildren(PAGE_ID);
+  const found = children.find(
+    (b) => b.type === 'heading_2' && plain(b.heading_2.rich_text).trim() === 'Completed'
+  );
+  if (found) { completedSectionId = found.id; return completedSectionId; }
+  const created = await notion('/blocks/' + PAGE_ID + '/children', {
+    method: 'PATCH',
+    body: JSON.stringify({ children: [{ heading_2: { rich_text: [{ text: { content: 'Completed' } }] } }] }),
+  });
+  completedSectionId = created.results[0].id;
+  return completedSectionId;
+}
+
+async function archiveCompleted(text) {
+  const sectionId = await getOrCreateCompletedSection();
+  const dateStr = new Date().toLocaleDateString('en-US', { timeZone: 'America/New_York', month: 'short', day: 'numeric' });
+  await notion('/blocks/' + sectionId + '/children', {
+    method: 'PATCH',
+    body: JSON.stringify({
+      children: [{
+        to_do: {
+          rich_text: [{ text: { content: text + ' — done ' + dateStr } }],
+          checked: true,
+        },
+      }],
+    }),
+  });
+}
+
 // Best-effort; a logging failure should never block the completion itself.
 async function logCompletion(isMajor) {
   try {
     const today = new Date().toISOString().slice(0, 10);
     const r = await fetch(
-      SUPABASE_URL + '/rest/v1/dfk_tracker?select=data&order=id.desc&limit=1',
+      SUPABASE_URL + '/rest/v1/dfk_tracker?select=data&id=eq.1',
       { headers: { apikey: SUPABASE_KEY, Authorization: 'Bearer ' + SUPABASE_KEY } }
     );
     let data = {};
@@ -89,19 +146,12 @@ module.exports = async (req, res) => {
     const id = String(body.id || '');
     const isMajor = !!body.major;
     const type = String(body.type || '');
+    const text = String(body.text || '').trim();
     if (!id) { res.status(400).json({ error: 'no id' }); return; }
-    // to_do blocks (e.g. The Fucking Hard Things) get checked off instead of
-    // deleted — keeps a permanent, visible record of what's been crossed off
-    // right in Notion. Blocks without a checked state (plain bulleted items,
-    // like the Fires/Today/This Week lists) still get removed on completion.
-    if (type === 'to_do') {
-      await notion('/blocks/' + id, {
-        method: 'PATCH',
-        body: JSON.stringify({ to_do: { checked: true } }),
-      });
-    } else {
-      await notion('/blocks/' + id, { method: 'DELETE' });
+    if (type === 'to_do' && text && PAGE_ID) {
+      try { await archiveCompleted(text); } catch (e) { /* best-effort — still complete below even if archiving fails */ }
     }
+    await notion('/blocks/' + id, { method: 'DELETE' });
     await logCompletion(isMajor);
     res.status(200).json({ ok: true });
   } catch (e) {
