@@ -10,6 +10,8 @@
 .breadcrumb a{color:var(--ink-soft);text-decoration:none}
 .breadcrumb a:hover{color:var(--ribbon)}
 .breadcrumb-sep{color:var(--oak-soft)}
+.countdown-60{display:flex;align-items:baseline;gap:.5rem;margin:0 0 1.2rem;font-family:var(--mono);font-size:.65rem;color:var(--ink-soft);letter-spacing:.04em}
+.countdown-60 .cd-num{font-family:var(--display);font-weight:700;font-size:1.5rem;color:var(--fail);line-height:1}
 </style>
   <link rel="apple-touch-icon" href="/icons/icon-doctrine.png">
 </head>
@@ -19,7 +21,8 @@
 <nav class="breadcrumb" aria-label="Breadcrumb"><a href="https://hub-seven-nu.vercel.app" target="_blank" rel="noopener">Doug Kim</a><span class="breadcrumb-sep">/</span><a href="https://doug-kim-dfk.vercel.app" target="_blank" rel="noopener">DFK</a><span class="breadcrumb-sep">/</span><span>Doctrine & Projects</span></nav>
 <span class="eyebrow">Reference</span>
 <h1 style="font-family:var(--display);font-weight:600;font-size:clamp(1.6rem,3.5vw,2.2rem);line-height:1.05;margin:0 0 .3rem;">Doctrine &amp; Projects</h1>
-<p style="font-family:var(--mono);font-size:.68rem;color:var(--ink-soft);margin:0 0 1.2rem;" id="hdr-meta">Aug 24 – Nov 22, 2026 · <span id="day-count">—</span> days remaining · Day <span id="day-num">—</span> of 91</p>
+<p style="font-family:var(--mono);font-size:.68rem;color:var(--ink-soft);margin:0 0 .3rem;" id="hdr-meta">Aug 24 – Nov 22, 2026 · <span id="day-count">—</span> days remaining · Day <span id="day-num">—</span> of 91</p>
+<p class="countdown-60"><span class="cd-num" id="cd60-num">—</span><span>days til</span><span class="cd-num">60</span></p>
 
 <div class="controls">
   <select class="ctrl-select" id="update-type">
@@ -146,6 +149,8 @@ function initHeader(){
   const rem=daysBetween(TODAY,END);const el=daysBetween(START,TODAY);
   document.getElementById('day-count').textContent=rem;
   document.getElementById('day-num').textContent=Math.max(1,el+1);
+  const TURNS_60=new Date(2027,5,19);
+  document.getElementById('cd60-num').textContent=Math.ceil((TURNS_60-new Date())/86400000);
 }
 
 function deadlineClass(dStr,urgent){
