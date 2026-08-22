@@ -83,15 +83,19 @@ h1{font-family:var(--display);font-weight:600;font-size:clamp(1.8rem,4vw,2.4rem)
 .hc:hover{background:var(--paper)}
 .hc.done{background:var(--pass-bg)}
 .hc.missed{background:var(--fail-bg)}
+.hc.half{background:var(--warn-bg)}
 .dot{width:7px;height:7px;border-radius:50%;background:var(--line-d);flex-shrink:0}
 .hc.done .dot{background:var(--pass)}
 .hc.missed .dot{background:var(--fail)}
+.hc.half .dot{background:var(--warn)}
 .hc-name{font-family:var(--mono);font-size:.6rem;color:var(--ink-muted);line-height:1.2}
 .hc.done .hc-name{color:var(--pass)}
 .hc.missed .hc-name{color:var(--fail)}
+.hc.half .hc-name{color:var(--warn)}
 
 /* Number inputs (Write/Read) */
 .num-inputs{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-bottom:1.2rem}
+.num-inputs3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.6rem;margin-bottom:1.2rem}
 .num-card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:.9rem 1rem}
 .num-card-title{font-family:var(--mono);font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:var(--oak-soft);margin-bottom:.6rem;display:flex;justify-content:space-between;align-items:center}
 .num-card-target{color:var(--ink-muted);font-size:.58rem}
@@ -224,6 +228,7 @@ footer a:hover{color:var(--ribbon)}
   .grid{grid-template-columns:repeat(2,1fr)}
   .wk-targets{grid-template-columns:1fr}
   .num-inputs{grid-template-columns:1fr}
+  .num-inputs3{grid-template-columns:1fr}
 }
 @media(prefers-reduced-motion:reduce){*{transition:none !important}}
 </style>
@@ -292,6 +297,34 @@ footer a:hover{color:var(--ribbon)}
       <span class="num-unit">hrs</span>
     </div>
     <div class="num-pass" id="read-pass"></div>
+  </div>
+</div>
+
+<div class="sec-lbl">Deep Work &amp; Discipline</div>
+<div class="num-inputs3">
+  <div class="num-card">
+    <div class="num-card-title">Deep Work <span class="num-card-target">25min blocks · target 4</span></div>
+    <div class="num-input-row">
+      <input type="number" id="deepwork-input" min="0" max="20" step="1" placeholder="0">
+      <span class="num-unit">blocks</span>
+    </div>
+    <div class="num-pass" id="deepwork-pass"></div>
+  </div>
+  <div class="num-card">
+    <div class="num-card-title">Screen Time <span class="num-card-target">junk video/social · under 60m</span></div>
+    <div class="num-input-row">
+      <input type="number" id="screentime-input" min="0" max="600" step="5" placeholder="0">
+      <span class="num-unit">min</span>
+    </div>
+    <div class="num-pass" id="screentime-pass"></div>
+  </div>
+  <div class="num-card">
+    <div class="num-card-title">Outside <span class="num-card-target">hour blocks · target 2</span></div>
+    <div class="num-input-row">
+      <input type="number" id="outside-input" min="0" max="12" step="1" placeholder="0">
+      <span class="num-unit">hrs</span>
+    </div>
+    <div class="num-pass" id="outside-pass"></div>
   </div>
 </div>
 
@@ -403,8 +436,6 @@ footer a:hover{color:var(--ribbon)}
 
 <script>
 const HABITS=[
-  {id:'med_am',    name:'Meditate AM'},
-  {id:'med_pm',    name:'Meditate PM'},
   {id:'exercise',  name:'Exercise'},
   {id:'run',       name:'Run'},
   {id:'shoot',     name:'Shoot'},
@@ -416,7 +447,10 @@ const HABITS=[
 ];
 
 const WRITE_PASS=1; const READ_PASS=1;
-const TOTAL_CHECKS=HABITS.length+2; // +Write +Read
+const DEEPWORK_PASS=4; // 25-min blocks/day
+const SCREEN_PASS=60;  // junk screen time minutes/day — pass at or under
+const OUTSIDE_PASS=2;  // hour-blocks outside/day
+const TOTAL_CHECKS=HABITS.length+2/*meditate, up to 2 for both sessions*/+2/*Write+Read*/+1/*Deep Work*/+1/*Screen Time*/+1/*Outside*/;
 
 const PHASES=[
   {name:'Phase 1 — Output',          dates:'Aug 24 – Sep 22', start:0, end:29,label:'Phase 1',days:'Days 1–30'},
@@ -459,19 +493,27 @@ function weekDays(offset){
 function habitScore(d){
   const dd=gd(d);
   const hDone=HABITS.filter(h=>dd[h.id]===true).length;
+  const medDone=dd.meditate||0; // 0, 1 (half), or 2 (full)
   const writeDone=(dd.write_hrs||0)>=WRITE_PASS?1:0;
   const readDone=(dd.read_hrs||0)>=READ_PASS?1:0;
+  const deepworkDone=(dd.deepwork_blocks||0)>=DEEPWORK_PASS?1:0;
+  const screentimeDone=(dd.screen_time_min!==undefined&&dd.screen_time_min<=SCREEN_PASS)?1:0;
+  const outsideDone=(dd.outside_blocks||0)>=OUTSIDE_PASS?1:0;
   const ship3Done=([0,1,2].filter(i=>dd['ship3_done_'+i]===true).length>=3)?1:0;
-  const total=hDone+writeDone+readDone+ship3Done;
+  const total=hDone+medDone+writeDone+readDone+deepworkDone+screentimeDone+outsideDone+ship3Done;
   const max=TOTAL_CHECKS+1; // +ship3 as bonus
-  if(!HABITS.some(h=>dd[h.id]!==undefined)&&!dd.write_hrs&&!dd.read_hrs)return -1;
+  if(!HABITS.some(h=>dd[h.id]!==undefined)&&!dd.write_hrs&&!dd.read_hrs&&!dd.meditate&&!dd.deepwork_blocks&&dd.screen_time_min===undefined&&!dd.outside_blocks)return -1;
   return Math.round(total/max*100);
 }
 function doneCount(d){
   const dd=gd(d);
   return HABITS.filter(h=>dd[h.id]===true).length
+    +(dd.meditate||0)
     +((dd.write_hrs||0)>=WRITE_PASS?1:0)
     +((dd.read_hrs||0)>=READ_PASS?1:0)
+    +((dd.deepwork_blocks||0)>=DEEPWORK_PASS?1:0)
+    +((dd.screen_time_min!==undefined&&dd.screen_time_min<=SCREEN_PASS)?1:0)
+    +((dd.outside_blocks||0)>=OUTSIDE_PASS?1:0)
     +([0,1,2].filter(i=>dd['ship3_done_'+i]===true).length>=3?1:0);
 }
 
@@ -517,11 +559,24 @@ function switchTab(tab){
 /* ── DAILY ── */
 function renderGrid(){
   const dd=gd(cur);
-  document.getElementById('grid').innerHTML=HABITS.map(h=>{
+  const medState=dd.meditate||0;
+  const medCls=medState===2?'done':medState===1?'half':'';
+  const medLbl='Meditate'+(medState===1?' — 1 of 2':medState===2?' — 2 of 2':'');
+  const medHtml=`<div class="hc ${medCls}" onclick="cycMeditate()"><div class="dot"></div><div class="hc-name">${medLbl}</div></div>`;
+  const habitsHtml=HABITS.map(h=>{
     const s=dd[h.id];const cls=s===true?'done':s===false?'missed':'';
     return `<div class="hc ${cls}" onclick="cyc('${h.id}')"><div class="dot"></div><div class="hc-name">${h.name}</div></div>`;
   }).join('');
+  document.getElementById('grid').innerHTML=medHtml+habitsHtml;
   updateScore();
+}
+
+function cycMeditate(){
+  if(!data[dk(cur)])data[dk(cur)]={};
+  const c=data[dk(cur)].meditate||0;
+  const next=(c+1)%3;
+  if(next===0)delete data[dk(cur)].meditate;else data[dk(cur)].meditate=next;
+  scheduleSave();renderGrid();renderStreak();updateHeader();updateStats();
 }
 
 function cyc(id){
@@ -534,8 +589,19 @@ function cyc(id){
 function markAll(val){
   if(!data[dk(cur)])data[dk(cur)]={};
   HABITS.forEach(h=>{data[dk(cur)][h.id]=val});
-  if(val){data[dk(cur)].write_hrs=4;data[dk(cur)].read_hrs=1;}
-  else{delete data[dk(cur)].write_hrs;delete data[dk(cur)].read_hrs;}
+  if(val){
+    data[dk(cur)].meditate=2;
+    data[dk(cur)].write_hrs=4;data[dk(cur)].read_hrs=1;
+    data[dk(cur)].deepwork_blocks=DEEPWORK_PASS;
+    data[dk(cur)].screen_time_min=0;
+    data[dk(cur)].outside_blocks=OUTSIDE_PASS;
+  }else{
+    delete data[dk(cur)].meditate;
+    delete data[dk(cur)].write_hrs;delete data[dk(cur)].read_hrs;
+    delete data[dk(cur)].deepwork_blocks;
+    delete data[dk(cur)].screen_time_min;
+    delete data[dk(cur)].outside_blocks;
+  }
   scheduleSave();renderGrid();renderNumInputs();renderStreak();updateHeader();updateStats();
 }
 
@@ -546,6 +612,15 @@ function renderNumInputs(){
   document.getElementById('read-input').value=r;
   updateWritePass(parseFloat(w)||0);
   updateReadPass(parseFloat(r)||0);
+  const dw=dd.deepwork_blocks||'';
+  document.getElementById('deepwork-input').value=dw;
+  updateDeepworkPass(parseFloat(dw)||0);
+  const st=(dd.screen_time_min!==undefined)?dd.screen_time_min:'';
+  document.getElementById('screentime-input').value=st;
+  updateScreentimePass(st===''?null:parseFloat(st));
+  const out=dd.outside_blocks||'';
+  document.getElementById('outside-input').value=out;
+  updateOutsidePass(parseFloat(out)||0);
 }
 
 function updateWritePass(v){
@@ -560,6 +635,24 @@ function updateReadPass(v){
   if(!v){el.textContent='';el.className='num-pass';return;}
   if(v>=1){el.textContent='✓ Pass';el.className='num-pass pass';}
   else{el.textContent='✗ Below 1hr';el.className='num-pass warn';}
+}
+function updateDeepworkPass(v){
+  const el=document.getElementById('deepwork-pass');
+  if(!v){el.textContent='';el.className='num-pass';return;}
+  if(v>=DEEPWORK_PASS){el.textContent='✓ '+v+' blocks — target hit';el.className='num-pass pass';}
+  else{el.textContent=v+' / '+DEEPWORK_PASS+' blocks';el.className='num-pass warn';}
+}
+function updateScreentimePass(v){
+  const el=document.getElementById('screentime-pass');
+  if(v===null||v===undefined||isNaN(v)){el.textContent='';el.className='num-pass';return;}
+  if(v<=SCREEN_PASS){el.textContent='✓ '+v+'min — under budget';el.className='num-pass pass';}
+  else{el.textContent='✗ '+v+'min — over '+SCREEN_PASS+'min budget';el.className='num-pass warn';}
+}
+function updateOutsidePass(v){
+  const el=document.getElementById('outside-pass');
+  if(!v){el.textContent='';el.className='num-pass';return;}
+  if(v>=OUTSIDE_PASS){el.textContent='✓ '+v+' hrs — target hit';el.className='num-pass pass';}
+  else{el.textContent=v+' / '+OUTSIDE_PASS+' hrs';el.className='num-pass warn';}
 }
 
 document.getElementById('write-input').addEventListener('input',function(){
@@ -579,6 +672,24 @@ document.getElementById('weight-input').addEventListener('input',function(){
   if(!data[dk(cur)])data[dk(cur)]={};
   if(!isNaN(v)&&this.value!=='')data[dk(cur)].weight=v;else delete data[dk(cur)].weight;
   scheduleSave();renderWeightChart();
+});
+document.getElementById('deepwork-input').addEventListener('input',function(){
+  const v=parseFloat(this.value)||0;
+  if(!data[dk(cur)])data[dk(cur)]={};
+  if(v>0)data[dk(cur)].deepwork_blocks=v;else delete data[dk(cur)].deepwork_blocks;
+  updateDeepworkPass(v);scheduleSave();updateScore();renderStreak();updateHeader();updateStats();
+});
+document.getElementById('screentime-input').addEventListener('input',function(){
+  const v=parseFloat(this.value);
+  if(!data[dk(cur)])data[dk(cur)]={};
+  if(!isNaN(v)&&this.value!=='')data[dk(cur)].screen_time_min=v;else delete data[dk(cur)].screen_time_min;
+  updateScreentimePass(isNaN(v)?null:v);scheduleSave();updateScore();renderStreak();updateHeader();updateStats();
+});
+document.getElementById('outside-input').addEventListener('input',function(){
+  const v=parseFloat(this.value)||0;
+  if(!data[dk(cur)])data[dk(cur)]={};
+  if(v>0)data[dk(cur)].outside_blocks=v;else delete data[dk(cur)].outside_blocks;
+  updateOutsidePass(v);scheduleSave();updateScore();renderStreak();updateHeader();updateStats();
 });
 
 /* Weight — daily input + 7-day sparkline ending on the currently viewed day */

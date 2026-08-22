@@ -92,8 +92,8 @@ table.heat{border-collapse:collapse;min-width:max-content}
 <div class="heat-legend">
   <div class="heat-leg"><span class="heat-leg-box" style="background:var(--pass);border-color:var(--pass)"></span>Done</div>
   <div class="heat-leg"><span class="heat-leg-box" style="background:var(--fail);border-color:var(--fail)"></span>Missed</div>
-  <div class="heat-leg"><span class="heat-leg-box" style="background:#EAF4EE;border-color:var(--pass)"></span>Write/Read pass</div>
-  <div class="heat-leg"><span class="heat-leg-box" style="background:#FBF5DC;border-color:var(--warn)"></span>Write/Read partial</div>
+  <div class="heat-leg"><span class="heat-leg-box" style="background:#EAF4EE;border-color:var(--pass)"></span>Metric pass (Write/Read/Deep Work/Outside/Screen Time)</div>
+  <div class="heat-leg"><span class="heat-leg-box" style="background:#FBF5DC;border-color:var(--warn)"></span>Metric partial / Meditate 1-of-2</div>
   <div class="heat-leg"><span class="heat-leg-box" style="background:var(--paper)"></span>Not logged</div>
   <div class="heat-leg"><span class="heat-leg-box" style="background:rgba(107,74,47,0.08)"></span>Future</div>
 </div>
@@ -109,16 +109,17 @@ table.heat{border-collapse:collapse;min-width:max-content}
 
 <script>
 const HABITS=[
-  'Meditate AM','Meditate PM','Exercise','Run',
-  'Shoot','Nourish','Social / Outreach','Social Physical','Off / Out',
+  'Exercise','Run',
+  'Shoot','Nourish','Social / Outreach','Social Physical','Off / Out','Guitar Practice',
 ];
 const HABIT_IDS=[
-  'med_am','med_pm','exercise','run',
-  'shoot','nourish','outreach','social_irl','off_out',
+  'exercise','run',
+  'shoot','nourish','outreach','social_irl','off_out','practice',
 ];
 // Special rows rendered differently
 const WRITE_ID='write_hrs'; const READ_ID='read_hrs';
 const WRITE_PASS=2; const READ_PASS=1; const WRITE_FULL=4;
+const DEEPWORK_PASS=4; const SCREEN_PASS=60; const OUTSIDE_PASS=2;
 
 const WK_TARGETS=[
   {id:'pushups',   name:'Push-ups', goal:700},
@@ -219,6 +220,22 @@ function buildGrid(){
 
   let bodyHTML='';
 
+  // Meditate row (tri-state: 0 none, 1 half, 2 full)
+  bodyHTML+=`<tr><td class="habit-name">Meditate</td>`;
+  for(let d=0;d<91;d++){
+    const dt=dayDate(d);const dow=dt.getDay();
+    const isFuture=d>today;const isToday=d===today;const isWeekSep=dow===0&&d>0;
+    const st=getDay(d).meditate||0;
+    let cls='cell';
+    if(isFuture)cls+=' future';
+    else if(st===2)cls+=' done';
+    else if(st===1)cls+=' hrs-low';
+    if(isToday)cls+=' today';if(isWeekSep)cls+=' week-sep';
+    const clickFn=isFuture?'':'onclick="cycleMeditateCell('+d+')"';
+    bodyHTML+=`<td class="${cls}" data-row="meditate" data-d="${d}" ${clickFn}></td>`;
+  }
+  bodyHTML+='</tr>';
+
   // Habit rows
   HABITS.forEach((habit,hi)=>{
     const hid=HABIT_IDS[hi];
@@ -269,7 +286,73 @@ function buildGrid(){
   }
   bodyHTML+='</tr>';
 
+  // Deep Work row
+  bodyHTML+=`<tr><td class="habit-name" style="color:var(--brass)">Deep Work (blocks)</td>`;
+  for(let d=0;d<91;d++){
+    const dt=dayDate(d);const dow=dt.getDay();
+    const isFuture=d>today;const isToday=d===today;const isWeekSep=dow===0&&d>0;
+    const v=getDay(d).deepwork_blocks||0;
+    let cls='cell hrs-text';
+    if(isFuture)cls='cell future';
+    else if(v>=DEEPWORK_PASS)cls='cell hrs-full';
+    else if(v>0)cls='cell hrs-low';
+    if(isToday)cls+=' today';if(isWeekSep)cls+=' week-sep';
+    bodyHTML+=`<td class="${cls}" data-d="${d}">${(!isFuture&&v>0)?v:''}</td>`;
+  }
+  bodyHTML+='</tr>';
+
+  // Screen Time row (inverted — lower is better)
+  bodyHTML+=`<tr><td class="habit-name" style="color:var(--brass)">Screen Time (min)</td>`;
+  for(let d=0;d<91;d++){
+    const dt=dayDate(d);const dow=dt.getDay();
+    const isFuture=d>today;const isToday=d===today;const isWeekSep=dow===0&&d>0;
+    const v=getDay(d).screen_time_min;
+    let cls='cell hrs-text';
+    if(isFuture)cls='cell future';
+    else if(v===undefined)cls='cell';
+    else if(v<=SCREEN_PASS)cls='cell hrs-full';
+    else cls='cell hrs-low';
+    if(isToday)cls+=' today';if(isWeekSep)cls+=' week-sep';
+    bodyHTML+=`<td class="${cls}" data-d="${d}">${(!isFuture&&v!==undefined)?v:''}</td>`;
+  }
+  bodyHTML+='</tr>';
+
+  // Outside row
+  bodyHTML+=`<tr><td class="habit-name" style="color:var(--brass)">Outside (hrs)</td>`;
+  for(let d=0;d<91;d++){
+    const dt=dayDate(d);const dow=dt.getDay();
+    const isFuture=d>today;const isToday=d===today;const isWeekSep=dow===0&&d>0;
+    const v=getDay(d).outside_blocks||0;
+    let cls='cell hrs-text';
+    if(isFuture)cls='cell future';
+    else if(v>=OUTSIDE_PASS)cls='cell hrs-full';
+    else if(v>0)cls='cell hrs-low';
+    if(isToday)cls+=' today';if(isWeekSep)cls+=' week-sep';
+    bodyHTML+=`<td class="${cls}" data-d="${d}">${(!isFuture&&v>0)?v:''}</td>`;
+  }
+  bodyHTML+='</tr>';
+
   body.innerHTML=bodyHTML;
+}
+
+function cycleMeditateCell(d){
+  if(!data[dk(d)])data[dk(d)]={};
+  const c=data[dk(d)].meditate||0;
+  const next=(c+1)%3;
+  if(next===0)delete data[dk(d)].meditate;else data[dk(d)].meditate=next;
+  updateMeditateCell(d);
+  scheduleSave();
+}
+
+function updateMeditateCell(d){
+  const today=todayIdx();
+  const td=document.querySelector(`td.cell[data-row="meditate"][data-d="${d}"]`);
+  if(!td)return;
+  const st=getDay(d).meditate||0;const isToday=d===today;const dow=dayDate(d).getDay();
+  let cls='cell';
+  if(st===2)cls+=' done';else if(st===1)cls+=' hrs-low';
+  if(isToday)cls+=' today';if(dow===0&&d>0)cls+=' week-sep';
+  td.className=cls;
 }
 
 function cycleCell(hi,d){
@@ -324,10 +407,14 @@ function buildWeeklySummaries(){
       loggedDays++;
       const dd=getDay(d);
       const hDone=HABITS.filter((_,hi)=>dd[HABIT_IDS[hi]]===true).length;
+      const medDone=dd.meditate||0;
       const wDone=(dd[WRITE_ID]||0)>=WRITE_PASS?1:0;
       const rDone=(dd[READ_ID]||0)>=READ_PASS?1:0;
-      const total=hDone+wDone+rDone;
-      const max=HABITS.length+2;
+      const dwDone=(dd.deepwork_blocks||0)>=DEEPWORK_PASS?1:0;
+      const stDone=(dd.screen_time_min!==undefined&&dd.screen_time_min<=SCREEN_PASS)?1:0;
+      const outDone=(dd.outside_blocks||0)>=OUTSIDE_PASS?1:0;
+      const total=hDone+medDone+wDone+rDone+dwDone+stDone+outDone;
+      const max=HABITS.length+2/*meditate*/+2/*write+read*/+1+1+1;
       if(total/max>=0.75)dfkDays++;
     }
     const dfkPct=loggedDays>0?Math.round(dfkDays/loggedDays*100):0;
