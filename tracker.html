@@ -38,6 +38,10 @@ h1{font-family:var(--display);font-weight:600;font-size:clamp(1.8rem,4vw,2.4rem)
 .hdr-sub{font-family:var(--mono);font-size:.68rem;color:var(--ink-soft);margin:0 0 .3rem}
 .hdr-date{font-family:var(--mono);font-size:.62rem;color:var(--oak-soft);margin:0 0 1rem}
 
+/* 60 countdown */
+.countdown-60{display:flex;align-items:baseline;gap:.5rem;margin:0 0 1.2rem;font-family:var(--mono);font-size:.65rem;color:var(--ink-soft);letter-spacing:.04em}
+.countdown-60 .cd-num{font-family:var(--display);font-weight:700;font-size:1.5rem;color:var(--fail);line-height:1}
+
 /* Sync */
 .sync-bar{display:flex;align-items:center;gap:.6rem;margin-bottom:1.2rem;padding:.4rem .8rem;background:var(--card);border:1px solid var(--line);border-radius:var(--radius)}
 .sync-dot{width:6px;height:6px;border-radius:50%;background:var(--line-d);flex-shrink:0;transition:background .3s}
@@ -238,6 +242,7 @@ footer a:hover{color:var(--ribbon)}
 <h1>Habit Tracker</h1>
 <p class="hdr-sub" id="hdr-sub">Nothing logged. That's still a choice.</p>
 <p class="hdr-date" id="hdr-date"></p>
+<p class="countdown-60"><span class="cd-num" id="cd60-num">—</span><span>days til 60</span></p>
 
 <div class="sync-bar">
   <div class="sync-dot" id="sync-dot"></div>
@@ -859,6 +864,9 @@ function lockConsequence(type){
 
 /* Init */
 document.getElementById('hdr-date').textContent=new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
+
+const TURNS_60=new Date(2027,5,19);
+document.getElementById('cd60-num').textContent=Math.ceil((TURNS_60-new Date())/86400000);
 
 async function init(){
   await loadData();cur=todayIdx();
