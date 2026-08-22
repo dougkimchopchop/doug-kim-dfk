@@ -277,6 +277,22 @@ footer a:hover{color:var(--ribbon)}
   <button onclick="cd(1)">→</button>
 </div>
 
+<div class="sec-lbl">Ship 3 — set in the morning, check at night</div>
+<div class="ship3-card">
+  <div class="ship3-item">
+    <div class="ship3-check" id="ship3-check-0" onclick="toggleShip3(0)"></div>
+    <input type="text" class="ship3-input" id="ship3-text-0" placeholder="What will you ship today?" oninput="saveShip3()">
+  </div>
+  <div class="ship3-item">
+    <div class="ship3-check" id="ship3-check-1" onclick="toggleShip3(1)"></div>
+    <input type="text" class="ship3-input" id="ship3-text-1" placeholder="" oninput="saveShip3()">
+  </div>
+  <div class="ship3-item">
+    <div class="ship3-check" id="ship3-check-2" onclick="toggleShip3(2)"></div>
+    <input type="text" class="ship3-input" id="ship3-text-2" placeholder="" oninput="saveShip3()">
+  </div>
+</div>
+
 <div class="sec-lbl">Habits — tap to log</div>
 <div class="grid" id="grid"></div>
 
@@ -311,10 +327,10 @@ footer a:hover{color:var(--ribbon)}
     <div class="num-pass" id="deepwork-pass"></div>
   </div>
   <div class="num-card">
-    <div class="num-card-title">Screen Time <span class="num-card-target">junk video/social · under 60m</span></div>
+    <div class="num-card-title">Screen Time <span class="num-card-target">junk video/social · under 1hr</span></div>
     <div class="num-input-row">
-      <input type="number" id="screentime-input" min="0" max="600" step="5" placeholder="0">
-      <span class="num-unit">min</span>
+      <input type="number" id="screentime-input" min="0" max="16" step="0.5" placeholder="0">
+      <span class="num-unit">hrs</span>
     </div>
     <div class="num-pass" id="screentime-pass"></div>
   </div>
@@ -325,22 +341,6 @@ footer a:hover{color:var(--ribbon)}
       <span class="num-unit">hrs</span>
     </div>
     <div class="num-pass" id="outside-pass"></div>
-  </div>
-</div>
-
-<div class="sec-lbl">Ship 3 — set in the morning, check at night</div>
-<div class="ship3-card">
-  <div class="ship3-item">
-    <div class="ship3-check" id="ship3-check-0" onclick="toggleShip3(0)"></div>
-    <input type="text" class="ship3-input" id="ship3-text-0" placeholder="What will you ship today?" oninput="saveShip3()">
-  </div>
-  <div class="ship3-item">
-    <div class="ship3-check" id="ship3-check-1" onclick="toggleShip3(1)"></div>
-    <input type="text" class="ship3-input" id="ship3-text-1" placeholder="" oninput="saveShip3()">
-  </div>
-  <div class="ship3-item">
-    <div class="ship3-check" id="ship3-check-2" onclick="toggleShip3(2)"></div>
-    <input type="text" class="ship3-input" id="ship3-text-2" placeholder="" oninput="saveShip3()">
   </div>
 </div>
 
@@ -448,7 +448,7 @@ const HABITS=[
 
 const WRITE_PASS=1; const READ_PASS=1;
 const DEEPWORK_PASS=4; // 25-min blocks/day
-const SCREEN_PASS=60;  // junk screen time minutes/day — pass at or under
+const SCREEN_PASS=1;   // junk screen time hours/day — pass at or under
 const OUTSIDE_PASS=2;  // hour-blocks outside/day
 const TOTAL_CHECKS=HABITS.length+2/*meditate, up to 2 for both sessions*/+2/*Write+Read*/+1/*Deep Work*/+1/*Screen Time*/+1/*Outside*/;
 
@@ -497,12 +497,12 @@ function habitScore(d){
   const writeDone=(dd.write_hrs||0)>=WRITE_PASS?1:0;
   const readDone=(dd.read_hrs||0)>=READ_PASS?1:0;
   const deepworkDone=(dd.deepwork_blocks||0)>=DEEPWORK_PASS?1:0;
-  const screentimeDone=(dd.screen_time_min!==undefined&&dd.screen_time_min<=SCREEN_PASS)?1:0;
+  const screentimeDone=(dd.screen_time_hrs!==undefined&&dd.screen_time_hrs<=SCREEN_PASS)?1:0;
   const outsideDone=(dd.outside_blocks||0)>=OUTSIDE_PASS?1:0;
   const ship3Done=([0,1,2].filter(i=>dd['ship3_done_'+i]===true).length>=3)?1:0;
   const total=hDone+medDone+writeDone+readDone+deepworkDone+screentimeDone+outsideDone+ship3Done;
   const max=TOTAL_CHECKS+1; // +ship3 as bonus
-  if(!HABITS.some(h=>dd[h.id]!==undefined)&&!dd.write_hrs&&!dd.read_hrs&&!dd.meditate&&!dd.deepwork_blocks&&dd.screen_time_min===undefined&&!dd.outside_blocks)return -1;
+  if(!HABITS.some(h=>dd[h.id]!==undefined)&&!dd.write_hrs&&!dd.read_hrs&&!dd.meditate&&!dd.deepwork_blocks&&dd.screen_time_hrs===undefined&&!dd.outside_blocks)return -1;
   return Math.round(total/max*100);
 }
 function doneCount(d){
@@ -512,7 +512,7 @@ function doneCount(d){
     +((dd.write_hrs||0)>=WRITE_PASS?1:0)
     +((dd.read_hrs||0)>=READ_PASS?1:0)
     +((dd.deepwork_blocks||0)>=DEEPWORK_PASS?1:0)
-    +((dd.screen_time_min!==undefined&&dd.screen_time_min<=SCREEN_PASS)?1:0)
+    +((dd.screen_time_hrs!==undefined&&dd.screen_time_hrs<=SCREEN_PASS)?1:0)
     +((dd.outside_blocks||0)>=OUTSIDE_PASS?1:0)
     +([0,1,2].filter(i=>dd['ship3_done_'+i]===true).length>=3?1:0);
 }
@@ -593,13 +593,13 @@ function markAll(val){
     data[dk(cur)].meditate=2;
     data[dk(cur)].write_hrs=4;data[dk(cur)].read_hrs=1;
     data[dk(cur)].deepwork_blocks=DEEPWORK_PASS;
-    data[dk(cur)].screen_time_min=0;
+    data[dk(cur)].screen_time_hrs=0;
     data[dk(cur)].outside_blocks=OUTSIDE_PASS;
   }else{
     delete data[dk(cur)].meditate;
     delete data[dk(cur)].write_hrs;delete data[dk(cur)].read_hrs;
     delete data[dk(cur)].deepwork_blocks;
-    delete data[dk(cur)].screen_time_min;
+    delete data[dk(cur)].screen_time_hrs;
     delete data[dk(cur)].outside_blocks;
   }
   scheduleSave();renderGrid();renderNumInputs();renderStreak();updateHeader();updateStats();
@@ -615,7 +615,7 @@ function renderNumInputs(){
   const dw=dd.deepwork_blocks||'';
   document.getElementById('deepwork-input').value=dw;
   updateDeepworkPass(parseFloat(dw)||0);
-  const st=(dd.screen_time_min!==undefined)?dd.screen_time_min:'';
+  const st=(dd.screen_time_hrs!==undefined)?dd.screen_time_hrs:'';
   document.getElementById('screentime-input').value=st;
   updateScreentimePass(st===''?null:parseFloat(st));
   const out=dd.outside_blocks||'';
@@ -645,8 +645,8 @@ function updateDeepworkPass(v){
 function updateScreentimePass(v){
   const el=document.getElementById('screentime-pass');
   if(v===null||v===undefined||isNaN(v)){el.textContent='';el.className='num-pass';return;}
-  if(v<=SCREEN_PASS){el.textContent='✓ '+v+'min — under budget';el.className='num-pass pass';}
-  else{el.textContent='✗ '+v+'min — over '+SCREEN_PASS+'min budget';el.className='num-pass warn';}
+  if(v<=SCREEN_PASS){el.textContent='✓ '+v+'hrs — under budget';el.className='num-pass pass';}
+  else{el.textContent='✗ '+v+'hrs — over '+SCREEN_PASS+'hr budget';el.className='num-pass warn';}
 }
 function updateOutsidePass(v){
   const el=document.getElementById('outside-pass');
@@ -682,7 +682,7 @@ document.getElementById('deepwork-input').addEventListener('input',function(){
 document.getElementById('screentime-input').addEventListener('input',function(){
   const v=parseFloat(this.value);
   if(!data[dk(cur)])data[dk(cur)]={};
-  if(!isNaN(v)&&this.value!=='')data[dk(cur)].screen_time_min=v;else delete data[dk(cur)].screen_time_min;
+  if(!isNaN(v)&&this.value!=='')data[dk(cur)].screen_time_hrs=v;else delete data[dk(cur)].screen_time_hrs;
   updateScreentimePass(isNaN(v)?null:v);scheduleSave();updateScore();renderStreak();updateHeader();updateStats();
 });
 document.getElementById('outside-input').addEventListener('input',function(){

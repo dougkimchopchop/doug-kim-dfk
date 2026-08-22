@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DFK — Ship Log</title>
+<link rel="stylesheet" href="styles.css">
+<style>
+.breadcrumb{font-family:var(--mono);font-size:.65rem;color:var(--ink-soft);margin-bottom:1.4rem;display:flex;align-items:center;gap:.4rem}
+.breadcrumb a{color:var(--ink-soft);text-decoration:none}
+.breadcrumb a:hover{color:var(--ribbon)}
+.breadcrumb-sep{color:var(--oak-soft)}
+
+.log-page{max-width:640px;padding:3rem 1.5rem 5rem;}
+
+.summary-bar{font-family:var(--mono);font-size:.68rem;color:var(--ink-soft);margin:0 0 1.2rem;padding:.6rem .9rem;background:var(--card);border:1px solid var(--line);border-radius:var(--radius)}
+.summary-bar b{color:var(--brass)}
+
+.ship-day{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:.9rem 1rem;margin-bottom:.7rem}
+.ship-day-header{display:flex;align-items:baseline;justify-content:space-between;gap:.6rem;margin-bottom:.6rem}
+.ship-day-date{font-family:var(--mono);font-size:.65rem;font-weight:700;color:var(--ink);letter-spacing:.05em;text-transform:uppercase}
+.ship-day-stat{font-family:var(--mono);font-size:.6rem;color:var(--ink-soft);white-space:nowrap}
+.ship-day-stat.full{color:var(--pass)}
+.ship-day-stat.partial{color:var(--warn)}
+.ship-day-stat.zero{color:var(--fail)}
+.ship-item{display:flex;align-items:baseline;gap:.5rem;margin-bottom:.35rem;font-size:.86rem;line-height:1.4}
+.ship-item:last-child{margin-bottom:0}
+.ship-icon{flex-shrink:0;width:14px;font-family:var(--mono);font-size:.75rem}
+.ship-item.done .ship-icon{color:var(--pass)}
+.ship-item.done .ship-item-text{text-decoration:line-through;color:var(--ink-soft)}
+.ship-item.missed .ship-icon{color:var(--fail)}
+.ship-item.missed .ship-item-text{color:var(--ink)}
+
+.ship-empty{font-family:var(--mono);font-size:.68rem;color:var(--ink-soft);font-style:italic;text-align:center;padding:3rem 0}
+</style>
+<link rel="apple-touch-icon" href="/icons/icon-tracker.png">
+</head>
+<body>
+<div class="page log-page">
+
+<nav class="breadcrumb" aria-label="Breadcrumb">
+  <a href="https://doug-kim-dfk.vercel.app" target="_blank" rel="noopener">Doug Kim</a>
+  <span class="breadcrumb-sep">/</span>
+  <span>Ship Log</span>
+</nav>
+
+<span class="eyebrow">Daily</span>
+<h1 style="font-family:var(--display);font-weight:600;font-size:clamp(1.6rem,3.5vw,2.2rem);line-height:1.05;margin:0 0 .3rem;">Ship Log</h1>
+<p style="font-family:var(--mono);font-size:.68rem;color:var(--ink-soft);margin:0 0 1rem;">Every day's Ship 3 — what you said you'd ship, and whether you did. Most recent first.</p>
+
+<div class="sync-bar">
+  <div class="sync-dot" id="sync-dot"></div>
+  <span class="sync-text" id="sync-text">Connecting…</span>
+</div>
+
+<div class="summary-bar" id="summary-bar"></div>
+
+<div id="ship-days"></div>
+
+</div>
+
+<footer>
+  <span><a href="https://doug-kim-dfk.vercel.app" target="_blank" rel="noopener" style="color:inherit;">← Doug Kim</a></span>
+  <span id="last-updated">Ship Log · synced to tracker data</span>
+</footer>
+
+<script>
+const START=new Date(2026,7,24);
+const LS_KEY='dfk_tracker';
+const SUPABASE_URL='https://rpmxkhgirhlfwqefdopo.supabase.co';
+const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJwbXhraGdpcmhsZndxZWZkb3BvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY2MDUzMTQsImV4cCI6MjA5MjE4MTMxNH0.bAUNydSiWh60mxD23RLYXpSpRxrzt0q2JQ7yDSZmOW4';
+
+let data={};
+
+function dk(d){return 'd'+d}
+function dayDate(d){const dt=new Date(START);dt.setDate(dt.getDate()+d);return dt}
+function todayIdx(){return Math.max(0,Math.min(90,Math.floor((Date.now()-START.getTime())/86400000)))}
+function getDay(d){return data[dk(d)]||{}}
+function escapeHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+
+function setSyncStatus(state,text){
+  document.getElementById('sync-dot').className='sync-dot '+state;
+  document.getElementById('sync-text').textContent=text;
+}
+
+async function loadData(){
+  try{
+    const r=await fetch(SUPABASE_URL+'/rest/v1/dfk_tracker?select=data&id=eq.1',{
+      headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY}
+    });
+    if(r.ok){
+      const rows=await r.json();
+      if(rows&&rows.length>0&&rows[0].data)data=JSON.parse(rows[0].data);
+      setSyncStatus('ok','Synced · '+new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}));
+    }else throw new Error();
+  }catch(e){
+    const local=localStorage.getItem(LS_KEY);
+    if(local){try{data=JSON.parse(local)}catch(ex){data={}}}
+    setSyncStatus('err','Offline — local data');
+  }
+}
+
+function render(){
+  const today=todayIdx();
+  const container=document.getElementById('ship-days');
+  let totalShipped=0,totalListed=0,daysWithData=0;
+  let html='';
+
+  for(let d=today;d>=0;d--){
+    const dd=getDay(d);
+    const items=[0,1,2].map(i=>({text:dd['ship3_text_'+i],done:dd['ship3_done_'+i]===true})).filter(it=>it.text&&it.text.trim());
+    if(items.length===0)continue;
+    daysWithData++;
+
+    const shippedCount=items.filter(it=>it.done).length;
+    totalShipped+=shippedCount;totalListed+=items.length;
+
+    const dt=dayDate(d);
+    const dateLbl=dt.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});
+    const statCls=shippedCount===items.length?'full':shippedCount===0?'zero':'partial';
+
+    const itemsHtml=items.map(it=>{
+      const cls=it.done?'done':'missed';
+      const icon=it.done?'✓':'✗';
+      return `<div class="ship-item ${cls}"><span class="ship-icon">${icon}</span><span class="ship-item-text">${escapeHtml(it.text)}</span></div>`;
+    }).join('');
+
+    html+=`<div class="ship-day">
+      <div class="ship-day-header">
+        <div class="ship-day-date">Day ${d+1} · ${dateLbl}</div>
+        <div class="ship-day-stat ${statCls}">${shippedCount} / ${items.length} shipped</div>
+      </div>
+      ${itemsHtml}
+    </div>`;
+  }
+
+  container.innerHTML=html||'<div class="ship-empty">Nothing logged yet. Set your Ship 3 on the tracker and it shows up here.</div>';
+
+  document.getElementById('summary-bar').innerHTML=daysWithData>0
+    ? '<b>'+totalShipped+' / '+totalListed+'</b> shipped across <b>'+daysWithData+'</b> logged days'
+    : '';
+}
+
+async function init(){
+  await loadData();
+  render();
+  document.getElementById('last-updated').textContent='Synced '+new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+}
+init();
+</script>
+</body>
+</html>
