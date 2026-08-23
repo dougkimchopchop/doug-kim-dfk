@@ -389,6 +389,9 @@ footer a:hover{color:var(--ribbon)}
 <div class="sec-lbl">Weekly targets</div>
 <div class="wk-targets" id="wk-targets"></div>
 
+<div class="sec-lbl">Deep Work &amp; Discipline — this week</div>
+<div class="wk-targets" id="wk-rollup"></div>
+
 <div class="sec-lbl" style="display:flex;justify-content:space-between;align-items:center;">
   <span>Shipped this week</span>
   <button onclick="toggleSetupGoals()" style="font-family:var(--mono);font-size:.58rem;letter-spacing:.08em;padding:.2rem .6rem;border:1px solid var(--line);background:transparent;color:var(--ink-muted);cursor:pointer;border-radius:var(--radius);" id="setup-toggle-btn">edit goals ↓</button>
@@ -439,7 +442,7 @@ const HABITS=[
   {id:'exercise',  name:'Exercise'},
   {id:'run',       name:'Run'},
   {id:'shoot',     name:'Shoot'},
-  {id:'nourish',   name:'Nourish'},
+  {id:'nourish',   name:'Nourish — eat less or fast'},
   {id:'outreach',  name:'Social / Outreach'},
   {id:'social_irl',name:'Social Physical'},
   {id:'off_out',   name:'Off / Out'},
@@ -840,6 +843,7 @@ function renderWeekly(){
     </div>`;
   }).join('');
 
+  renderWeeklyRollup();
   renderShippedFields();
   // Wins
   ['win1','win2','win3'].forEach(id=>{
@@ -882,6 +886,40 @@ function saveWkTarget(id,val){
     card.querySelector('.wk-target-status').textContent=n?(hit?'✓ Hit':n+' / '+t.goal):'—';
     card.querySelector('.wk-target-status').className='wk-target-status '+(hit?'pass':'fail');
   }
+}
+
+function renderWeeklyRollup(){
+  const days=weekDays(wkOffset).filter(d=>d>=0&&d<=90);
+  const dwTotal=days.reduce((s,d)=>s+(gd(d).deepwork_blocks||0),0);
+  const outTotal=days.reduce((s,d)=>s+(gd(d).outside_blocks||0),0);
+  const stDays=days.filter(d=>gd(d).screen_time_hrs!==undefined);
+  const stAvg=stDays.length?stDays.reduce((s,d)=>s+gd(d).screen_time_hrs,0)/stDays.length:null;
+
+  const dwGoal=DEEPWORK_PASS*7,outGoal=OUTSIDE_PASS*7;
+  const dwPct=Math.min(100,Math.round(dwTotal/dwGoal*100));
+  const outPct=Math.min(100,Math.round(outTotal/outGoal*100));
+  const stPct=stAvg===null?0:(stAvg<=SCREEN_PASS?100:Math.max(10,Math.round(SCREEN_PASS/stAvg*100)));
+
+  const dwHit=dwTotal>=dwGoal,outHit=outTotal>=outGoal,stHit=stAvg!==null&&stAvg<=SCREEN_PASS;
+  const barCol=(hit,pct)=>hit?'var(--pass)':pct>=50?'var(--warn)':'var(--ribbon)';
+
+  document.getElementById('wk-rollup').innerHTML=`
+    <div class="wk-target">
+      <div class="wk-target-name">Deep Work <span class="wk-target-goal">goal: ${dwGoal} blocks</span></div>
+      <div class="wk-bar"><div class="wk-bar-fill" style="width:${dwPct}%;background:${barCol(dwHit,dwPct)}"></div></div>
+      <div class="wk-target-status ${dwHit?'pass':'fail'}">${dwTotal} / ${dwGoal} blocks</div>
+    </div>
+    <div class="wk-target">
+      <div class="wk-target-name">Outside <span class="wk-target-goal">goal: ${outGoal} hrs</span></div>
+      <div class="wk-bar"><div class="wk-bar-fill" style="width:${outPct}%;background:${barCol(outHit,outPct)}"></div></div>
+      <div class="wk-target-status ${outHit?'pass':'fail'}">${outTotal} / ${outGoal} hrs</div>
+    </div>
+    <div class="wk-target">
+      <div class="wk-target-name">Screen Time <span class="wk-target-goal">budget: ${SCREEN_PASS}hr/day avg</span></div>
+      <div class="wk-bar"><div class="wk-bar-fill" style="width:${stPct}%;background:${barCol(stHit,stPct)}"></div></div>
+      <div class="wk-target-status ${stHit?'pass':'fail'}">${stAvg===null?'no data yet':(Math.round(stAvg*10)/10)+'hrs/day avg'}</div>
+    </div>
+  `;
 }
 
 /* ── SHIP GOALS ── */

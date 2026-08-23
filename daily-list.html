@@ -133,6 +133,19 @@
     font-family: 'Space Mono', monospace; font-size: 11px; color: var(--ink-soft);
   }
   .counter-hist span.day { color: var(--ink); font-weight: 700; }
+
+  .tabs { display: flex; gap: 0; border-bottom: 1px solid var(--line-d); margin: 22px 0 22px; }
+  .tab { font-family: 'Space Mono', monospace; font-size: 12px; letter-spacing: .06em; text-transform: uppercase; padding: 8px 16px; cursor: pointer; color: var(--ink-soft); border-bottom: 2px solid transparent; margin-bottom: -1px; }
+  .tab.active { color: var(--ribbon); border-color: var(--ribbon); }
+  .tab:hover { color: var(--ink); }
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  .comp-day { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px 16px; margin-bottom: 11px; }
+  .comp-day-date { font-family: 'Space Mono', monospace; font-size: 11px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--ink); margin-bottom: 8px; }
+  .comp-item { font-size: 15px; line-height: 1.5; padding: 3px 0; color: var(--ink-soft); }
+  .comp-item::before { content: "✓ "; color: var(--brass); }
+  .comp-empty { font-family: 'Space Mono', monospace; font-size: 12px; color: var(--ink-soft); font-style: italic; text-align: center; padding: 40px 0; }
 </style>
 </head>
 <body>
@@ -156,7 +169,17 @@
     <div class="counter-hist" id="counter-hist"></div>
   </div>
 
-  <div id="sections"></div>
+  <div class="tabs">
+    <div class="tab active" id="tab-active" onclick="switchTab('active')">Active</div>
+    <div class="tab" id="tab-completed" onclick="switchTab('completed')">Completed</div>
+  </div>
+
+  <div class="panel active" id="panel-active">
+    <div id="sections"></div>
+  </div>
+  <div class="panel" id="panel-completed">
+    <div id="completed-grid"></div>
+  </div>
 
   <footer>
     <a href="https://doug-kim-dfk.vercel.app">← Doug Kim</a>
@@ -526,6 +549,47 @@ async function addItem(sectionKey, input) {
   } catch (e) {
     input.value = text;
     statusEl.textContent = 'Could not add: ' + e.message;
+  }
+}
+
+/* ── Completed tab ── */
+let completedLoaded = false;
+
+function switchTab(tab) {
+  document.getElementById('tab-active').classList.toggle('active', tab === 'active');
+  document.getElementById('tab-completed').classList.toggle('active', tab === 'completed');
+  document.getElementById('panel-active').classList.toggle('active', tab === 'active');
+  document.getElementById('panel-completed').classList.toggle('active', tab === 'completed');
+  if (tab === 'completed' && !completedLoaded) loadCompleted();
+}
+
+function renderCompleted(items) {
+  const grid = document.getElementById('completed-grid');
+  if (!items.length) {
+    grid.innerHTML = '<div class="comp-empty">Nothing finished yet. Complete a task on Active and it shows up here.</div>';
+    return;
+  }
+  const byDate = {};
+  const order = [];
+  items.slice().reverse().forEach((it) => {
+    const key = it.doneLabel || 'Undated';
+    if (!byDate[key]) { byDate[key] = []; order.push(key); }
+    byDate[key].push(it.text);
+  });
+  grid.innerHTML = order.map((date) => {
+    const list = byDate[date].map((t) => '<div class="comp-item">' + linkify(t) + '</div>').join('');
+    return '<div class="comp-day"><div class="comp-day-date">' + esc(date) + '</div>' + list + '</div>';
+  }).join('');
+}
+
+async function loadCompleted() {
+  document.getElementById('completed-grid').innerHTML = '<div class="comp-empty">Loading…</div>';
+  try {
+    const data = await ensureKeyThen(() => api('/api/completed', { headers: headers() }));
+    completedLoaded = true;
+    renderCompleted(data.items || []);
+  } catch (e) {
+    document.getElementById('completed-grid').innerHTML = '<div class="comp-empty">Could not load: ' + esc(e.message) + '</div>';
   }
 }
 

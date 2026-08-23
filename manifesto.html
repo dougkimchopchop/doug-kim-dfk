@@ -44,7 +44,12 @@
 
 <nav class="breadcrumb" aria-label="Breadcrumb"><a href="https://doug-kim-dfk.vercel.app" target="_blank" rel="noopener">Doug Kim</a><span class="breadcrumb-sep">/</span><span>Manifesto</span></nav>
 <span class="eyebrow">Identity · Execution · No Exits</span>
-<h1 style="font-family:var(--display);font-weight:600;font-size:clamp(1.6rem,3.5vw,2.2rem);line-height:1.1;margin:0 0 1.4rem;">Action and hard work is <em>a behavior</em> you do right now.</h1>
+<h1 style="font-family:var(--display);font-weight:600;font-size:clamp(1.6rem,3.5vw,2.2rem);line-height:1.1;margin:0 0 1.2rem;">Action and hard work is <em>a behavior</em> you do right now.</h1>
+
+<div class="sync-bar">
+  <div class="sync-dot" id="sync-dot"></div>
+  <span class="sync-text" id="sync-text">Connecting…</span>
+</div>
 
 <div class="sec-lbl">01 — the only definition that matters</div>
 <div class="principle">
@@ -101,12 +106,44 @@ const TASKS=[
   {id:'t5', title:'Do not open your phone for the next 30 minutes', desc:'Starting now. The work is the proof.'},
 ];
 
-function todayKey(){
-  const d=new Date();
-  return 'dfk_doctrine_proof_'+d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();
+const START=new Date(2026,7,24);
+const SUPABASE_URL='https://rpmxkhgirhlfwqefdopo.supabase.co';
+const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJwbXhraGdpcmhsZndxZWZkb3BvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY2MDUzMTQsImV4cCI6MjA5MjE4MTMxNH0.bAUNydSiWh60mxD23RLYXpSpRxrzt0q2JQ7yDSZmOW4';
+const LS_KEY='dfk_tracker';
+
+let data={};
+let saveTimer=null;
+
+function dk(d){return 'd'+d}
+function todayIdx(){return Math.max(0,Math.min(90,Math.floor((Date.now()-START.getTime())/86400000)))}
+function todayKey(){return dk(todayIdx())}
+
+function setSyncStatus(s,msg){document.getElementById('sync-dot').className='sync-dot'+(s?' '+s:'');document.getElementById('sync-text').textContent=msg;}
+
+async function loadData(){
+  try{
+    const r=await fetch(SUPABASE_URL+'/rest/v1/dfk_tracker?select=data&id=eq.1',{headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY}});
+    if(r.ok){const rows=await r.json();if(rows&&rows[0]&&rows[0].data)data=JSON.parse(rows[0].data);setSyncStatus('ok','Synced · '+new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}));}
+    else throw new Error();
+  }catch(e){const local=localStorage.getItem(LS_KEY);if(local){try{data=JSON.parse(local)}catch(ex){data={}}}setSyncStatus('err','Offline — local data');}
 }
-function loadState(){try{return JSON.parse(localStorage.getItem(todayKey())||'{}')}catch(e){return{}}}
-function saveState(s){localStorage.setItem(todayKey(),JSON.stringify(s))}
+
+async function saveData(){
+  setSyncStatus('saving','Saving…');
+  try{
+    try{
+      const rr=await fetch(SUPABASE_URL+'/rest/v1/dfk_tracker?select=data&id=eq.1',{headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY}});
+      if(rr.ok){const rows=await rr.json();if(rows&&rows[0]&&rows[0].data){const remote=JSON.parse(rows[0].data);data={...remote,...data};}}
+    }catch(e){}
+    const payload=JSON.stringify(data);localStorage.setItem(LS_KEY,payload);
+    const r=await fetch(SUPABASE_URL+'/rest/v1/dfk_tracker',{method:'POST',headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY,'Content-Type':'application/json','Prefer':'resolution=merge-duplicates'},body:JSON.stringify({id:1,data:payload})});
+    if(r.ok)setSyncStatus('ok','Synced · '+new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}));else throw new Error();
+  }catch(e){setSyncStatus('err','Sync failed — saved locally');}
+}
+function scheduleSave(){clearTimeout(saveTimer);saveTimer=setTimeout(saveData,500)}
+
+function loadState(){return data[todayKey()]||{}}
+function saveState(s){data[todayKey()]=s;scheduleSave()}
 
 function render(){
   const state=loadState();
@@ -138,12 +175,18 @@ function toggle(id){
 
 function resetProof(){
   if(confirm("Reset today's proof tasks?")){
-    saveState({});
+    const state=loadState();
+    TASKS.forEach(t=>{delete state[t.id]});
+    saveState(state);
     render();
   }
 }
 
-render();
+async function init(){
+  await loadData();
+  render();
+}
+init();
 </script>
 </body>
 </html>
