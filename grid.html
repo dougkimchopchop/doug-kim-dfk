@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <title>DFK — Grid</title>
 <link rel="stylesheet" href="styles.css">
 <style>
@@ -464,6 +465,11 @@ async function init(){
   document.getElementById('last-updated').textContent='Synced '+new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
 }
 init();
+
+// Force a fresh Supabase fetch when the page is restored from bfcache
+// (mobile app-switch/tab-switch) instead of showing stale rendered data.
+window.addEventListener('pageshow',function(e){if(e.persisted)init();});
+document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible')init();});
 </script>
 </body>
 </html>
