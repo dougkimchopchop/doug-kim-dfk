@@ -12,6 +12,11 @@
 .breadcrumb-sep{color:var(--oak-soft)}
 .countdown-60{display:flex;align-items:baseline;gap:.5rem;margin:0 0 1.2rem;font-family:var(--mono);font-size:.65rem;color:var(--ink-soft);letter-spacing:.04em}
 .countdown-60 .cd-num{font-family:var(--display);font-weight:700;font-size:1.5rem;color:var(--fail);line-height:1}
+.proj-top-task{display:flex;align-items:baseline;gap:.35rem;margin:.3rem 0 .4rem;}
+.proj-top-task-arrow{font-family:var(--mono);font-size:.7rem;color:var(--ribbon);flex-shrink:0;}
+.proj-top-task-input{flex:1;width:100%;font-family:var(--body);font-size:.82rem;font-weight:600;color:var(--ink);background:transparent;border:none;border-bottom:1px dashed var(--line-d);padding:.15rem 0;}
+.proj-top-task-input::placeholder{color:var(--ink-muted);font-weight:400;font-style:italic;}
+.proj-top-task-input:focus{outline:none;border-bottom-color:var(--brass);}
 </style>
   <link rel="apple-touch-icon" href="/icons/icon-doctrine.png">
 </head>
@@ -161,28 +166,40 @@ function initHeader(){
   document.getElementById('cd60-num').textContent=Math.ceil((TURNS_60-new Date())/86400000);
 }
 
+function deadlineDate(dStr){
+  const m={Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,Jul:6,Aug:7,Sep:8,Oct:9,Nov:10,Dec:11};
+  const [mo,d]=dStr.split(' ');return new Date(2026,m[mo],parseInt(d));
+}
+
 function deadlineClass(dStr,urgent){
   if(urgent)return'dl-fire';
-  const m={Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,Jul:6,Aug:7,Sep:8,Oct:9,Nov:10,Dec:11};
-  const [mo,d]=dStr.split(' ');const dt=new Date(2026,m[mo],parseInt(d));
-  const diff=daysBetween(TODAY,dt);
+  const diff=daysBetween(TODAY,deadlineDate(dStr));
   if(diff<=21)return'dl-fire';if(diff<=45)return'dl-warn';return'dl-ok';
 }
+
+function getTopTasks(){try{return JSON.parse(localStorage.getItem('dfk_top_tasks')||'{}')}catch{return{}}}
+function saveTopTask(num,val){const n=getTopTasks();if(val.trim())n[num]=val.trim();else delete n[num];localStorage.setItem('dfk_top_tasks',JSON.stringify(n));}
 
 function getNotes(){try{return JSON.parse(localStorage.getItem('dfk_notes_jul27')||'{}')}catch{return{}}}
 function saveNote(num,val){const n=getNotes();if(val.trim())n[num]=val.trim();else delete n[num];localStorage.setItem('dfk_notes_jul27',JSON.stringify(n));}
 function clearNotes(){if(confirm('Clear all project notes?')){localStorage.removeItem('dfk_notes_jul27');renderProjects();}}
 
 function renderProjects(){
-  const notes=getNotes();
-  document.getElementById('proj-grid').innerHTML=PROJECTS.map(p=>{
+  const notes=getNotes();const topTasks=getTopTasks();
+  const sorted=[...PROJECTS].sort((a,b)=>deadlineDate(a.deadline)-deadlineDate(b.deadline));
+  document.getElementById('proj-grid').innerHTML=sorted.map(p=>{
     const note=notes[p.num]||'';const dlClass=deadlineClass(p.deadline,p.urgent);
+    const topTask=topTasks[p.num]||'';
     const link=p.notion?`<a class="proj-link" href="${p.notion}" target="_blank" rel="noopener" onclick="event.stopPropagation()">${p.name} ↗</a>`:`<span>${p.name}</span>`;
     return `<div class="proj${p.urgent?' urgent':''}" onclick="toggleNote('${p.num}')" id="proj-${p.num}">
       <div class="proj-top">
         <span class="proj-num">${p.num}</span>
         <span class="proj-name">${link}</span>
         <span class="dl ${dlClass}">${p.deadline}</span>
+      </div>
+      <div class="proj-top-task">
+        <span class="proj-top-task-arrow">→</span>
+        <input class="proj-top-task-input" id="toptask-${p.num}" placeholder="What's the one thing that moves this forward?" value="${topTask.replace(/"/g,'&quot;')}" onclick="event.stopPropagation()" oninput="saveTopTask('${p.num}',this.value)">
       </div>
       <div class="proj-finish">${p.finish}</div>
       <div class="proj-note${note?' show':''}" id="note-display-${p.num}">${note}</div>
