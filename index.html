@@ -15,6 +15,8 @@
 .sec-block .sec-lbl{margin-bottom:.9rem;}
 .dfk-meta{font-family:var(--mono);font-size:.68rem;color:var(--ink-soft);margin:0 0 1rem;}
 .dfk-meta b{color:var(--ribbon);}
+.countdown-60{display:flex;align-items:baseline;gap:.5rem;margin:0 0 .3rem;font-family:var(--mono);font-size:.65rem;color:var(--ink-soft);letter-spacing:.04em}
+.countdown-60 .cd-num{font-family:var(--display);font-weight:700;font-size:1.5rem;color:var(--fail);line-height:1}
 </style>
   <link rel="apple-touch-icon" href="/icons/icon-index.png">
 </head>
@@ -29,43 +31,26 @@
 
 <main id="main">
 
-  <div class="sec-block">
-    <div class="sec-lbl">Projects</div>
-    <section class="shelf" aria-label="Projects">
-      <a class="project-card" href="https://craft-catalog-snowy.vercel.app" target="_blank" rel="noopener">
-        <span class="tag">PROJECT 01</span>
-        <h2>The Craft Catalog</h2>
-        <p class="desc">A card-catalog reference for literary craft technique — structural patterns, a full technique playbook, and outside published examples, built from Writers Studio materials and open reading.</p>
-        <span class="go">Enter →</span>
-      </a>
-      <a class="project-card" href="#dfk-section">
-        <span class="tag">PROJECT 02</span>
-        <h2>DFK — 90 Days</h2>
-        <p class="desc">Daily habit tracker, points system, and doctrine for the Aug 24 – Nov 22, 2026 identity challenge. Synced across devices via Supabase.</p>
-        <span class="go">See below ↓</span>
-      </a>
-    </section>
-  </div>
-
   <div class="sec-block" id="dfk-section">
     <div class="sec-lbl">DFK — 90 Days</div>
     <p class="dfk-meta">Aug 24 – Nov 22, 2026 · <b id="day-count">—</b> days remaining · Phase 1: Output → Phase 2: Get Paid → Phase 3: Raise Everything</p>
+    <p class="countdown-60"><span class="cd-num" id="cd60-num">—</span><span>days til</span><span class="cd-num">60</span></p>
   </div>
 
   <div class="sec-block">
-    <div class="sec-lbl">Daily &amp; Weekly</div>
-    <section class="shelf" aria-label="Daily and weekly tools">
-      <a class="project-card" href="/tracker.html" target="_blank" rel="noopener">
-        <span class="tag">DAILY</span>
-        <h2>Daily</h2>
-        <p class="desc">Five daily habits, plain yes/no — Be outside, Exercised, Social physical, Wrote, Shoot. Score, streak, 90-day graphs. Synced to Supabase across all devices.</p>
-        <span class="go">Open tracker →</span>
-      </a>
+    <div class="sec-lbl">Weekly &amp; Daily</div>
+    <section class="shelf" aria-label="Weekly and daily tools">
       <a class="project-card" href="/weekly.html" target="_blank" rel="noopener">
         <span class="tag">WEEKLY</span>
         <h2>Weekly</h2>
         <p class="desc">Weekly targets — push-ups, rolls, Substack, Instagram — plus shipped wins and consequence locks. Same Supabase data, its own page.</p>
         <span class="go">Open weekly →</span>
+      </a>
+      <a class="project-card" href="/tracker.html" target="_blank" rel="noopener">
+        <span class="tag">DAILY</span>
+        <h2>Daily</h2>
+        <p class="desc">Five daily habits, plain yes/no — Be outside, Exercised, Social physical, Wrote, Shoot. Score, streak, 90-day graphs. Synced to Supabase across all devices.</p>
+        <span class="go">Open tracker →</span>
       </a>
       <a class="project-card" href="/grid.html" target="_blank" rel="noopener">
         <span class="tag">DAILY</span>
@@ -97,6 +82,12 @@
         <p class="desc">The 11 projects and goals, sorted by deadline — each with a top next action, Notion links, status notes, and AI-powered daily or weekly check-ins. Separate from the daily habits — this is where the finish lines live.</p>
         <span class="go">Start building →</span>
       </a>
+      <a class="project-card" href="https://craft-catalog-snowy.vercel.app" target="_blank" rel="noopener">
+        <span class="tag">PROJECT</span>
+        <h2>The Craft Catalog</h2>
+        <p class="desc">A card-catalog reference for literary craft technique — structural patterns, a full technique playbook, and outside published examples, built from Writers Studio materials and open reading.</p>
+        <span class="go">Enter →</span>
+      </a>
     </section>
   </div>
 
@@ -124,6 +115,9 @@ const END=new Date('2026-11-22');
 const today=new Date();
 const remaining=Math.max(0,Math.round((END-today)/86400000));
 document.getElementById('day-count').textContent=remaining;
+
+const TURNS_60=new Date(2027,5,19);
+document.getElementById('cd60-num').textContent=Math.ceil((TURNS_60-new Date())/86400000);
 </script>
 </body>
 </html>
