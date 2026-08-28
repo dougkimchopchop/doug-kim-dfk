@@ -247,6 +247,7 @@ footer a:hover{color:var(--ribbon)}
 <div class="eyebrow">Weekly</div>
 <h1>Weekly</h1>
 <p class="hdr-date" id="hdr-date"></p>
+<p class="countdown-60"><span class="cd-num" id="cd60-num">—</span><span>days til</span><span class="cd-num">60</span></p>
 
 <div class="sync-bar">
   <div class="sync-dot" id="sync-dot"></div>
@@ -285,24 +286,6 @@ footer a:hover{color:var(--ribbon)}
   <div class="win-row"><span class="win-num">1</span><input type="text" class="win-input" id="win1" placeholder="What actually moved?" oninput="saveWins()"></div>
   <div class="win-row"><span class="win-num">2</span><input type="text" class="win-input" id="win2" placeholder="" oninput="saveWins()"></div>
   <div class="win-row"><span class="win-num">3</span><input type="text" class="win-input" id="win3" placeholder="" oninput="saveWins()"></div>
-</div>
-
-<div class="sec-lbl">Consequence locks — name Sunday night, no negotiation</div>
-<div class="consequence-card habit-lock">
-  <div class="consequence-title">Habit lock — if weekly DFK day % &lt; 75%</div>
-  <div class="consequence-desc">What happens if you didn't show up enough this week?</div>
-  <input type="text" class="consequence-input" id="habit-consequence" placeholder="Your penalty…" oninput="saveConsequences()">
-  <button class="lock-btn" id="habit-lock-btn" onclick="lockConsequence('habit')">Lock in</button>
-  <div class="lock-status" id="habit-lock-status"></div>
-</div>
-<div class="consequence-card output-lock">
-  <div class="consequence-title">Output lock — if any weekly target missed</div>
-  <div class="consequence-desc">What happens if you missed push-ups, rolls, Substack, or Instagram?</div>
-  <input type="text" class="consequence-input" id="output-consequence" placeholder="Your penalty…" oninput="saveConsequences()">
-  <button class="lock-btn" id="output-lock-btn" onclick="lockConsequence('output')">Lock in</button>
-  <div class="lock-status" id="output-lock-status"></div>
-</div>
-
 </div>
 
 </div><!-- end page -->
@@ -376,6 +359,7 @@ const WK_TARGETS=[
   {id:'sub_notes', name:'Sub notes',      goal:5,   unit:'notes'},
   {id:'sub_restack',name:'Sub restacks',  goal:20,  unit:''},
   {id:'ig_posts',  name:'Instagram',      goal:3,   unit:'posts'},
+  {id:'guitar',    name:'Guitar practice',goal:7,   unit:'hrs'},
 ];
 
 /* ── WEEKLY ── */
@@ -407,20 +391,6 @@ function renderWeekly(){
   // Wins
   ['win1','win2','win3'].forEach(id=>{
     const el=document.getElementById(id);if(el)el.value=wd[id]||'';
-  });
-  // Consequences
-  document.getElementById('habit-consequence').value=wd.habit_consequence||'';
-  document.getElementById('output-consequence').value=wd.output_consequence||'';
-  ['habit','output'].forEach(type=>{
-    if(wd[type+'_locked']){
-      const btn=document.getElementById(type+'-lock-btn');
-      btn.className='lock-btn locked';btn.textContent='LOCKED';
-      document.getElementById(type+'-lock-status').textContent='Locked '+wd[type+'_locked_at'];
-    } else {
-      const btn=document.getElementById(type+'-lock-btn');
-      btn.className='lock-btn';btn.textContent='Lock in';
-      document.getElementById(type+'-lock-status').textContent='';
-    }
   });
 }
 
@@ -551,27 +521,11 @@ function saveWins(){
   scheduleSave();
 }
 
-function saveConsequences(){
-  const wk=weekKey(wkOffset);if(!data[wk])data[wk]={};
-  ['habit','output'].forEach(type=>{
-    const el=document.getElementById(type+'-consequence');
-    if(el){const v=el.value;if(v)data[wk][type+'_consequence']=v;else delete data[wk][type+'_consequence'];}
-  });
-  scheduleSave();
-}
-
-function lockConsequence(type){
-  const wk=weekKey(wkOffset);if(!data[wk])data[wk]={};
-  const ts=new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
-  data[wk][type+'_locked']=true;data[wk][type+'_locked_at']=ts;
-  scheduleSave();
-  const btn=document.getElementById(type+'-lock-btn');
-  btn.className='lock-btn locked';btn.textContent='LOCKED';
-  document.getElementById(type+'-lock-status').textContent='Locked '+ts;
-}
-
 /* Init */
 document.getElementById('hdr-date').textContent=new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
+
+const TURNS_60=new Date(2027,5,19);
+document.getElementById('cd60-num').textContent=Math.ceil((TURNS_60-new Date())/86400000);
 
 async function init(){
   await loadData();
