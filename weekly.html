@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<title>Daily</title>
+<title>Weekly</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;1,8..60,300&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
@@ -241,118 +241,101 @@ footer a:hover{color:var(--ribbon)}
 <nav class="breadcrumb" aria-label="Breadcrumb">
   <a href="https://doug-kim-dfk.vercel.app" target="_blank" rel="noopener">Doug Kim</a>
   <span class="breadcrumb-sep">/</span>
-  <span>Daily</span>
+  <span>Weekly</span>
 </nav>
 
-<div class="eyebrow">Daily</div>
-<h1>Daily</h1>
-<p class="hdr-sub" id="hdr-sub">Nothing logged. That's still a choice.</p>
+<div class="eyebrow">Weekly</div>
+<h1>Weekly</h1>
 <p class="hdr-date" id="hdr-date"></p>
-<p class="countdown-60"><span class="cd-num" id="cd60-num">—</span><span>days til</span><span class="cd-num">60</span></p>
 
 <div class="sync-bar">
   <div class="sync-dot" id="sync-dot"></div>
   <span class="sync-text" id="sync-text">Connecting…</span>
 </div>
 
-<!-- ═══ DAILY ═══ -->
-<div class="panel active" id="panel-daily">
-
-<div class="stats">
-  <div class="sc"><div class="sc-lbl">Score</div><div class="sc-num" id="sc-score">0%</div><div class="sc-sub" id="sc-frac">0 / 5</div></div>
-  <div class="sc"><div class="sc-lbl">Streak</div><div class="sc-num" id="sc-streak">0</div><div class="sc-sub">days won</div></div>
-  <div class="sc"><div class="sc-lbl">Day</div><div class="sc-num" id="sc-day">—</div><div class="sc-sub">of 91</div></div>
-  <div class="sc"><div class="sc-lbl">Phase</div><div class="sc-phase" id="sc-phase">—</div><div class="sc-sub" id="sc-pdays"></div></div>
-</div>
-
-<div class="div"></div>
-
-<div class="nav">
-  <button onclick="cd(-1)">←</button>
-  <span class="nav-lbl" id="nav-lbl">Day 1 of 91</span>
-  <button onclick="cd(1)">→</button>
-</div>
-
-<div class="sec-lbl">Habits — tap to log</div>
-<div class="grid" id="grid"></div>
-
-<div class="sec-lbl">Weight — logged every morning</div>
-<div class="num-card" style="margin-bottom:1.2rem;">
-  <div class="num-card-title">Weight <span class="num-card-target" id="weight-note"></span></div>
-  <div class="num-input-row">
-    <input type="number" id="weight-input" min="0" max="500" step="0.1" placeholder="0">
-    <span class="num-unit">lbs</span>
+<div class="wk-topbar">
+  <div class="wk-nav">
+    <button onclick="changeWk(-1)">←</button>
+    <span class="wk-range" id="wk-range">Week of —</span>
+    <button onclick="changeWk(1)" id="wk-next">→</button>
   </div>
-  <div class="num-pass" id="weight-trend"></div>
-  <svg id="weight-chart" width="100%" height="60" style="margin-top:.6rem;display:block;"></svg>
 </div>
 
-<div class="score-row">
-  <div class="score-big" id="sbig">0%</div>
-  <div class="score-sub">Threshold: <span class="thresh">75%</span></div>
-</div>
-<div class="verdict" id="verdict"></div>
+<div class="sec-lbl">Weekly targets</div>
+<div class="wk-targets" id="wk-targets"></div>
 
-<div class="div"></div>
-<div class="sec-lbl" id="sbar-lbl">28-day window</div>
-<div class="sbar" id="sbar"></div>
+<div class="sec-lbl">Deep Work &amp; Discipline — this week</div>
+<div class="wk-targets" id="wk-rollup"></div>
 
-<div class="sec-lbl">Phases</div>
-<div class="phases" id="phases"></div>
-
-<div class="bot-row">
-  <button class="tbtn" onclick="markAll(true)">Mark all done</button>
-  <button class="tbtn" onclick="markAll(false)">Clear all</button>
+<div class="sec-lbl" style="display:flex;justify-content:space-between;align-items:center;">
+  <span>Shipped this week</span>
+  <button onclick="toggleSetupGoals()" style="font-family:var(--mono);font-size:.58rem;letter-spacing:.08em;padding:.2rem .6rem;border:1px solid var(--line);background:transparent;color:var(--ink-muted);cursor:pointer;border-radius:var(--radius);" id="setup-toggle-btn">edit goals ↓</button>
 </div>
 
-</div><!-- end daily -->
+<div class="shipped-card" id="setup-goals-panel" style="display:none;margin-bottom:.6rem;background:var(--warn-bg);border-color:var(--warn);">
+  <div class="shipped-title" style="color:var(--warn);margin-bottom:.6rem;">Set ship goals for this cycle — these labels apply every week</div>
+  <div id="goal-setup-fields"></div>
+  <button onclick="addGoalField()" style="font-family:var(--mono);font-size:.62rem;padding:.3rem .8rem;border:1px solid var(--line-d);background:transparent;color:var(--ink-muted);cursor:pointer;border-radius:var(--radius);margin-top:.5rem;">+ add goal</button>
+</div>
 
-<footer>
-  <span><a href="https://doug-kim-dfk.vercel.app" target="_blank" rel="noopener">← Doug Kim</a></span>
-  <span id="last-updated">Daily · 2026</span>
-</footer>
+<div class="shipped-card" id="shipped-fields-container"></div>
+
+<div class="sec-lbl">Big wins</div>
+<div class="wins-card">
+  <div class="win-row"><span class="win-num">1</span><input type="text" class="win-input" id="win1" placeholder="What actually moved?" oninput="saveWins()"></div>
+  <div class="win-row"><span class="win-num">2</span><input type="text" class="win-input" id="win2" placeholder="" oninput="saveWins()"></div>
+  <div class="win-row"><span class="win-num">3</span><input type="text" class="win-input" id="win3" placeholder="" oninput="saveWins()"></div>
+</div>
+
+<div class="sec-lbl">Consequence locks — name Sunday night, no negotiation</div>
+<div class="consequence-card habit-lock">
+  <div class="consequence-title">Habit lock — if weekly DFK day % &lt; 75%</div>
+  <div class="consequence-desc">What happens if you didn't show up enough this week?</div>
+  <input type="text" class="consequence-input" id="habit-consequence" placeholder="Your penalty…" oninput="saveConsequences()">
+  <button class="lock-btn" id="habit-lock-btn" onclick="lockConsequence('habit')">Lock in</button>
+  <div class="lock-status" id="habit-lock-status"></div>
+</div>
+<div class="consequence-card output-lock">
+  <div class="consequence-title">Output lock — if any weekly target missed</div>
+  <div class="consequence-desc">What happens if you missed push-ups, rolls, Substack, or Instagram?</div>
+  <input type="text" class="consequence-input" id="output-consequence" placeholder="Your penalty…" oninput="saveConsequences()">
+  <button class="lock-btn" id="output-lock-btn" onclick="lockConsequence('output')">Lock in</button>
+  <div class="lock-status" id="output-lock-status"></div>
+</div>
+
+</div>
 
 </div><!-- end page -->
 
+<footer>
+  <span><a href="https://doug-kim-dfk.vercel.app" target="_blank" rel="noopener">← Doug Kim</a></span>
+  <span id="last-updated">Weekly · 2026</span>
+</footer>
+
 <script>
-const HABITS=[
-  {id:'left_apartment', name:'Be outside'},
-  {id:'exercise',  name:'Exercised'},
-  {id:'social_irl',name:'Social physical'},
-  {id:'wrote',     name:'Wrote'},
-  {id:'shoot',     name:'Shoot'},
-];
-
-const TOTAL_CHECKS=HABITS.length;
-
-const PHASES=[
-  {name:'Phase 1 — Output',          dates:'Aug 24 – Sep 22', start:0, end:29,label:'Phase 1',days:'Days 1–30'},
-  {name:'Phase 2 — Get paid',        dates:'Sep 23 – Oct 22',  start:30,end:59,label:'Phase 2',days:'Days 31–60'},
-  {name:'Phase 3 — Raise everything',dates:'Oct 23 – Nov 22',  start:60,end:90,label:'Phase 3',days:'Days 61–91'},
-];
-
-const DAYS=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 const START=new Date(2026,7,24);
 const SUPABASE_URL='https://rpmxkhgirhlfwqefdopo.supabase.co';
 const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJwbXhraGdpcmhsZndxZWZkb3BvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY2MDUzMTQsImV4cCI6MjA5MjE4MTMxNH0.bAUNydSiWh60mxD23RLYXpSpRxrzt0q2JQ7yDSZmOW4';
 const LS_KEY='dfk_tracker';
 
-let data={},cur=0,saveTimer=null;
+let data={},wkOffset=0,saveTimer=null;
 
 function todayIdx(){return Math.max(0,Math.min(90,Math.floor((Date.now()-START.getTime())/86400000)))}
 function dk(d){return 'd'+d}
 function gd(d){return data[dk(d)]||{}}
 function dayDate(d){const dt=new Date(START);dt.setDate(dt.getDate()+d);return dt}
-function habitScore(d){
-  const dd=gd(d);
-  const hDone=HABITS.filter(h=>dd[h.id]===true).length;
-  if(!HABITS.some(h=>dd[h.id]!==undefined))return -1;
-  return Math.round(hDone/TOTAL_CHECKS*100);
+function weekKey(offset){
+  const today=todayIdx();const dt=dayDate(today);const dow=dt.getDay();
+  const sun=new Date(dt);sun.setDate(dt.getDate()-dow+(offset*7));
+  return 'w'+sun.toISOString().slice(0,10);
 }
-function doneCount(d){
-  const dd=gd(d);
-  return HABITS.filter(h=>dd[h.id]===true).length;
+function weekDays(offset){
+  const today=todayIdx();const dt=dayDate(today);const dow=dt.getDay();
+  const base=today-dow+(offset*7);const days=[];
+  for(let i=0;i<7;i++)days.push(base+i);return days;
 }
+
+const DEEPWORK_PASS=4; const SCREEN_PASS=1; const OUTSIDE_PASS=2; // used by Weekly rollup
 
 function setSyncStatus(s,msg){document.getElementById('sync-dot').className='sync-dot'+(s?' '+s:'');document.getElementById('sync-text').textContent=msg;}
 
@@ -386,151 +369,217 @@ async function saveData(){
 }
 function scheduleSave(){clearTimeout(saveTimer);saveTimer=setTimeout(saveData,800)}
 
-/* ── DAILY ── */
-function renderGrid(){
-  const dd=gd(cur);
-  const habitsHtml=HABITS.map(h=>{
-    const s=dd[h.id];const cls=s===true?'done':s===false?'missed':'';
-    return `<div class="hc ${cls}" onclick="cyc('${h.id}')"><div class="dot"></div><div class="hc-name">${h.name}</div></div>`;
+const WK_TARGETS=[
+  {id:'pushups',   name:'Push-ups',       goal:700, unit:'reps'},
+  {id:'rolls',     name:'Rolls shot',     goal:5,   unit:'rolls'},
+  {id:'sub_post',  name:'Thursday essay', goal:1,   unit:'posts'},
+  {id:'sub_notes', name:'Sub notes',      goal:5,   unit:'notes'},
+  {id:'sub_restack',name:'Sub restacks',  goal:20,  unit:''},
+  {id:'ig_posts',  name:'Instagram',      goal:3,   unit:'posts'},
+];
+
+/* ── WEEKLY ── */
+function renderWeekly(){
+  const today=todayIdx();const days=weekDays(wkOffset);
+  const dt0=days[0]>=0?dayDate(days[0]):new Date(START.getTime()+days[0]*86400000);
+  const dt6=days[6]>=0?dayDate(days[6]):new Date(START.getTime()+days[6]*86400000);
+  document.getElementById('wk-range').textContent='Week of '+dt0.toLocaleDateString('en-US',{month:'short',day:'numeric'})+' – '+dt6.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+  document.getElementById('wk-next').style.opacity=wkOffset===0?'0.3':'1';
+
+  // Render targets
+  const wk=weekKey(wkOffset);const wd=data[wk]||{};
+  document.getElementById('wk-targets').innerHTML=WK_TARGETS.map(t=>{
+    const val=wd['target_'+t.id]||0;const pct=Math.min(100,Math.round(val/t.goal*100));
+    const hit=val>=t.goal;const col=hit?'var(--pass)':pct>=50?'var(--warn)':'var(--ribbon)';
+    return `<div class="wk-target">
+      <div class="wk-target-name">${t.name} <span class="wk-target-goal">goal: ${t.goal}${t.unit?' '+t.unit:''}</span></div>
+      <div class="wk-target-input-row">
+        <input type="number" min="0" value="${val||''}" placeholder="0" oninput="saveWkTarget('${t.id}',this.value)" id="wkt-${t.id}">
+        <span class="wk-target-unit">${t.unit}</span>
+      </div>
+      <div class="wk-bar"><div class="wk-bar-fill" style="width:${pct}%;background:${col}"></div></div>
+      <div class="wk-target-status ${hit?'pass':'fail'}">${val?( hit?'✓ Hit':''+val+' / '+t.goal):'—'}</div>
+    </div>`;
   }).join('');
-  document.getElementById('grid').innerHTML=habitsHtml;
-  updateScore();
-}
 
-function cyc(id){
-  if(!data[dk(cur)])data[dk(cur)]={};
-  const c=data[dk(cur)][id];
-  if(c===undefined)data[dk(cur)][id]=true;else if(c===true)data[dk(cur)][id]=false;else delete data[dk(cur)][id];
-  scheduleSave();renderGrid();renderStreak();updateHeader();updateStats();
-}
-
-function markAll(val){
-  if(!data[dk(cur)])data[dk(cur)]={};
-  HABITS.forEach(h=>{data[dk(cur)][h.id]=val});
-  scheduleSave();renderGrid();renderStreak();updateHeader();updateStats();
-}
-
-document.getElementById('weight-input').addEventListener('input',function(){
-  const v=parseFloat(this.value);
-  if(!data[dk(cur)])data[dk(cur)]={};
-  if(!isNaN(v)&&this.value!=='')data[dk(cur)].weight=v;else delete data[dk(cur)].weight;
-  scheduleSave();renderWeightChart();
-});
-
-/* Weight — daily input + 7-day sparkline ending on the currently viewed day */
-function renderWeightInput(){
-  const dd=gd(cur);
-  document.getElementById('weight-input').value=(dd.weight!==undefined)?dd.weight:'';
-  renderWeightChart();
-}
-
-function renderWeightChart(){
-  const start=Math.max(0,cur-6);
-  const days=[];for(let i=start;i<=cur;i++)days.push(i);
-  const series=days.map(d=>({d,v:gd(d).weight})).filter(p=>p.v!==undefined&&p.v!==null&&p.v!=='');
-  const svg=document.getElementById('weight-chart');
-  const trendEl=document.getElementById('weight-trend');
-  if(series.length<2){
-    svg.innerHTML='';
-    trendEl.textContent=series.length===1?(series[0].v+' lbs logged — a few more mornings to see the trend'):'';
-    trendEl.className='num-pass';
-    return;
-  }
-  const w=300,h=60,pad=8;
-  const vals=series.map(p=>p.v);
-  const minV=Math.min(...vals),maxV=Math.max(...vals);
-  const range=(maxV-minV)||1;
-  const stepX=series.length>1?(w-2*pad)/(series.length-1):0;
-  const coords=series.map((p,i)=>{
-    const x=pad+i*stepX;
-    const y=h-pad-((p.v-minV)/range)*(h-2*pad);
-    return {x,y,today:p.d===cur};
+  renderWeeklyRollup();
+  renderShippedFields();
+  // Wins
+  ['win1','win2','win3'].forEach(id=>{
+    const el=document.getElementById(id);if(el)el.value=wd[id]||'';
   });
-  const pointsAttr=coords.map(c=>c.x.toFixed(1)+','+c.y.toFixed(1)).join(' ');
-  const dots=coords.map(c=>'<circle cx="'+c.x.toFixed(1)+'" cy="'+c.y.toFixed(1)+'" r="'+(c.today?3:2)+'" fill="'+(c.today?'#7A2E2E':'#9C7A32')+'"/>').join('');
-  svg.setAttribute('viewBox','0 0 '+w+' '+h);
-  svg.innerHTML='<polyline points="'+pointsAttr+'" fill="none" stroke="#9C7A32" stroke-width="1.5"/>'+dots;
-  const first=series[0].v,last=series[series.length-1].v;
-  const delta=last-first;
-  const sign=delta>0?'+':'';
-  trendEl.textContent=last.toFixed(1)+' lbs · '+sign+delta.toFixed(1)+' over '+series.length+' mornings';
-  trendEl.className='num-pass '+(delta<0?'pass':delta>0?'warn':'');
+  // Consequences
+  document.getElementById('habit-consequence').value=wd.habit_consequence||'';
+  document.getElementById('output-consequence').value=wd.output_consequence||'';
+  ['habit','output'].forEach(type=>{
+    if(wd[type+'_locked']){
+      const btn=document.getElementById(type+'-lock-btn');
+      btn.className='lock-btn locked';btn.textContent='LOCKED';
+      document.getElementById(type+'-lock-status').textContent='Locked '+wd[type+'_locked_at'];
+    } else {
+      const btn=document.getElementById(type+'-lock-btn');
+      btn.className='lock-btn';btn.textContent='Lock in';
+      document.getElementById(type+'-lock-status').textContent='';
+    }
+  });
 }
 
-function updateScore(){
-  const s=habitScore(cur);const done=doneCount(cur);const max=TOTAL_CHECKS;
-  document.getElementById('sbig').textContent=s<0?'0%':s+'%';
-  document.getElementById('sc-score').textContent=s<0?'0%':s+'%';
-  document.getElementById('sc-frac').textContent=done+' / '+max;
-  const v=document.getElementById('verdict');
-  if(s<0||s===0){v.className='verdict';v.textContent='';}
-  else if(s===100){v.className='verdict pass';v.textContent='100% — every vote cast for DFK.';}
-  else if(s>=75){v.className='verdict pass';v.textContent=s+'% — above threshold. DFK showed up.';}
-  else if(s>=50){v.className='verdict warn';v.textContent=s+'% — below threshold. Not good enough.';}
-  else{v.className='verdict fail';v.textContent=s+"% — Loss. The pattern is being written right now.";}
+function changeWk(dir){
+  const newOffset=wkOffset+dir;if(newOffset>0)return;if(newOffset<-12)return;
+  wkOffset=newOffset;renderWeekly();
 }
 
-function updateHeader(){
-  const s=habitScore(cur);const sub=document.getElementById('hdr-sub');
-  if(s<0)sub.textContent="Nothing logged. That's still a choice.";
-  else if(s===100)sub.textContent="Full score. Every vote cast for DFK.";
-  else if(s>=75)sub.textContent="Above threshold. DFK showed up today.";
-  else if(s>=50)sub.textContent="Below threshold. Not good enough.";
-  else sub.textContent="Loss. The pattern is being written right now.";
+function saveWkTarget(id,val){
+  const wk=weekKey(wkOffset);if(!data[wk])data[wk]={};
+  const n=parseInt(val)||0;
+  if(n>0)data[wk]['target_'+id]=n;else delete data[wk]['target_'+id];
+  scheduleSave();
+  // refresh bar/status inline
+  const t=WK_TARGETS.find(t=>t.id===id);if(!t)return;
+  const pct=Math.min(100,Math.round(n/t.goal*100));const hit=n>=t.goal;
+  const col=hit?'var(--pass)':pct>=50?'var(--warn)':'var(--ribbon)';
+  const card=document.getElementById('wkt-'+id).closest('.wk-target');
+  if(card){
+    card.querySelector('.wk-bar-fill').style.width=pct+'%';
+    card.querySelector('.wk-bar-fill').style.background=col;
+    card.querySelector('.wk-target-status').textContent=n?(hit?'✓ Hit':n+' / '+t.goal):'—';
+    card.querySelector('.wk-target-status').className='wk-target-status '+(hit?'pass':'fail');
+  }
 }
 
-function updateStats(){
-  const today=todayIdx();let streak=0;
-  for(let i=today;i>=0;i--){if(habitScore(i)>=75)streak++;else break}
-  document.getElementById('sc-streak').textContent=streak;
-  document.getElementById('sc-day').textContent=today+1;
-  const ph=PHASES.find(p=>cur>=p.start&&cur<=p.end)||PHASES[0];
-  document.getElementById('sc-phase').textContent=ph.label;
-  document.getElementById('sc-pdays').textContent=ph.days;
+function renderWeeklyRollup(){
+  const days=weekDays(wkOffset).filter(d=>d>=0&&d<=90);
+  const dwTotal=days.reduce((s,d)=>s+(gd(d).deepwork_blocks||0),0);
+  const outTotal=days.reduce((s,d)=>s+(gd(d).outside_blocks||0),0);
+  const stDays=days.filter(d=>gd(d).screen_time_hrs!==undefined);
+  const stAvg=stDays.length?stDays.reduce((s,d)=>s+gd(d).screen_time_hrs,0)/stDays.length:null;
+
+  const dwGoal=DEEPWORK_PASS*7,outGoal=OUTSIDE_PASS*7;
+  const dwPct=Math.min(100,Math.round(dwTotal/dwGoal*100));
+  const outPct=Math.min(100,Math.round(outTotal/outGoal*100));
+  const stPct=stAvg===null?0:(stAvg<=SCREEN_PASS?100:Math.max(10,Math.round(SCREEN_PASS/stAvg*100)));
+
+  const dwHit=dwTotal>=dwGoal,outHit=outTotal>=outGoal,stHit=stAvg!==null&&stAvg<=SCREEN_PASS;
+  const barCol=(hit,pct)=>hit?'var(--pass)':pct>=50?'var(--warn)':'var(--ribbon)';
+
+  document.getElementById('wk-rollup').innerHTML=`
+    <div class="wk-target">
+      <div class="wk-target-name">Deep Work <span class="wk-target-goal">goal: ${dwGoal} blocks</span></div>
+      <div class="wk-bar"><div class="wk-bar-fill" style="width:${dwPct}%;background:${barCol(dwHit,dwPct)}"></div></div>
+      <div class="wk-target-status ${dwHit?'pass':'fail'}">${dwTotal} / ${dwGoal} blocks</div>
+    </div>
+    <div class="wk-target">
+      <div class="wk-target-name">Outside <span class="wk-target-goal">goal: ${outGoal} hrs</span></div>
+      <div class="wk-bar"><div class="wk-bar-fill" style="width:${outPct}%;background:${barCol(outHit,outPct)}"></div></div>
+      <div class="wk-target-status ${outHit?'pass':'fail'}">${outTotal} / ${outGoal} hrs</div>
+    </div>
+    <div class="wk-target">
+      <div class="wk-target-name">Screen Time <span class="wk-target-goal">budget: ${SCREEN_PASS}hr/day avg</span></div>
+      <div class="wk-bar"><div class="wk-bar-fill" style="width:${stPct}%;background:${barCol(stHit,stPct)}"></div></div>
+      <div class="wk-target-status ${stHit?'pass':'fail'}">${stAvg===null?'no data yet':(Math.round(stAvg*10)/10)+'hrs/day avg'}</div>
+    </div>
+  `;
 }
 
-function cd(d){cur=Math.max(0,Math.min(todayIdx(),cur+d));updateNav();renderGrid();renderWeightInput();renderStreak();renderPhases();updateHeader();}
+/* ── SHIP GOALS ── */
+const DEFAULT_GOALS=['Istanbul Essay','PM Outreach','Photos to Editors','Songbook'];
 
-function updateNav(){
-  document.getElementById('nav-lbl').textContent='Day '+(cur+1)+' of 91 · '+dayDate(cur).toLocaleDateString('en-US',{month:'short',day:'numeric'});
+function getShipGoals(){return data.ship_goals||DEFAULT_GOALS;}
+
+function toggleSetupGoals(){
+  const panel=document.getElementById('setup-goals-panel');
+  const btn=document.getElementById('setup-toggle-btn');
+  const open=panel.style.display==='none';
+  panel.style.display=open?'block':'none';
+  btn.textContent=open?'close ↑':'edit goals ↓';
+  if(open)renderGoalSetupFields();
 }
 
-function renderStreak(){
-  const today=todayIdx();const start=Math.max(0,today-27);const days=[];for(let i=start;i<=today;i++)days.push(i);
-  document.getElementById('sbar-lbl').textContent=days.length+'-day window';
-  document.getElementById('sbar').innerHTML=days.map(i=>{
-    const s=habitScore(i);const lbl=dayDate(i).getDate();
-    let cls='sd';if(s>=75)cls+=' lp';else if(s>=50)cls+=' lw';else if(s>=0)cls+=' lf';
-    if(i===today)cls+=' today';
-    const outline=i===cur?'outline:1.5px solid var(--ribbon);outline-offset:1px':'';
-    return `<div class="${cls}" onclick="jmp(${i})" title="Day ${i+1}: ${s>=0?s+'%':'—'}" style="${outline}">${lbl}</div>`;
+function renderGoalSetupFields(){
+  const goals=getShipGoals();
+  document.getElementById('goal-setup-fields').innerHTML=goals.map((g,i)=>
+    `<div class="setup-goal-row">
+      <input type="text" value="${g.replace(/"/g,'&quot;')}" oninput="updateGoalField(${i},this.value)" placeholder="Goal name">
+      <button onclick="removeGoalField(${i})">✕</button>
+    </div>`
+  ).join('');
+}
+
+function updateGoalField(i,val){
+  const goals=getShipGoals().slice();goals[i]=val;
+  data.ship_goals=goals;scheduleSave();renderShippedFields();
+}
+
+function removeGoalField(i){
+  const goals=getShipGoals().slice();goals.splice(i,1);
+  data.ship_goals=goals;scheduleSave();renderGoalSetupFields();renderShippedFields();
+}
+
+function addGoalField(){
+  const goals=getShipGoals().slice();if(goals.length>=8)return;
+  goals.push('');data.ship_goals=goals;scheduleSave();renderGoalSetupFields();renderShippedFields();
+}
+
+function renderShippedFields(){
+  const goals=getShipGoals();const wk=weekKey(wkOffset);const wd=data[wk]||{};
+  document.getElementById('shipped-fields-container').innerHTML=goals.map((g,i)=>{
+    const id='shipped_goal_'+i;const val=wd[id]||'';
+    const label=g||('Goal '+(i+1));
+    const mb=i===goals.length-1?'margin-bottom:0':'';
+    return `<div class="shipped-item" style="${mb}">
+      <div class="shipped-label">${label}</div>
+      <textarea class="shipped-input" id="field-${id}" placeholder="What moved on this?" rows="2" oninput="saveShipped()">${val}</textarea>
+    </div>`;
   }).join('');
 }
 
-function renderPhases(){
-  document.getElementById('phases').innerHTML=PHASES.map(p=>`<div class="ph${cur>=p.start&&cur<=p.end?' active':''}"><div class="ph-name">${p.name}</div><div class="ph-dates">${p.dates}</div></div>`).join('');
+function saveShipped(){
+  const wk=weekKey(wkOffset);if(!data[wk])data[wk]={};
+  const goals=getShipGoals();
+  goals.forEach((_,i)=>{
+    const el=document.getElementById('field-shipped_goal_'+i);
+    if(el){const v=el.value;if(v)data[wk]['shipped_goal_'+i]=v;else delete data[wk]['shipped_goal_'+i];}
+  });
+  scheduleSave();
 }
 
-function jmp(d){if(d<=todayIdx()){cur=d;updateNav();renderGrid();renderWeightInput();renderStreak();renderPhases();updateHeader();}}
+function saveWins(){
+  const wk=weekKey(wkOffset);if(!data[wk])data[wk]={};
+  ['win1','win2','win3'].forEach(id=>{
+    const el=document.getElementById(id);if(el){const v=el.value;if(v)data[wk][id]=v;else delete data[wk][id];}
+  });
+  scheduleSave();
+}
+
+function saveConsequences(){
+  const wk=weekKey(wkOffset);if(!data[wk])data[wk]={};
+  ['habit','output'].forEach(type=>{
+    const el=document.getElementById(type+'-consequence');
+    if(el){const v=el.value;if(v)data[wk][type+'_consequence']=v;else delete data[wk][type+'_consequence'];}
+  });
+  scheduleSave();
+}
+
+function lockConsequence(type){
+  const wk=weekKey(wkOffset);if(!data[wk])data[wk]={};
+  const ts=new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
+  data[wk][type+'_locked']=true;data[wk][type+'_locked_at']=ts;
+  scheduleSave();
+  const btn=document.getElementById(type+'-lock-btn');
+  btn.className='lock-btn locked';btn.textContent='LOCKED';
+  document.getElementById(type+'-lock-status').textContent='Locked '+ts;
+}
 
 /* Init */
 document.getElementById('hdr-date').textContent=new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
 
-const TURNS_60=new Date(2027,5,19);
-document.getElementById('cd60-num').textContent=Math.ceil((TURNS_60-new Date())/86400000);
-
 async function init(){
-  await loadData();cur=todayIdx();
-  updateNav();renderGrid();renderWeightInput();renderStreak();renderPhases();updateHeader();updateStats();
+  await loadData();
+  renderWeekly();
   document.getElementById('last-updated').textContent='Synced '+new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
 }
 init();
 
-// Mobile Safari (and other browsers) can restore this page from the
-// back-forward cache when you switch apps/tabs and return, without
-// re-running any JS — you'd see whatever was on screen at the moment you
-// left, not fresh data. Force a real reload from Supabase whenever the
-// page becomes visible again so desktop/mobile never drift.
 window.addEventListener('pageshow',function(e){if(e.persisted)init();});
 document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible')init();});
 </script>
