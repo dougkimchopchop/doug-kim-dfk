@@ -264,7 +264,7 @@ footer a:hover{color:var(--ribbon)}
 <div class="panel active" id="panel-daily">
 
 <div class="stats">
-  <div class="sc"><div class="sc-lbl">Score</div><div class="sc-num" id="sc-score">0%</div><div class="sc-sub" id="sc-frac">0 / 12</div></div>
+  <div class="sc"><div class="sc-lbl">Score</div><div class="sc-num" id="sc-score">0%</div><div class="sc-sub" id="sc-frac">0 / 5</div></div>
   <div class="sc"><div class="sc-lbl">Streak</div><div class="sc-num" id="sc-streak">0</div><div class="sc-sub">days won</div></div>
   <div class="sc"><div class="sc-lbl">Day</div><div class="sc-num" id="sc-day">—</div><div class="sc-sub">of 91</div></div>
   <div class="sc"><div class="sc-lbl">Phase</div><div class="sc-phase" id="sc-phase">—</div><div class="sc-sub" id="sc-pdays"></div></div>
@@ -278,72 +278,8 @@ footer a:hover{color:var(--ribbon)}
   <button onclick="cd(1)">→</button>
 </div>
 
-<div class="sec-lbl">Ship 3 — set in the morning, check at night</div>
-<div class="ship3-card">
-  <div class="ship3-item">
-    <div class="ship3-check" id="ship3-check-0" onclick="toggleShip3(0)"></div>
-    <input type="text" class="ship3-input" id="ship3-text-0" placeholder="What will you ship today?" oninput="saveShip3()">
-  </div>
-  <div class="ship3-item">
-    <div class="ship3-check" id="ship3-check-1" onclick="toggleShip3(1)"></div>
-    <input type="text" class="ship3-input" id="ship3-text-1" placeholder="" oninput="saveShip3()">
-  </div>
-  <div class="ship3-item">
-    <div class="ship3-check" id="ship3-check-2" onclick="toggleShip3(2)"></div>
-    <input type="text" class="ship3-input" id="ship3-text-2" placeholder="" oninput="saveShip3()">
-  </div>
-</div>
-
 <div class="sec-lbl">Habits — tap to log</div>
 <div class="grid" id="grid"></div>
-
-<div class="sec-lbl">Write &amp; Read</div>
-<div class="num-inputs">
-  <div class="num-card">
-    <div class="num-card-title">Write <span class="num-card-target">≥1hr pass · target 4hrs</span></div>
-    <div class="num-input-row">
-      <input type="number" id="write-input" min="0" max="12" step="0.5" placeholder="0">
-      <span class="num-unit">hrs</span>
-    </div>
-    <div class="num-pass" id="write-pass"></div>
-  </div>
-  <div class="num-card">
-    <div class="num-card-title">Read <span class="num-card-target">≥1hr pass</span></div>
-    <div class="num-input-row">
-      <input type="number" id="read-input" min="0" max="12" step="0.5" placeholder="0">
-      <span class="num-unit">hrs</span>
-    </div>
-    <div class="num-pass" id="read-pass"></div>
-  </div>
-</div>
-
-<div class="sec-lbl">Deep Work &amp; Discipline</div>
-<div class="num-inputs3">
-  <div class="num-card">
-    <div class="num-card-title">Deep Work <span class="num-card-target">25min blocks · target 4</span></div>
-    <div class="num-input-row">
-      <input type="number" id="deepwork-input" min="0" max="20" step="1" placeholder="0">
-      <span class="num-unit">blocks</span>
-    </div>
-    <div class="num-pass" id="deepwork-pass"></div>
-  </div>
-  <div class="num-card">
-    <div class="num-card-title">Screen Time <span class="num-card-target">junk video/social · under 1hr</span></div>
-    <div class="num-input-row">
-      <input type="number" id="screentime-input" min="0" max="16" step="0.5" placeholder="0">
-      <span class="num-unit">hrs</span>
-    </div>
-    <div class="num-pass" id="screentime-pass"></div>
-  </div>
-  <div class="num-card">
-    <div class="num-card-title">Outside <span class="num-card-target">hour blocks · target 2</span></div>
-    <div class="num-input-row">
-      <input type="number" id="outside-input" min="0" max="12" step="1" placeholder="0">
-      <span class="num-unit">hrs</span>
-    </div>
-    <div class="num-pass" id="outside-pass"></div>
-  </div>
-</div>
 
 <div class="sec-lbl">Weight — logged every morning</div>
 <div class="num-card" style="margin-bottom:1.2rem;">
@@ -440,22 +376,17 @@ footer a:hover{color:var(--ribbon)}
 
 <script>
 const HABITS=[
-  {id:'left_apartment', name:'Outside / Friends'},
-  {id:'exercise',  name:'Exercise'},
-  {id:'run',       name:'Run'},
+  {id:'left_apartment', name:'Be outside'},
+  {id:'exercise',  name:'Exercised'},
+  {id:'social_irl',name:'Social physical'},
+  {id:'wrote',     name:'Wrote'},
   {id:'shoot',     name:'Shoot'},
-  {id:'nourish',   name:'OMAD'},
-  {id:'outreach',  name:'Social / Outreach'},
-  {id:'social_irl',name:'Social Physical'},
-  {id:'off_out',   name:'Off / Out'},
-  {id:'practice',  name:'Practice — Guitar (20min)'},
 ];
 
-const WRITE_PASS=1; const READ_PASS=1;
-const DEEPWORK_PASS=4; // 25-min blocks/day
-const SCREEN_PASS=1;   // junk screen time hours/day — pass at or under
-const OUTSIDE_PASS=2;  // hour-blocks outside/day
-const TOTAL_CHECKS=HABITS.length+2/*meditate, up to 2 for both sessions*/+2/*Write+Read*/+1/*Deep Work*/+1/*Screen Time*/+1/*Outside*/;
+const DEEPWORK_PASS=4; // 25-min blocks/day — used by Weekly rollup only
+const SCREEN_PASS=1;   // junk screen time hours/day — used by Weekly rollup only
+const OUTSIDE_PASS=2;  // hour-blocks outside/day — used by Weekly rollup only
+const TOTAL_CHECKS=HABITS.length;
 
 const PHASES=[
   {name:'Phase 1 — Output',          dates:'Aug 24 – Sep 22', start:0, end:29,label:'Phase 1',days:'Days 1–30'},
@@ -498,28 +429,12 @@ function weekDays(offset){
 function habitScore(d){
   const dd=gd(d);
   const hDone=HABITS.filter(h=>dd[h.id]===true).length;
-  const medDone=dd.meditate||0; // 0, 1 (half), or 2 (full)
-  const writeDone=(dd.write_hrs||0)>=WRITE_PASS?1:0;
-  const readDone=(dd.read_hrs||0)>=READ_PASS?1:0;
-  const deepworkDone=(dd.deepwork_blocks||0)>=DEEPWORK_PASS?1:0;
-  const screentimeDone=(dd.screen_time_hrs!==undefined&&dd.screen_time_hrs<=SCREEN_PASS)?1:0;
-  const outsideDone=(dd.outside_blocks||0)>=OUTSIDE_PASS?1:0;
-  const ship3Done=([0,1,2].filter(i=>dd['ship3_done_'+i]===true).length>=3)?1:0;
-  const total=hDone+medDone+writeDone+readDone+deepworkDone+screentimeDone+outsideDone+ship3Done;
-  const max=TOTAL_CHECKS+1; // +ship3 as bonus
-  if(!HABITS.some(h=>dd[h.id]!==undefined)&&!dd.write_hrs&&!dd.read_hrs&&!dd.meditate&&!dd.deepwork_blocks&&dd.screen_time_hrs===undefined&&!dd.outside_blocks)return -1;
-  return Math.round(total/max*100);
+  if(!HABITS.some(h=>dd[h.id]!==undefined))return -1;
+  return Math.round(hDone/TOTAL_CHECKS*100);
 }
 function doneCount(d){
   const dd=gd(d);
-  return HABITS.filter(h=>dd[h.id]===true).length
-    +(dd.meditate||0)
-    +((dd.write_hrs||0)>=WRITE_PASS?1:0)
-    +((dd.read_hrs||0)>=READ_PASS?1:0)
-    +((dd.deepwork_blocks||0)>=DEEPWORK_PASS?1:0)
-    +((dd.screen_time_hrs!==undefined&&dd.screen_time_hrs<=SCREEN_PASS)?1:0)
-    +((dd.outside_blocks||0)>=OUTSIDE_PASS?1:0)
-    +([0,1,2].filter(i=>dd['ship3_done_'+i]===true).length>=3?1:0);
+  return HABITS.filter(h=>dd[h.id]===true).length;
 }
 
 function setSyncStatus(s,msg){document.getElementById('sync-dot').className='sync-dot'+(s?' '+s:'');document.getElementById('sync-text').textContent=msg;}
@@ -564,24 +479,12 @@ function switchTab(tab){
 /* ── DAILY ── */
 function renderGrid(){
   const dd=gd(cur);
-  const medState=dd.meditate||0;
-  const medCls=medState===2?'done':medState===1?'half':'';
-  const medLbl='Meditate'+(medState===1?' — 1 of 2':medState===2?' — 2 of 2':'');
-  const medHtml=`<div class="hc ${medCls}" onclick="cycMeditate()"><div class="dot"></div><div class="hc-name">${medLbl}</div></div>`;
   const habitsHtml=HABITS.map(h=>{
     const s=dd[h.id];const cls=s===true?'done':s===false?'missed':'';
     return `<div class="hc ${cls}" onclick="cyc('${h.id}')"><div class="dot"></div><div class="hc-name">${h.name}</div></div>`;
   }).join('');
-  document.getElementById('grid').innerHTML=medHtml+habitsHtml;
+  document.getElementById('grid').innerHTML=habitsHtml;
   updateScore();
-}
-
-function cycMeditate(){
-  if(!data[dk(cur)])data[dk(cur)]={};
-  const c=data[dk(cur)].meditate||0;
-  const next=(c+1)%3;
-  if(next===0)delete data[dk(cur)].meditate;else data[dk(cur)].meditate=next;
-  scheduleSave();renderGrid();renderStreak();updateHeader();updateStats();
 }
 
 function cyc(id){
@@ -594,107 +497,14 @@ function cyc(id){
 function markAll(val){
   if(!data[dk(cur)])data[dk(cur)]={};
   HABITS.forEach(h=>{data[dk(cur)][h.id]=val});
-  if(val){
-    data[dk(cur)].meditate=2;
-    data[dk(cur)].write_hrs=4;data[dk(cur)].read_hrs=1;
-    data[dk(cur)].deepwork_blocks=DEEPWORK_PASS;
-    data[dk(cur)].screen_time_hrs=0;
-    data[dk(cur)].outside_blocks=OUTSIDE_PASS;
-  }else{
-    delete data[dk(cur)].meditate;
-    delete data[dk(cur)].write_hrs;delete data[dk(cur)].read_hrs;
-    delete data[dk(cur)].deepwork_blocks;
-    delete data[dk(cur)].screen_time_hrs;
-    delete data[dk(cur)].outside_blocks;
-  }
-  scheduleSave();renderGrid();renderNumInputs();renderStreak();updateHeader();updateStats();
+  scheduleSave();renderGrid();renderStreak();updateHeader();updateStats();
 }
 
-function renderNumInputs(){
-  const dd=gd(cur);
-  const w=dd.write_hrs||'';const r=dd.read_hrs||'';
-  document.getElementById('write-input').value=w;
-  document.getElementById('read-input').value=r;
-  updateWritePass(parseFloat(w)||0);
-  updateReadPass(parseFloat(r)||0);
-  const dw=dd.deepwork_blocks||'';
-  document.getElementById('deepwork-input').value=dw;
-  updateDeepworkPass(parseFloat(dw)||0);
-  const st=(dd.screen_time_hrs!==undefined)?dd.screen_time_hrs:'';
-  document.getElementById('screentime-input').value=st;
-  updateScreentimePass(st===''?null:parseFloat(st));
-  const out=dd.outside_blocks||'';
-  document.getElementById('outside-input').value=out;
-  updateOutsidePass(parseFloat(out)||0);
-}
-
-function updateWritePass(v){
-  const el=document.getElementById('write-pass');
-  if(!v){el.textContent='';el.className='num-pass';return;}
-  if(v>=4){el.textContent='✓ 4hrs — full score';el.className='num-pass pass';}
-  else if(v>=1){el.textContent='✓ Pass ('+v+'hrs)';el.className='num-pass pass';}
-  else{el.textContent='✗ Below 1hr';el.className='num-pass warn';}
-}
-function updateReadPass(v){
-  const el=document.getElementById('read-pass');
-  if(!v){el.textContent='';el.className='num-pass';return;}
-  if(v>=1){el.textContent='✓ Pass';el.className='num-pass pass';}
-  else{el.textContent='✗ Below 1hr';el.className='num-pass warn';}
-}
-function updateDeepworkPass(v){
-  const el=document.getElementById('deepwork-pass');
-  if(!v){el.textContent='';el.className='num-pass';return;}
-  if(v>=DEEPWORK_PASS){el.textContent='✓ '+v+' blocks — target hit';el.className='num-pass pass';}
-  else{el.textContent=v+' / '+DEEPWORK_PASS+' blocks';el.className='num-pass warn';}
-}
-function updateScreentimePass(v){
-  const el=document.getElementById('screentime-pass');
-  if(v===null||v===undefined||isNaN(v)){el.textContent='';el.className='num-pass';return;}
-  if(v<=SCREEN_PASS){el.textContent='✓ '+v+'hrs — under budget';el.className='num-pass pass';}
-  else{el.textContent='✗ '+v+'hrs — over '+SCREEN_PASS+'hr budget';el.className='num-pass warn';}
-}
-function updateOutsidePass(v){
-  const el=document.getElementById('outside-pass');
-  if(!v){el.textContent='';el.className='num-pass';return;}
-  if(v>=OUTSIDE_PASS){el.textContent='✓ '+v+' hrs — target hit';el.className='num-pass pass';}
-  else{el.textContent=v+' / '+OUTSIDE_PASS+' hrs';el.className='num-pass warn';}
-}
-
-document.getElementById('write-input').addEventListener('input',function(){
-  const v=parseFloat(this.value)||0;
-  if(!data[dk(cur)])data[dk(cur)]={};
-  if(v>0)data[dk(cur)].write_hrs=v;else delete data[dk(cur)].write_hrs;
-  updateWritePass(v);scheduleSave();updateScore();renderStreak();updateHeader();updateStats();
-});
-document.getElementById('read-input').addEventListener('input',function(){
-  const v=parseFloat(this.value)||0;
-  if(!data[dk(cur)])data[dk(cur)]={};
-  if(v>0)data[dk(cur)].read_hrs=v;else delete data[dk(cur)].read_hrs;
-  updateReadPass(v);scheduleSave();updateScore();renderStreak();updateHeader();updateStats();
-});
 document.getElementById('weight-input').addEventListener('input',function(){
   const v=parseFloat(this.value);
   if(!data[dk(cur)])data[dk(cur)]={};
   if(!isNaN(v)&&this.value!=='')data[dk(cur)].weight=v;else delete data[dk(cur)].weight;
   scheduleSave();renderWeightChart();
-});
-document.getElementById('deepwork-input').addEventListener('input',function(){
-  const v=parseFloat(this.value)||0;
-  if(!data[dk(cur)])data[dk(cur)]={};
-  if(v>0)data[dk(cur)].deepwork_blocks=v;else delete data[dk(cur)].deepwork_blocks;
-  updateDeepworkPass(v);scheduleSave();updateScore();renderStreak();updateHeader();updateStats();
-});
-document.getElementById('screentime-input').addEventListener('input',function(){
-  const v=parseFloat(this.value);
-  if(!data[dk(cur)])data[dk(cur)]={};
-  if(!isNaN(v)&&this.value!=='')data[dk(cur)].screen_time_hrs=v;else delete data[dk(cur)].screen_time_hrs;
-  updateScreentimePass(isNaN(v)?null:v);scheduleSave();updateScore();renderStreak();updateHeader();updateStats();
-});
-document.getElementById('outside-input').addEventListener('input',function(){
-  const v=parseFloat(this.value)||0;
-  if(!data[dk(cur)])data[dk(cur)]={};
-  if(v>0)data[dk(cur)].outside_blocks=v;else delete data[dk(cur)].outside_blocks;
-  updateOutsidePass(v);scheduleSave();updateScore();renderStreak();updateHeader();updateStats();
 });
 
 /* Weight — daily input + 7-day sparkline ending on the currently viewed day */
@@ -737,36 +547,8 @@ function renderWeightChart(){
   trendEl.className='num-pass '+(delta<0?'pass':delta>0?'warn':'');
 }
 
-/* Ship 3 */
-function renderShip3(){
-  const dd=gd(cur);
-  [0,1,2].forEach(i=>{
-    const text=dd['ship3_text_'+i]||'';const done=dd['ship3_done_'+i]===true;
-    const input=document.getElementById('ship3-text-'+i);
-    const check=document.getElementById('ship3-check-'+i);
-    input.value=text;
-    input.className='ship3-input'+(done?' done-text':'');
-    check.className='ship3-check'+(done?' done':'');
-  });
-}
-
-function toggleShip3(i){
-  if(!data[dk(cur)])data[dk(cur)]={};
-  data[dk(cur)]['ship3_done_'+i]=!data[dk(cur)]['ship3_done_'+i];
-  scheduleSave();renderShip3();updateScore();renderStreak();updateHeader();updateStats();
-}
-
-function saveShip3(){
-  if(!data[dk(cur)])data[dk(cur)]={};
-  [0,1,2].forEach(i=>{
-    const v=document.getElementById('ship3-text-'+i).value;
-    if(v)data[dk(cur)]['ship3_text_'+i]=v;else delete data[dk(cur)]['ship3_text_'+i];
-  });
-  scheduleSave();
-}
-
 function updateScore(){
-  const s=habitScore(cur);const done=doneCount(cur);const max=TOTAL_CHECKS+1;
+  const s=habitScore(cur);const done=doneCount(cur);const max=TOTAL_CHECKS;
   document.getElementById('sbig').textContent=s<0?'0%':s+'%';
   document.getElementById('sc-score').textContent=s<0?'0%':s+'%';
   document.getElementById('sc-frac').textContent=done+' / '+max;
@@ -797,7 +579,7 @@ function updateStats(){
   document.getElementById('sc-pdays').textContent=ph.days;
 }
 
-function cd(d){cur=Math.max(0,Math.min(todayIdx(),cur+d));updateNav();renderGrid();renderNumInputs();renderWeightInput();renderShip3();renderStreak();renderPhases();updateHeader();}
+function cd(d){cur=Math.max(0,Math.min(todayIdx(),cur+d));updateNav();renderGrid();renderWeightInput();renderStreak();renderPhases();updateHeader();}
 
 function updateNav(){
   document.getElementById('nav-lbl').textContent='Day '+(cur+1)+' of 91 · '+dayDate(cur).toLocaleDateString('en-US',{month:'short',day:'numeric'});
@@ -819,7 +601,7 @@ function renderPhases(){
   document.getElementById('phases').innerHTML=PHASES.map(p=>`<div class="ph${cur>=p.start&&cur<=p.end?' active':''}"><div class="ph-name">${p.name}</div><div class="ph-dates">${p.dates}</div></div>`).join('');
 }
 
-function jmp(d){if(d<=todayIdx()){cur=d;updateNav();renderGrid();renderNumInputs();renderWeightInput();renderShip3();renderStreak();renderPhases();updateHeader();}}
+function jmp(d){if(d<=todayIdx()){cur=d;updateNav();renderGrid();renderWeightInput();renderStreak();renderPhases();updateHeader();}}
 
 /* ── WEEKLY ── */
 function renderWeekly(){
@@ -1021,7 +803,7 @@ document.getElementById('cd60-num').textContent=Math.ceil((TURNS_60-new Date())/
 
 async function init(){
   await loadData();cur=todayIdx();
-  updateNav();renderGrid();renderNumInputs();renderWeightInput();renderShip3();renderStreak();renderPhases();updateHeader();updateStats();
+  updateNav();renderGrid();renderWeightInput();renderStreak();renderPhases();updateHeader();updateStats();
   document.getElementById('last-updated').textContent='Synced '+new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
 }
 init();
