@@ -296,14 +296,14 @@ footer a:hover{color:var(--ribbon)}
 </footer>
 
 <script>
-const START=new Date(2026,7,31);
+const START=new Date(2026,8,7);
 const SUPABASE_URL='https://rpmxkhgirhlfwqefdopo.supabase.co';
 const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJwbXhraGdpcmhsZndxZWZkb3BvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY2MDUzMTQsImV4cCI6MjA5MjE4MTMxNH0.bAUNydSiWh60mxD23RLYXpSpRxrzt0q2JQ7yDSZmOW4';
 const LS_KEY='dfk_tracker';
 
 let data={},wkOffset=0,saveTimer=null;
 
-function todayIdx(){return Math.max(0,Math.min(90,Math.floor((Date.now()-START.getTime())/86400000)))}
+function todayIdx(){return Math.max(0,Math.min(89,Math.floor((Date.now()-START.getTime())/86400000)))}
 function dk(d){return 'd'+d}
 function gd(d){return data[dk(d)]||{}}
 function dayDate(d){const dt=new Date(START);dt.setDate(dt.getDate()+d);return dt}

@@ -76,7 +76,7 @@ table.heat{border-collapse:collapse;min-width:max-content}
 </nav>
 <span class="eyebrow">Daily</span>
 <h1 style="font-family:var(--display);font-weight:600;font-size:clamp(1.6rem,3.5vw,2.2rem);line-height:1.05;margin:0 0 .3rem;">Grid</h1>
-<p style="font-family:var(--mono);font-size:.68rem;color:var(--ink-soft);margin:0 0 1rem;">91-day heatmap — every habit, every day. Tap a cell to log it.</p>
+<p style="font-family:var(--mono);font-size:.68rem;color:var(--ink-soft);margin:0 0 1rem;">90-day heatmap — every habit, every day. Tap a cell to log it.</p>
 
 <div class="sync-bar">
   <div class="sync-dot" id="sync-dot"></div>
@@ -133,7 +133,7 @@ const DEFAULT_GOALS=['Istanbul Essay','PM Outreach','Photos to Editors','Songboo
 
 const DAYS_SHORT=['S','M','T','W','T','F','S'];
 const MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-const START=new Date(2026,7,31);
+const START=new Date(2026,8,7);
 const LS_KEY='dfk_tracker';
 const SUPABASE_URL='https://rpmxkhgirhlfwqefdopo.supabase.co';
 const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJwbXhraGdpcmhsZndxZWZkb3BvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY2MDUzMTQsImV4cCI6MjA5MjE4MTMxNH0.bAUNydSiWh60mxD23RLYXpSpRxrzt0q2JQ7yDSZmOW4';
@@ -143,7 +143,7 @@ let saveTimer=null;
 
 function dk(d){return 'd'+d}
 function dayDate(d){const dt=new Date(START);dt.setDate(dt.getDate()+d);return dt}
-function todayIdx(){return Math.max(0,Math.min(90,Math.round((new Date()-START)/86400000)))}
+function todayIdx(){return Math.max(0,Math.min(89,Math.round((new Date()-START)/86400000)))}
 function getDay(d){return data[dk(d)]||{}}
 function weekKey(sunDayIdx){const dt=dayDate(Math.max(0,sunDayIdx));const sun=new Date(dt);sun.setDate(dt.getDate()-dt.getDay());return 'w'+sun.toISOString().slice(0,10)}
 
@@ -203,11 +203,11 @@ function buildGrid(){
   let numRow='<tr><th class="habit-head"></th>';
   let lastMonth=-1,monthSpan=0,monthCells=[];
 
-  for(let d=0;d<91;d++){
+  for(let d=0;d<90;d++){
     const dt=dayDate(d);const dow=dt.getDay();const mon=dt.getMonth();
     const isWeekSep=dow===0&&d>0;const cls=(isWeekSep?'week-sep ':'')+'day-col';
     if(mon!==lastMonth){if(lastMonth!==-1)monthCells.push({month:lastMonth,span:monthSpan});lastMonth=mon;monthSpan=0;}
-    monthSpan++;if(d===90)monthCells.push({month:mon,span:monthSpan});
+    monthSpan++;if(d===89)monthCells.push({month:mon,span:monthSpan});
     const isToday=d===today;
     dayRow+=`<th class="${cls}" style="${isToday?'color:var(--ribbon)':''}">${DAYS_SHORT[dow]}</th>`;
     numRow+=`<th class="${cls}"><span class="day-num${isToday?' today-num':''}${dow===0?' sun':''}">${dt.getDate()}</span></th>`;
@@ -221,7 +221,7 @@ function buildGrid(){
 
   // Meditate row (tri-state: 0 none, 1 half, 2 full)
   bodyHTML+=`<tr><td class="habit-name">Meditate</td>`;
-  for(let d=0;d<91;d++){
+  for(let d=0;d<90;d++){
     const dt=dayDate(d);const dow=dt.getDay();
     const isFuture=d>today;const isToday=d===today;const isWeekSep=dow===0&&d>0;
     const st=getDay(d).meditate||0;
@@ -239,7 +239,7 @@ function buildGrid(){
   HABITS.forEach((habit,hi)=>{
     const hid=HABIT_IDS[hi];
     bodyHTML+=`<tr class="habit-row" data-hi="${hi}"><td class="habit-name">${habit}</td>`;
-    for(let d=0;d<91;d++){
+    for(let d=0;d<90;d++){
       const dt=dayDate(d);const dow=dt.getDay();
       const isFuture=d>today;const isToday=d===today;const isWeekSep=dow===0&&d>0;
       const dd=getDay(d);const state=dd[hid];
@@ -256,7 +256,7 @@ function buildGrid(){
 
   // Write row
   bodyHTML+=`<tr><td class="habit-name" style="color:var(--brass)">Write (hrs)</td>`;
-  for(let d=0;d<91;d++){
+  for(let d=0;d<90;d++){
     const dt=dayDate(d);const dow=dt.getDay();
     const isFuture=d>today;const isToday=d===today;const isWeekSep=dow===0&&d>0;
     const hrs=getDay(d)[WRITE_ID]||0;
@@ -272,7 +272,7 @@ function buildGrid(){
 
   // Read row
   bodyHTML+=`<tr><td class="habit-name" style="color:var(--brass)">Read (hrs)</td>`;
-  for(let d=0;d<91;d++){
+  for(let d=0;d<90;d++){
     const dt=dayDate(d);const dow=dt.getDay();
     const isFuture=d>today;const isToday=d===today;const isWeekSep=dow===0&&d>0;
     const hrs=getDay(d)[READ_ID]||0;
@@ -287,7 +287,7 @@ function buildGrid(){
 
   // Deep Work row
   bodyHTML+=`<tr><td class="habit-name" style="color:var(--brass)">Deep Work (blocks)</td>`;
-  for(let d=0;d<91;d++){
+  for(let d=0;d<90;d++){
     const dt=dayDate(d);const dow=dt.getDay();
     const isFuture=d>today;const isToday=d===today;const isWeekSep=dow===0&&d>0;
     const v=getDay(d).deepwork_blocks||0;
@@ -302,7 +302,7 @@ function buildGrid(){
 
   // Screen Time row (inverted — lower is better)
   bodyHTML+=`<tr><td class="habit-name" style="color:var(--brass)">Screen Time (hrs)</td>`;
-  for(let d=0;d<91;d++){
+  for(let d=0;d<90;d++){
     const dt=dayDate(d);const dow=dt.getDay();
     const isFuture=d>today;const isToday=d===today;const isWeekSep=dow===0&&d>0;
     const v=getDay(d).screen_time_hrs;
@@ -318,7 +318,7 @@ function buildGrid(){
 
   // Outside row
   bodyHTML+=`<tr><td class="habit-name" style="color:var(--brass)">Outside (hrs)</td>`;
-  for(let d=0;d<91;d++){
+  for(let d=0;d<90;d++){
     const dt=dayDate(d);const dow=dt.getDay();
     const isFuture=d>today;const isToday=d===today;const isWeekSep=dow===0&&d>0;
     const v=getDay(d).outside_blocks||0;
@@ -384,7 +384,7 @@ function buildWeeklySummaries(){
 
   // Find all weeks that have started
   let weeks=[];
-  for(let d=0;d<91;d+=7){
+  for(let d=0;d<90;d+=7){
     if(d>today+7)break;
     weeks.push(d);
   }
