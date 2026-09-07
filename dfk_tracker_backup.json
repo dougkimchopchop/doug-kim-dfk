@@ -1,0 +1,41 @@
+{
+  "task_log": {
+    "2026-08-23": {
+      "total": 2,
+      "major": 0
+    },
+    "2026-08-24": {
+      "total": 3,
+      "major": 0
+    },
+    "2026-08-25": {
+      "total": 1,
+      "major": 0
+    },
+    "2026-08-26": {
+      "total": 5,
+      "major": 0
+    },
+    "2026-08-27": {
+      "total": 1,
+      "major": 1
+    },
+    "2026-08-28": {
+      "total": 1,
+      "major": 0
+    }
+  },
+  "w2026-08-23": {
+    "win1": "Substack Cameras Down Shipped",
+    "habit_consequence": "no videos",
+    "habit_locked": true,
+    "habit_locked_at": "Aug 25, 06:07 AM",
+    "output_consequence": "no image edits",
+    "output_locked": true,
+    "output_locked_at": "Aug 25, 06:07 AM",
+    "target_pushups": 210,
+    "target_sub_post": 1,
+    "target_sub_notes": 5,
+    "target_sub_restack": 4
+  }
+}
