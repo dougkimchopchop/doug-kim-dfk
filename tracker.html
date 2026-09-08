@@ -276,6 +276,20 @@ footer a:hover{color:var(--ribbon)}
 <div class="sec-lbl">Habits — tap to log</div>
 <div class="grid" id="grid"></div>
 
+<div class="sec-lbl">Stop Doing — tap to log</div>
+<div class="grid" id="stop-grid"></div>
+
+<div class="stats" id="stop-stats-row" style="grid-template-columns:repeat(2,1fr);margin-bottom:1.2rem;">
+  <div class="sc"><div class="sc-lbl">Stop Score</div><div class="sc-num" id="stop-sc-score">0%</div><div class="sc-sub" id="stop-sc-frac">0 / 6</div></div>
+  <div class="sc"><div class="sc-lbl">Stop Streak</div><div class="sc-num" id="stop-sc-streak">0</div><div class="sc-sub">days won</div></div>
+</div>
+
+<div class="score-row">
+  <div class="score-big" id="stop-sbig">0%</div>
+  <div class="score-sub">Threshold: <span class="thresh">75%</span></div>
+</div>
+<div class="verdict" id="stop-verdict"></div>
+
 <div class="sec-lbl">Weight — logged every morning</div>
 <div class="num-card" style="margin-bottom:1.2rem;">
   <div class="num-card-title">Weight <span class="num-card-target" id="weight-note"></span></div>
@@ -324,6 +338,17 @@ const HABITS=[
   {id:'shoot',     name:'Shoot'},
 ];
 
+const STOPS=[
+  {id:'stop_video_sort',  name:'Video / Photo Sort'},
+  {id:'stop_ruminating',  name:'Ruminating'},
+  {id:'stop_eat_crap',    name:'Eat Crap'},
+  {id:'stop_spend',       name:'Spend'},
+  {id:'stop_hiding',      name:'Hiding'},
+  {id:'stop_defer_manana',name:'Defer Mañana'},
+];
+
+const TOTAL_STOP_CHECKS=STOPS.length;
+
 const TOTAL_CHECKS=HABITS.length;
 
 const PHASES=[
@@ -353,6 +378,17 @@ function habitScore(d){
 function doneCount(d){
   const dd=gd(d);
   return HABITS.filter(h=>dd[h.id]===true).length;
+}
+
+function stopScore(d){
+  const dd=gd(d);
+  const sDone=STOPS.filter(h=>dd[h.id]===true).length;
+  if(!STOPS.some(h=>dd[h.id]!==undefined))return -1;
+  return Math.round(sDone/TOTAL_STOP_CHECKS*100);
+}
+function stopDoneCount(d){
+  const dd=gd(d);
+  return STOPS.filter(h=>dd[h.id]===true).length;
 }
 
 function setSyncStatus(s,msg){document.getElementById('sync-dot').className='sync-dot'+(s?' '+s:'');document.getElementById('sync-text').textContent=msg;}
@@ -398,11 +434,34 @@ function renderGrid(){
   updateScore();
 }
 
+function renderStopGrid(){
+  const dd=gd(cur);
+  const stopsHtml=STOPS.map(h=>{
+    const s=dd[h.id];const cls=s===true?'done':s===false?'missed':'';
+    return `<div class="hc ${cls}" onclick="cyc('${h.id}')"><div class="dot"></div><div class="hc-name">${h.name}</div></div>`;
+  }).join('');
+  document.getElementById('stop-grid').innerHTML=stopsHtml;
+  updateStopScore();
+}
+
+function updateStopScore(){
+  const s=stopScore(cur);const done=stopDoneCount(cur);const max=TOTAL_STOP_CHECKS;
+  document.getElementById('stop-sbig').textContent=s<0?'0%':s+'%';
+  document.getElementById('stop-sc-score').textContent=s<0?'0%':s+'%';
+  document.getElementById('stop-sc-frac').textContent=done+' / '+max;
+  const v=document.getElementById('stop-verdict');
+  if(s<0||s===0){v.className='verdict';v.textContent='';}
+  else if(s===100){v.className='verdict pass';v.textContent='100% — held the line on everything.';}
+  else if(s>=75){v.className='verdict pass';v.textContent=s+'% — above threshold. Held the line.';}
+  else if(s>=50){v.className='verdict warn';v.textContent=s+'% — below threshold. Slipping.';}
+  else{v.className='verdict fail';v.textContent=s+"% — Loss. Old patterns winning today.";}
+}
+
 function cyc(id){
   if(!data[dk(cur)])data[dk(cur)]={};
   const c=data[dk(cur)][id];
   if(c===undefined)data[dk(cur)][id]=true;else if(c===true)data[dk(cur)][id]=false;else delete data[dk(cur)][id];
-  scheduleSave();renderGrid();renderStreak();updateHeader();updateStats();
+  scheduleSave();renderGrid();renderStopGrid();renderStreak();updateHeader();updateStats();
 }
 
 function markAll(val){
@@ -488,9 +547,13 @@ function updateStats(){
   const ph=PHASES.find(p=>cur>=p.start&&cur<=p.end)||PHASES[0];
   document.getElementById('sc-phase').textContent=ph.label;
   document.getElementById('sc-pdays').textContent=ph.days;
+
+  let stopStreak=0;
+  for(let i=today;i>=0;i--){if(stopScore(i)>=75)stopStreak++;else break}
+  document.getElementById('stop-sc-streak').textContent=stopStreak;
 }
 
-function cd(d){cur=Math.max(0,Math.min(todayIdx(),cur+d));updateNav();renderGrid();renderWeightInput();renderStreak();renderPhases();updateHeader();}
+function cd(d){cur=Math.max(0,Math.min(todayIdx(),cur+d));updateNav();renderGrid();renderStopGrid();renderWeightInput();renderStreak();renderPhases();updateHeader();}
 
 function updateNav(){
   document.getElementById('nav-lbl').textContent='Day '+(cur+1)+' of 90 · '+dayDate(cur).toLocaleDateString('en-US',{month:'short',day:'numeric'});
@@ -512,7 +575,7 @@ function renderPhases(){
   document.getElementById('phases').innerHTML=PHASES.map(p=>`<div class="ph${cur>=p.start&&cur<=p.end?' active':''}"><div class="ph-name">${p.name}</div><div class="ph-dates">${p.dates}</div></div>`).join('');
 }
 
-function jmp(d){if(d<=todayIdx()){cur=d;updateNav();renderGrid();renderWeightInput();renderStreak();renderPhases();updateHeader();}}
+function jmp(d){if(d<=todayIdx()){cur=d;updateNav();renderGrid();renderStopGrid();renderWeightInput();renderStreak();renderPhases();updateHeader();}}
 
 /* Init */
 document.getElementById('hdr-date').textContent=new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
@@ -522,7 +585,7 @@ document.getElementById('cd60-num').textContent=Math.ceil((TURNS_60-new Date())/
 
 async function init(){
   await loadData();cur=todayIdx();
-  updateNav();renderGrid();renderWeightInput();renderStreak();renderPhases();updateHeader();updateStats();
+  updateNav();renderGrid();renderStopGrid();renderWeightInput();renderStreak();renderPhases();updateHeader();updateStats();
   document.getElementById('last-updated').textContent='Synced '+new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
 }
 init();
