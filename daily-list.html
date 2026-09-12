@@ -131,23 +131,28 @@
     text-transform: uppercase; color: var(--ink-soft); margin-top: 3px;
   }
   .counter-hist {
-    display: flex; flex-direction: column; gap: 8px; padding-top: 14px;
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; padding-top: 14px;
     border-top: 1px solid var(--line);
   }
-  .counter-hist-row {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 10px 14px; background: var(--paper);
-    border: 1px solid var(--line); border-radius: var(--radius);
+  .counter-hist-card {
+    background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius);
+    padding: 10px 6px 11px; text-align: center;
   }
-  .counter-hist-row .d-lbl {
-    font-family: 'Space Mono', monospace; font-size: 11px; font-weight: 700;
-    letter-spacing: .05em; text-transform: uppercase; color: var(--ink);
+  .counter-hist-card .d-lbl {
+    font-family: 'Space Mono', monospace; font-size: 10px; font-weight: 700;
+    letter-spacing: .04em; text-transform: uppercase; color: var(--ink-soft); margin-bottom: 6px;
   }
-  .counter-hist-row .d-num {
-    font-family: 'Space Mono', monospace; font-size: 14px; font-weight: 700; color: var(--ink-soft);
+  .counter-hist-card .d-num {
+    font-family: 'Space Mono', monospace; font-size: 17px; font-weight: 700; color: var(--ink);
   }
-  .counter-hist-row .d-num b { color: var(--ink); font-weight: 700; }
+  .counter-hist-card .d-num .slash { color: var(--ink-soft); font-weight: 400; margin: 0 1px; }
+  .counter-hist-card .d-num .major { color: var(--brass); }
+  .counter-hist-card .d-legend {
+    font-family: 'Space Mono', monospace; font-size: 8px; color: var(--ink-soft);
+    text-transform: uppercase; letter-spacing: .04em; margin-top: 3px;
+  }
   .counter-hist-empty {
+    grid-column: 1 / -1;
     font-family: 'Space Mono', monospace; font-size: 12px; color: var(--ink-soft); font-style: italic;
     text-align: center; padding: 40px 0;
   }
@@ -557,7 +562,11 @@ async function loadCounter() {
           const e = log[d];
           const t = typeof e === 'number' ? e : (e && e.total) || 0;
           const m = typeof e === 'number' ? 0 : (e && e.major) || 0;
-          return '<div class="counter-hist-row"><span class="d-lbl">' + fmtDay(d) + '</span><span class="d-num"><b>' + t + '</b> / ' + m + '</span></div>';
+          return '<div class="counter-hist-card">' +
+            '<div class="d-lbl">' + fmtDay(d) + '</div>' +
+            '<div class="d-num">' + t + '<span class="slash">/</span><span class="major">' + m + '</span></div>' +
+            '<div class="d-legend">total / major</div>' +
+            '</div>';
         })
         .join('');
     }
