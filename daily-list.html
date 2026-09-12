@@ -131,25 +131,25 @@
     text-transform: uppercase; color: var(--ink-soft); margin-top: 3px;
   }
   .counter-hist {
-    display: flex; gap: 8px; overflow-x: auto; padding-top: 12px;
-    border-top: 1px solid var(--line); -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
+    display: flex; flex-direction: column; gap: 8px; padding-top: 14px;
+    border-top: 1px solid var(--line);
   }
-  .counter-hist::-webkit-scrollbar { display: none; }
-  .counter-hist-day {
-    flex: none; display: flex; flex-direction: column; align-items: center; gap: 3px;
-    min-width: 48px; padding: 6px 4px; background: var(--paper);
+  .counter-hist-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 14px; background: var(--paper);
     border: 1px solid var(--line); border-radius: var(--radius);
   }
-  .counter-hist-day .d-lbl {
-    font-family: 'Space Mono', monospace; font-size: 10px; color: var(--ink-soft); letter-spacing: .02em;
+  .counter-hist-row .d-lbl {
+    font-family: 'Space Mono', monospace; font-size: 11px; font-weight: 700;
+    letter-spacing: .05em; text-transform: uppercase; color: var(--ink);
   }
-  .counter-hist-day .d-num {
-    font-family: 'Space Mono', monospace; font-size: 15px; font-weight: 700; color: var(--ink);
+  .counter-hist-row .d-num {
+    font-family: 'Space Mono', monospace; font-size: 14px; font-weight: 700; color: var(--ink-soft);
   }
+  .counter-hist-row .d-num b { color: var(--ink); font-weight: 700; }
   .counter-hist-empty {
-    font-family: 'Space Mono', monospace; font-size: 11px; color: var(--ink-soft); font-style: italic;
-    padding-top: 12px; border-top: 1px solid var(--line);
+    font-family: 'Space Mono', monospace; font-size: 12px; color: var(--ink-soft); font-style: italic;
+    text-align: center; padding: 40px 0;
   }
 
   .tabs { display: flex; gap: 0; border-bottom: 1px solid var(--line-d); margin: 22px 0 22px; }
@@ -175,23 +175,10 @@
   </header>
   <div id="status">Loading…</div>
 
-  <div class="counter" id="counter" style="display:none">
-    <div class="counter-today-row">
-      <div class="counter-today">
-        <div class="counter-num" id="counter-today-num">0</div>
-        <div class="counter-lbl">Tasks completed today</div>
-      </div>
-      <div class="counter-today">
-        <div class="counter-num" id="counter-major-num">0</div>
-        <div class="counter-lbl">Major DFK today</div>
-      </div>
-    </div>
-    <div class="counter-hist" id="counter-hist"></div>
-  </div>
-
   <div class="tabs">
     <div class="tab active" id="tab-active" onclick="switchTab('active')">Active</div>
     <div class="tab" id="tab-completed" onclick="switchTab('completed')">Completed</div>
+    <div class="tab" id="tab-tracker" onclick="switchTab('tracker')">Tracker</div>
   </div>
 
   <div class="panel active" id="panel-active">
@@ -199,6 +186,21 @@
   </div>
   <div class="panel" id="panel-completed">
     <div id="completed-grid"></div>
+  </div>
+  <div class="panel" id="panel-tracker">
+    <div class="counter" id="counter" style="display:none">
+      <div class="counter-today-row">
+        <div class="counter-today">
+          <div class="counter-num" id="counter-today-num">0</div>
+          <div class="counter-lbl">Tasks completed today</div>
+        </div>
+        <div class="counter-today">
+          <div class="counter-num" id="counter-major-num">0</div>
+          <div class="counter-lbl">Major DFK today</div>
+        </div>
+      </div>
+      <div class="counter-hist" id="counter-hist"></div>
+    </div>
   </div>
 
   <footer>
@@ -554,7 +556,8 @@ async function loadCounter() {
         .map(d => {
           const e = log[d];
           const t = typeof e === 'number' ? e : (e && e.total) || 0;
-          return '<div class="counter-hist-day"><span class="d-lbl">' + fmtDay(d) + '</span><span class="d-num">' + t + '</span></div>';
+          const m = typeof e === 'number' ? 0 : (e && e.major) || 0;
+          return '<div class="counter-hist-row"><span class="d-lbl">' + fmtDay(d) + '</span><span class="d-num"><b>' + t + '</b> / ' + m + '</span></div>';
         })
         .join('');
     }
@@ -583,8 +586,10 @@ let completedLoaded = false;
 function switchTab(tab) {
   document.getElementById('tab-active').classList.toggle('active', tab === 'active');
   document.getElementById('tab-completed').classList.toggle('active', tab === 'completed');
+  document.getElementById('tab-tracker').classList.toggle('active', tab === 'tracker');
   document.getElementById('panel-active').classList.toggle('active', tab === 'active');
   document.getElementById('panel-completed').classList.toggle('active', tab === 'completed');
+  document.getElementById('panel-tracker').classList.toggle('active', tab === 'tracker');
   if (tab === 'completed' && !completedLoaded) loadCompleted();
 }
 
