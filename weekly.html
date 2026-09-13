@@ -179,6 +179,35 @@ h1{font-family:var(--display);font-weight:600;font-size:clamp(1.8rem,4vw,2.4rem)
 .wk-target-status.pass{color:var(--pass)}
 .wk-target-status.fail{color:var(--fail)}
 
+/* Score tab */
+.score-card{background:var(--card);border:1px solid var(--line-d);border-radius:var(--radius);padding:1.2rem 1.2rem 1.1rem;margin-bottom:1.2rem;text-align:center}
+.score-card .eyebrow{justify-content:center;margin-bottom:.3rem}
+.score-card .score-big{font-size:3.2rem}
+.score-card .score-sub{margin-top:.4rem;letter-spacing:.03em}
+.score-card .score-sub b{color:var(--ribbon)}
+.score-bar{margin-top:.9rem;background:var(--line);height:6px;border-radius:3px;overflow:hidden}
+.score-bar-fill{height:6px;border-radius:3px;background:var(--brass);transition:width .3s}
+
+.breakdown-card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:.4rem 1rem;margin-bottom:1rem}
+.breakdown-row{display:flex;align-items:center;gap:.7rem;padding:.55rem 0;border-bottom:1px solid var(--line)}
+.breakdown-row:last-child{border-bottom:none}
+.breakdown-info{flex:1;min-width:0}
+.breakdown-name{font-size:.84rem;color:var(--ink)}
+.breakdown-detail{font-family:var(--mono);font-size:.6rem;color:var(--ink-muted);margin-top:.15rem;letter-spacing:.02em}
+.breakdown-bar-wrap{width:56px;background:var(--line);height:4px;border-radius:2px;overflow:hidden;flex-shrink:0}
+.breakdown-bar-fill{height:4px;border-radius:2px}
+.breakdown-val{font-family:var(--mono);font-size:.68rem;width:42px;text-align:right;flex-shrink:0;color:var(--ink-soft)}
+.breakdown-val.pass{color:var(--pass)}
+
+.recap-item{margin-bottom:.6rem}
+.recap-item:last-child{margin-bottom:0}
+.recap-text{font-size:.88rem;color:var(--ink);line-height:1.45}
+.recap-text.empty{color:var(--ink-muted);font-style:italic}
+.recap-win-row{display:flex;align-items:baseline;gap:.6rem;margin-bottom:.5rem}
+.recap-win-row:last-child{margin-bottom:0}
+.recap-win-text{font-size:.9rem;color:var(--ink)}
+.recap-win-text.empty{color:var(--ink-muted);font-style:italic}
+
 /* Weekly shipped */
 .shipped-card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:.9rem 1rem;margin-bottom:1rem}
 .shipped-title{font-family:var(--mono);font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:var(--oak-soft);margin-bottom:.8rem}
@@ -254,6 +283,13 @@ footer a:hover{color:var(--ribbon)}
   <span class="sync-text" id="sync-text">Connecting…</span>
 </div>
 
+<div class="tabs">
+  <div class="tab active" id="tab-week" onclick="switchTab('week')">This Week</div>
+  <div class="tab" id="tab-score" onclick="switchTab('score')">Score</div>
+</div>
+
+<div class="panel active" id="panel-week">
+
 <div class="wk-topbar">
   <div class="wk-nav">
     <button onclick="changeWk(-1)">←</button>
@@ -286,6 +322,26 @@ footer a:hover{color:var(--ribbon)}
   <div class="win-row"><span class="win-num">1</span><input type="text" class="win-input" id="win1" placeholder="What actually moved?" oninput="saveWins()"></div>
   <div class="win-row"><span class="win-num">2</span><input type="text" class="win-input" id="win2" placeholder="" oninput="saveWins()"></div>
   <div class="win-row"><span class="win-num">3</span><input type="text" class="win-input" id="win3" placeholder="" oninput="saveWins()"></div>
+</div>
+
+</div><!-- end panel-week -->
+
+<div class="panel" id="panel-score">
+  <div class="score-card">
+    <div class="eyebrow" id="score-week-lbl">Week</div>
+    <div class="score-big" id="score-big">—</div>
+    <div class="score-sub" id="score-sub">weekly goals reached</div>
+    <div class="score-bar"><div class="score-bar-fill" id="score-bar-fill" style="width:0%"></div></div>
+  </div>
+
+  <div class="sec-lbl">Weekly targets — breakdown</div>
+  <div class="breakdown-card" id="score-breakdown"></div>
+
+  <div class="sec-lbl">Shipped this week</div>
+  <div class="shipped-card" id="score-shipped"></div>
+
+  <div class="sec-lbl">Big wins</div>
+  <div class="wins-card" id="score-wins"></div>
 </div>
 
 </div><!-- end page -->
@@ -392,6 +448,8 @@ function renderWeekly(){
   ['win1','win2','win3'].forEach(id=>{
     const el=document.getElementById(id);if(el)el.value=wd[id]||'';
   });
+
+  renderScore();
 }
 
 function changeWk(dir){
@@ -449,6 +507,73 @@ function renderWeeklyRollup(){
       <div class="wk-target-status ${stHit?'pass':'fail'}">${stAvg===null?'no data yet':(Math.round(stAvg*10)/10)+'hrs/day avg'}</div>
     </div>
   `;
+}
+
+function switchTab(t){
+  document.getElementById('tab-week').classList.toggle('active',t==='week');
+  document.getElementById('tab-score').classList.toggle('active',t==='score');
+  document.getElementById('panel-week').classList.toggle('active',t==='week');
+  document.getElementById('panel-score').classList.toggle('active',t==='score');
+  if(t==='score')renderScore();
+}
+
+function renderScore(){
+  const days=weekDays(wkOffset).filter(d=>d>=0&&d<=90);
+  const wk=weekKey(wkOffset);const wd=data[wk]||{};
+
+  const allDays=weekDays(wkOffset);
+  let weekNum=Math.floor(allDays[0]/7)+1;if(weekNum<1)weekNum=1;
+  document.getElementById('score-week-lbl').textContent='Week '+weekNum;
+
+  const rows=WK_TARGETS.map(t=>{
+    const val=wd['target_'+t.id]||0;
+    const pct=Math.min(100,Math.round(val/t.goal*100));
+    const hit=val>=t.goal;
+    const col=hit?'var(--pass)':pct>=50?'var(--warn)':'var(--ribbon)';
+    return {name:t.name,detail:val+' / '+t.goal+(t.unit?' '+t.unit:''),pct,hit,col};
+  });
+
+  const dwTotal=days.reduce((s,d)=>s+(gd(d).deepwork_blocks||0),0);
+  const outTotal=days.reduce((s,d)=>s+(gd(d).outside_blocks||0),0);
+  const stDays=days.filter(d=>gd(d).screen_time_hrs!==undefined);
+  const stAvg=stDays.length?stDays.reduce((s,d)=>s+gd(d).screen_time_hrs,0)/stDays.length:null;
+  const dwGoal=DEEPWORK_PASS*7,outGoal=OUTSIDE_PASS*7;
+  const dwPct=Math.min(100,Math.round(dwTotal/dwGoal*100));
+  const outPct=Math.min(100,Math.round(outTotal/outGoal*100));
+  const stPct=stAvg===null?0:(stAvg<=SCREEN_PASS?100:Math.max(10,Math.round(SCREEN_PASS/stAvg*100)));
+  const dwHit=dwTotal>=dwGoal,outHit=outTotal>=outGoal,stHit=stAvg!==null&&stAvg<=SCREEN_PASS;
+  const barCol=(hit,pct)=>hit?'var(--pass)':pct>=50?'var(--warn)':'var(--ribbon)';
+
+  rows.push({name:'Deep Work',detail:dwTotal+' / '+dwGoal+' blocks',pct:dwPct,hit:dwHit,col:barCol(dwHit,dwPct)});
+  rows.push({name:'Outside',detail:outTotal+' / '+outGoal+' hrs',pct:outPct,hit:outHit,col:barCol(outHit,outPct)});
+  rows.push({name:'Screen Time',detail:(stAvg===null?'no data yet':(Math.round(stAvg*10)/10)+'hrs/day avg (budget '+SCREEN_PASS+'hr)'),pct:stPct,hit:stHit,col:barCol(stHit,stPct)});
+
+  const overall=Math.round(rows.reduce((s,r)=>s+r.pct,0)/rows.length);
+  const hitCount=rows.filter(r=>r.hit).length;
+
+  document.getElementById('score-big').textContent=overall+'%';
+  document.getElementById('score-sub').innerHTML='weekly goals reached &nbsp;·&nbsp; <b>'+hitCount+' of '+rows.length+'</b> hit outright';
+  document.getElementById('score-bar-fill').style.width=overall+'%';
+
+  document.getElementById('score-breakdown').innerHTML=rows.map(r=>
+    `<div class="breakdown-row">
+      <div class="breakdown-info"><div class="breakdown-name">${r.name}</div><div class="breakdown-detail">${r.detail}</div></div>
+      <div class="breakdown-bar-wrap"><div class="breakdown-bar-fill" style="width:${r.pct}%;background:${r.col}"></div></div>
+      <div class="breakdown-val${r.hit?' pass':''}">${r.hit?'✓ ':''}${r.pct}%</div>
+    </div>`
+  ).join('');
+
+  const goals=getShipGoals();
+  document.getElementById('score-shipped').innerHTML=goals.map((g,i)=>{
+    const v=wd['shipped_goal_'+i]||'';
+    const label=g||('Goal '+(i+1));
+    return `<div class="recap-item"><div class="shipped-label">${label}</div><div class="recap-text${v?'':' empty'}">${v||'— nothing logged yet'}</div></div>`;
+  }).join('');
+
+  document.getElementById('score-wins').innerHTML=['win1','win2','win3'].map((id,i)=>{
+    const v=wd[id]||'';
+    return `<div class="recap-win-row"><span class="win-num">${i+1}</span><span class="recap-win-text${v?'':' empty'}">${v||'—'}</span></div>`;
+  }).join('');
 }
 
 /* ── SHIP GOALS ── */
