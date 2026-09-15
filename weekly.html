@@ -304,21 +304,21 @@ footer a:hover{color:var(--ribbon)}
 <div class="sec-lbl">Log Today</div>
 <div class="num-inputs3" id="log-today">
   <div class="num-card">
-    <div class="num-card-title">Deep Work</div>
+    <div class="num-card-title">Deep Work <span class="num-card-target">goal: 4/day</span></div>
     <div class="num-input-row">
       <input type="number" min="0" step="1" id="log-deepwork" placeholder="0" oninput="saveTodayMetric('deepwork_blocks',this.value)">
       <span class="num-unit">blocks</span>
     </div>
   </div>
   <div class="num-card">
-    <div class="num-card-title">Outside</div>
+    <div class="num-card-title">Outside <span class="num-card-target">goal: 2 hrs/day</span></div>
     <div class="num-input-row">
       <input type="number" min="0" step="0.5" id="log-outside" placeholder="0" oninput="saveTodayMetric('outside_blocks',this.value)">
       <span class="num-unit">hrs</span>
     </div>
   </div>
   <div class="num-card">
-    <div class="num-card-title">Screen Time</div>
+    <div class="num-card-title">Screen Time <span class="num-card-target">budget: 1hr/day</span></div>
     <div class="num-input-row">
       <input type="number" min="0" step="0.1" id="log-screentime" placeholder="0" oninput="saveTodayMetric('screen_time_hrs',this.value)">
       <span class="num-unit">hrs</span>
