@@ -301,6 +301,31 @@ footer a:hover{color:var(--ribbon)}
 <div class="sec-lbl">Weekly targets</div>
 <div class="wk-targets" id="wk-targets"></div>
 
+<div class="sec-lbl">Log Today</div>
+<div class="num-inputs3" id="log-today">
+  <div class="num-card">
+    <div class="num-card-title">Deep Work</div>
+    <div class="num-input-row">
+      <input type="number" min="0" step="1" id="log-deepwork" placeholder="0" oninput="saveTodayMetric('deepwork_blocks',this.value)">
+      <span class="num-unit">blocks</span>
+    </div>
+  </div>
+  <div class="num-card">
+    <div class="num-card-title">Outside</div>
+    <div class="num-input-row">
+      <input type="number" min="0" step="0.5" id="log-outside" placeholder="0" oninput="saveTodayMetric('outside_blocks',this.value)">
+      <span class="num-unit">hrs</span>
+    </div>
+  </div>
+  <div class="num-card">
+    <div class="num-card-title">Screen Time</div>
+    <div class="num-input-row">
+      <input type="number" min="0" step="0.1" id="log-screentime" placeholder="0" oninput="saveTodayMetric('screen_time_hrs',this.value)">
+      <span class="num-unit">hrs</span>
+    </div>
+  </div>
+</div>
+
 <div class="sec-lbl">Deep Work &amp; Discipline — this week</div>
 <div class="wk-targets" id="wk-rollup"></div>
 
@@ -442,6 +467,7 @@ function renderWeekly(){
     </div>`;
   }).join('');
 
+  fillTodayInputs();
   renderWeeklyRollup();
   renderShippedFields();
   // Wins
@@ -507,6 +533,22 @@ function renderWeeklyRollup(){
       <div class="wk-target-status ${stHit?'pass':'fail'}">${stAvg===null?'no data yet':(Math.round(stAvg*10)/10)+'hrs/day avg'}</div>
     </div>
   `;
+}
+
+function saveTodayMetric(key,val){
+  const d=todayIdx();if(!data[dk(d)])data[dk(d)]={};
+  const n=parseFloat(val);
+  if(val===''||isNaN(n))delete data[dk(d)][key];else data[dk(d)][key]=n;
+  scheduleSave();
+  renderWeeklyRollup();
+  if(document.getElementById('panel-score').classList.contains('active'))renderScore();
+}
+
+function fillTodayInputs(){
+  const d=todayIdx();const dd=gd(d);
+  document.getElementById('log-deepwork').value=dd.deepwork_blocks||'';
+  document.getElementById('log-outside').value=dd.outside_blocks||'';
+  document.getElementById('log-screentime').value=dd.screen_time_hrs!==undefined?dd.screen_time_hrs:'';
 }
 
 function switchTab(t){
