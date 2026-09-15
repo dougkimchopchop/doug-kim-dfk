@@ -597,6 +597,25 @@ init();
 // page becomes visible again so desktop/mobile never drift.
 window.addEventListener('pageshow',function(e){if(e.persisted)init();});
 document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible')init();});
+
+// If this tab is just left open straight through midnight (no tab switch,
+// no app switch — so visibilitychange/pageshow never fire), `cur` would
+// otherwise stay frozen on the old day and keep showing yesterday's
+// checkmarks. Poll for the date rolling over and, only if you were
+// actually viewing today (not a past day you paged back to on purpose),
+// carry the view forward to the new today.
+let lastKnownToday=todayIdx();
+setInterval(function(){
+  const t=todayIdx();
+  if(t!==lastKnownToday){
+    const wasOnToday=(cur===lastKnownToday);
+    lastKnownToday=t;
+    if(wasOnToday){
+      cur=t;
+      updateNav();renderGrid();renderStopGrid();renderWeightInput();renderStreak();renderPhases();updateHeader();updateStats();
+    }
+  }
+},60000);
 </script>
 </body>
 </html>
