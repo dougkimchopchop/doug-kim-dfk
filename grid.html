@@ -145,7 +145,26 @@ function dk(d){return 'd'+d}
 function dayDate(d){const dt=new Date(START);dt.setDate(dt.getDate()+d);return dt}
 function todayIdx(){return Math.max(0,Math.min(89,Math.round((new Date()-START)/86400000)))}
 function getDay(d){return data[dk(d)]||{}}
-function weekKey(sunDayIdx){const dt=dayDate(Math.max(0,sunDayIdx));const sun=new Date(dt);sun.setDate(dt.getDate()-dt.getDay());return 'w'+sun.toISOString().slice(0,10)}
+/* Weeks run Monday–Sunday. One-time migration of old Sunday-start week keys
+   (w<Sunday date>) into Monday-start keys. The Sun 2026-09-27 key was written on
+   that Sunday, so it belongs to the week of Mon 2026-09-21; earlier Sunday keys
+   map to the following Monday (6 of 7 days overlap). Old keys are left in place. */
+function ymd(dt){return dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0')+'-'+String(dt.getDate()).padStart(2,'0')}
+function migrateWeeksToMonday(){
+  if(data.wk_monday_migrated)return false;
+  Object.keys(data).forEach(k=>{
+    const m=/^w(\d{4})-(\d{2})-(\d{2})$/.exec(k);if(!m)return;
+    const s=new Date(+m[1],+m[2]-1,+m[3]);if(s.getDay()!==0)return;
+    const t=new Date(s);t.setDate(s.getDate()+(ymd(s)>='2026-09-27'?-6:1));
+    const tk='w'+ymd(t);const src=data[k]||{};const tgt=data[tk]||(data[tk]={});
+    Object.keys(src).forEach(f=>{
+      if(!(f in tgt))tgt[f]=src[f];
+      else if(typeof tgt[f]==='number'&&typeof src[f]==='number')tgt[f]=Math.max(tgt[f],src[f]);
+    });
+  });
+  data.wk_monday_migrated=true;return true;
+}
+function weekKey(startIdx){const dt=dayDate(Math.max(0,startIdx));const mon=new Date(dt);mon.setDate(dt.getDate()-((dt.getDay()+6)%7));return 'w'+ymd(mon)}
 
 function setSyncStatus(state,text){
   document.getElementById('sync-dot').className='sync-dot '+state;
@@ -205,7 +224,7 @@ function buildGrid(){
 
   for(let d=0;d<90;d++){
     const dt=dayDate(d);const dow=dt.getDay();const mon=dt.getMonth();
-    const isWeekSep=dow===0&&d>0;const cls=(isWeekSep?'week-sep ':'')+'day-col';
+    const isWeekSep=dow===1&&d>0;const cls=(isWeekSep?'week-sep ':'')+'day-col';
     if(mon!==lastMonth){if(lastMonth!==-1)monthCells.push({month:lastMonth,span:monthSpan});lastMonth=mon;monthSpan=0;}
     monthSpan++;if(d===89)monthCells.push({month:mon,span:monthSpan});
     const isToday=d===today;
@@ -223,7 +242,7 @@ function buildGrid(){
   bodyHTML+=`<tr><td class="habit-name">Meditate</td>`;
   for(let d=0;d<90;d++){
     const dt=dayDate(d);const dow=dt.getDay();
-    const isFuture=d>today;const isToday=d===today;const isWeekSep=dow===0&&d>0;
+    const isFuture=d>today;const isToday=d===today;const isWeekSep=dow===1&&d>0;
     const st=getDay(d).meditate||0;
     let cls='cell';
     if(isFuture)cls+=' future';
@@ -241,7 +260,7 @@ function buildGrid(){
     bodyHTML+=`<tr class="habit-row" data-hi="${hi}"><td class="habit-name">${habit}</td>`;
     for(let d=0;d<90;d++){
       const dt=dayDate(d);const dow=dt.getDay();
-      const isFuture=d>today;const isToday=d===today;const isWeekSep=dow===0&&d>0;
+      const isFuture=d>today;const isToday=d===today;const isWeekSep=dow===1&&d>0;
       const dd=getDay(d);const state=dd[hid];
       let cls='cell';
       if(isFuture)cls+=' future';
@@ -258,7 +277,7 @@ function buildGrid(){
   bodyHTML+=`<tr><td class="habit-name" style="color:var(--brass)">Write (hrs)</td>`;
   for(let d=0;d<90;d++){
     const dt=dayDate(d);const dow=dt.getDay();
-    const isFuture=d>today;const isToday=d===today;const isWeekSep=dow===0&&d>0;
+    const isFuture=d>today;const isToday=d===today;const isWeekSep=dow===1&&d>0;
     const hrs=getDay(d)[WRITE_ID]||0;
     let cls='cell hrs-text';
     if(isFuture)cls='cell future';
@@ -274,7 +293,7 @@ function buildGrid(){
   bodyHTML+=`<tr><td class="habit-name" style="color:var(--brass)">Read (hrs)</td>`;
   for(let d=0;d<90;d++){
     const dt=dayDate(d);const dow=dt.getDay();
-    const isFuture=d>today;const isToday=d===today;const isWeekSep=dow===0&&d>0;
+    const isFuture=d>today;const isToday=d===today;const isWeekSep=dow===1&&d>0;
     const hrs=getDay(d)[READ_ID]||0;
     let cls='cell hrs-text';
     if(isFuture)cls='cell future';
@@ -289,7 +308,7 @@ function buildGrid(){
   bodyHTML+=`<tr><td class="habit-name" style="color:var(--brass)">Deep Work (blocks)</td>`;
   for(let d=0;d<90;d++){
     const dt=dayDate(d);const dow=dt.getDay();
-    const isFuture=d>today;const isToday=d===today;const isWeekSep=dow===0&&d>0;
+    const isFuture=d>today;const isToday=d===today;const isWeekSep=dow===1&&d>0;
     const v=getDay(d).deepwork_blocks||0;
     let cls='cell hrs-text';
     if(isFuture)cls='cell future';
@@ -304,7 +323,7 @@ function buildGrid(){
   bodyHTML+=`<tr><td class="habit-name" style="color:var(--brass)">Screen Time (hrs)</td>`;
   for(let d=0;d<90;d++){
     const dt=dayDate(d);const dow=dt.getDay();
-    const isFuture=d>today;const isToday=d===today;const isWeekSep=dow===0&&d>0;
+    const isFuture=d>today;const isToday=d===today;const isWeekSep=dow===1&&d>0;
     const v=getDay(d).screen_time_hrs;
     let cls='cell hrs-text';
     if(isFuture)cls='cell future';
@@ -320,7 +339,7 @@ function buildGrid(){
   bodyHTML+=`<tr><td class="habit-name" style="color:var(--brass)">Outside (hrs)</td>`;
   for(let d=0;d<90;d++){
     const dt=dayDate(d);const dow=dt.getDay();
-    const isFuture=d>today;const isToday=d===today;const isWeekSep=dow===0&&d>0;
+    const isFuture=d>today;const isToday=d===today;const isWeekSep=dow===1&&d>0;
     const v=getDay(d).outside_blocks||0;
     let cls='cell hrs-text';
     if(isFuture)cls='cell future';
@@ -350,7 +369,7 @@ function updateMeditateCell(d){
   const st=getDay(d).meditate||0;const isToday=d===today;const dow=dayDate(d).getDay();
   let cls='cell';
   if(st===2)cls+=' done';else if(st===1)cls+=' hrs-low';
-  if(isToday)cls+=' today';if(dow===0&&d>0)cls+=' week-sep';
+  if(isToday)cls+=' today';if(dow===1&&d>0)cls+=' week-sep';
   td.className=cls;
 }
 
@@ -372,7 +391,7 @@ function updateCell(hi,d){
   const state=getDay(d)[hid];const isToday=d===today;const dow=dayDate(d).getDay();
   let cls='cell';
   if(state===true)cls+=' done';else if(state===false)cls+=' missed';
-  if(isToday)cls+=' today';if(dow===0&&d>0)cls+=' week-sep';
+  if(isToday)cls+=' today';if(dow===1&&d>0)cls+=' week-sep';
   td.className=cls;
 }
 
@@ -458,6 +477,7 @@ function buildWeeklySummaries(){
 
 async function init(){
   await loadData();
+  if(migrateWeeksToMonday())saveData();
   buildGrid();
   buildWeeklySummaries();
   document.getElementById('last-updated').textContent='Synced '+new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});

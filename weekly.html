@@ -388,14 +388,33 @@ function todayIdx(){return Math.max(0,Math.min(89,Math.floor((Date.now()-START.g
 function dk(d){return 'd'+d}
 function gd(d){return data[dk(d)]||{}}
 function dayDate(d){const dt=new Date(START);dt.setDate(dt.getDate()+d);return dt}
+/* Weeks run Monday–Sunday. One-time migration of old Sunday-start week keys
+   (w<Sunday date>) into Monday-start keys. The Sun 2026-09-27 key was written on
+   that Sunday, so it belongs to the week of Mon 2026-09-21; earlier Sunday keys
+   map to the following Monday (6 of 7 days overlap). Old keys are left in place. */
+function ymd(dt){return dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0')+'-'+String(dt.getDate()).padStart(2,'0')}
+function migrateWeeksToMonday(){
+  if(data.wk_monday_migrated)return false;
+  Object.keys(data).forEach(k=>{
+    const m=/^w(\d{4})-(\d{2})-(\d{2})$/.exec(k);if(!m)return;
+    const s=new Date(+m[1],+m[2]-1,+m[3]);if(s.getDay()!==0)return;
+    const t=new Date(s);t.setDate(s.getDate()+(ymd(s)>='2026-09-27'?-6:1));
+    const tk='w'+ymd(t);const src=data[k]||{};const tgt=data[tk]||(data[tk]={});
+    Object.keys(src).forEach(f=>{
+      if(!(f in tgt))tgt[f]=src[f];
+      else if(typeof tgt[f]==='number'&&typeof src[f]==='number')tgt[f]=Math.max(tgt[f],src[f]);
+    });
+  });
+  data.wk_monday_migrated=true;return true;
+}
 function weekKey(offset){
-  const today=todayIdx();const dt=dayDate(today);const dow=dt.getDay();
-  const sun=new Date(dt);sun.setDate(dt.getDate()-dow+(offset*7));
-  return 'w'+sun.toISOString().slice(0,10);
+  const today=todayIdx();const dt=dayDate(today);const mdow=(dt.getDay()+6)%7;
+  const mon=new Date(dt);mon.setDate(dt.getDate()-mdow+(offset*7));
+  return 'w'+ymd(mon);
 }
 function weekDays(offset){
-  const today=todayIdx();const dt=dayDate(today);const dow=dt.getDay();
-  const base=today-dow+(offset*7);const days=[];
+  const today=todayIdx();const dt=dayDate(today);const mdow=(dt.getDay()+6)%7;
+  const base=today-mdow+(offset*7);const days=[];
   for(let i=0;i<7;i++)days.push(base+i);return days;
 }
 
@@ -696,6 +715,7 @@ document.getElementById('cd60-num').textContent=Math.ceil((TURNS_60-new Date())/
 
 async function init(){
   await loadData();
+  if(migrateWeeksToMonday())saveData();
   renderWeekly();
   document.getElementById('last-updated').textContent='Synced '+new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
 }
