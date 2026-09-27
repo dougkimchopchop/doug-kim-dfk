@@ -91,6 +91,13 @@ p.line a:hover{color:var(--accent);border-color:var(--accent);}
 .essay-source a{color:var(--refrain);text-decoration:none;border-bottom:1px dotted var(--refrain);}
 .essay-source a:hover{color:var(--accent);border-color:var(--accent);}
 .essay-note{font-size:.82rem;font-style:italic;color:var(--ink-soft);margin-bottom:.6rem;}
+
+.expand{margin-top:.8rem;}
+.expand summary{cursor:pointer;font-family:var(--mono);font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);font-weight:700;list-style:none;padding:.2rem 0;}
+.expand summary::-webkit-details-marker{display:none;}
+.expand summary::before{content:"+ ";}
+.expand[open] summary::before{content:"\2212 ";}
+.expand .support-grid{margin-top:.8rem;}
 </style>
 </head>
 <body>
@@ -170,22 +177,6 @@ p.line a:hover{color:var(--accent);border-color:var(--accent);}
   </div>
   <div class="support-grid">
     <div class="support-card">
-      <div class="support-lbl">The rehearsal doesn't count</div>
-      <div class="support-text">Nothing counts until it leaves your skull and lands somewhere real.</div>
-    </div>
-    <div class="support-card">
-      <div class="support-lbl">Done beats perfect</div>
-      <div class="support-text">Done and posted beats perfect and buried, every time it's tried.</div>
-    </div>
-    <div class="support-card">
-      <div class="support-lbl">Ship it anyway</div>
-      <div class="support-text">Ship the ugly draft. Ship the underexposed frame. Ship the awkward ask.</div>
-    </div>
-    <div class="support-card">
-      <div class="support-lbl">The block isn't real</div>
-      <div class="support-text">It's fear wearing a work shirt. <b>Clock in anyway.</b></div>
-    </div>
-    <div class="support-card">
       <div class="support-lbl">Planning is a cancer</div>
       <div class="support-text">Planning and ruminating is death. Organizing and thinking is a cancer.</div>
     </div>
@@ -194,6 +185,27 @@ p.line a:hover{color:var(--accent);border-color:var(--accent);}
       <div class="support-text">You are dying soon. <b>Fucking hurry the fuck up.</b></div>
     </div>
   </div>
+  <details class="expand">
+    <summary>More on shipping</summary>
+    <div class="support-grid">
+      <div class="support-card">
+        <div class="support-lbl">The rehearsal doesn't count</div>
+        <div class="support-text">Nothing counts until it leaves your skull and lands somewhere real.</div>
+      </div>
+      <div class="support-card">
+        <div class="support-lbl">Done beats perfect</div>
+        <div class="support-text">Done and posted beats perfect and buried, every time it's tried.</div>
+      </div>
+      <div class="support-card">
+        <div class="support-lbl">Ship it anyway</div>
+        <div class="support-text">Ship the ugly draft. Ship the underexposed frame. Ship the awkward ask.</div>
+      </div>
+      <div class="support-card">
+        <div class="support-lbl">The block isn't real</div>
+        <div class="support-text">It's fear wearing a work shirt. <b>Clock in anyway.</b></div>
+      </div>
+    </div>
+  </details>
 </section>
 
 <section>
