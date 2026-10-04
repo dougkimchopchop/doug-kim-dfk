@@ -2,113 +2,45 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Kill This Wasted Life — Doug Kim</title>
-<meta name="description" content="Atomic habits cheat sheet: bad habits to kill, good habits to install, and the rules.">
+<meta name="description" content="Caught yourself? Find the line. Do it now.">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Kill List">
+<meta name="theme-color" content="#EFE6D3">
 <link rel="stylesheet" href="styles.css">
 <style>
-.breadcrumb{font-family:var(--mono);font-size:.65rem;color:var(--ink-soft);margin-bottom:1.4rem;display:flex;align-items:center;gap:.4rem}
+.page{max-width:560px;padding-top:max(1.2rem,env(safe-area-inset-top));padding-bottom:max(2rem,env(safe-area-inset-bottom))}
+.breadcrumb{font-family:var(--mono);font-size:.65rem;color:var(--ink-soft);margin-bottom:1.2rem;display:flex;align-items:center;gap:.4rem}
 .breadcrumb a{color:var(--ink-soft);text-decoration:none}
 .breadcrumb a:hover{color:var(--ribbon)}
 .breadcrumb-sep{color:var(--oak-soft)}
-.h1{font-family:var(--display);font-weight:600;font-size:clamp(1.6rem,3.5vw,2.2rem);line-height:1.1;margin:0 0 .5rem}
-.lede{font-size:.94rem;color:var(--ink-soft);line-height:1.6;margin:0 0 .6rem}
-.mission{border:1px solid var(--line);border-left:2px solid var(--ribbon);background:var(--card);border-radius:var(--radius);padding:1rem 1.2rem;margin:1rem 0 1.4rem;font-size:1rem;line-height:1.6}
-.mission .tag{font-family:var(--mono);font-size:.62rem;color:var(--oak-soft);letter-spacing:.1em;text-transform:uppercase;display:block;margin-bottom:.4rem}
-.sec-lbl{margin-top:2rem}
-.p{font-size:.88rem;color:var(--ink);line-height:1.55;margin:.4rem 0 .7rem}
-.muted{color:var(--ink-soft)}
-table.goals{width:100%;border-collapse:collapse;font-size:.84rem;margin:.6rem 0 1rem;background:var(--card);border:1px solid var(--line);border-radius:var(--radius)}
-table.goals th,table.goals td{text-align:left;padding:.55rem .7rem;border-top:1px solid var(--line);vertical-align:top}
-table.goals th{font-family:var(--mono);font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;color:var(--oak-soft);border-top:none}
-table.goals td:first-child{font-family:var(--display);font-weight:600;white-space:nowrap}
-table.goals.kill td:first-child{color:var(--ribbon)}
-.tbl-wrap{overflow-x:auto}
-.row{display:flex;gap:1rem;border-top:1px dashed var(--line);padding:.7rem 0;align-items:flex-start}
-.row:first-of-type{border-top:none}
-.row .k{font-family:var(--mono);font-size:.66rem;color:var(--ribbon);text-transform:uppercase;letter-spacing:.05em;min-width:92px;padding-top:.15rem}
-.row .v{font-size:.87rem;line-height:1.55}
-.step{display:flex;gap:.9rem;border-top:1px dashed var(--line);padding:.6rem 0}
-.step:first-child{border-top:none}
-.step .n{font-family:var(--display);font-weight:700;color:var(--ribbon);min-width:24px}
-.step .b{font-size:.88rem;line-height:1.55}
-.callout{background:var(--fail-bg);border-left:3px solid var(--ribbon);border-radius:var(--radius);padding:.8rem 1.1rem;font-size:.88rem;margin:.6rem 0}
-.foot{text-align:center;font-family:var(--mono);font-size:.7rem;color:var(--ink-soft);margin-top:2rem}
+.h1{font-family:var(--display);font-weight:600;font-size:clamp(1.9rem,8vw,2.4rem);line-height:1.05;margin:0 0 .4rem}
+.sub{font-family:var(--mono);font-size:.8rem;color:var(--ribbon);margin:0 0 1.4rem;letter-spacing:.02em}
+.kill{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:.75rem}
+.kill li{background:var(--card);border:1px solid var(--line);border-left:3px solid var(--ribbon);border-radius:var(--radius);box-shadow:var(--shadow);padding:1rem 1.1rem}
+.kill .when{display:block;font-family:var(--mono);font-size:.66rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:.35rem}
+.kill .do{display:block;font-family:var(--display);font-weight:600;font-size:clamp(1.25rem,5.5vw,1.5rem);line-height:1.2;color:var(--ink)}
+.callout{margin-top:1.2rem;background:var(--ribbon);color:var(--paper);border-radius:var(--radius);padding:1.1rem 1.2rem}
+.callout .when{display:block;font-family:var(--mono);font-size:.66rem;letter-spacing:.08em;text-transform:uppercase;opacity:.8;margin-bottom:.35rem}
+.callout .do{display:block;font-family:var(--display);font-weight:700;font-size:clamp(1.4rem,6vw,1.7rem);line-height:1.15}
 </style>
 </head>
 <body>
 <div class="page">
 <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Doug Kim</a><span class="breadcrumb-sep">/</span><span>Kill This Wasted Life</span></nav>
-<span class="eyebrow">Atomic habits</span>
 <h1 class="h1">Kill This Wasted Life</h1>
-<p class="lede">You have four plans, a 16-habit tracker, a brain protocol and a calendar scheduled to the half hour. You don't have a planning problem. You have a doing problem, and every new system is another way to avoid doing.</p>
+<p class="sub">Caught yourself? Find the line. Do it now.</p>
 
-<div class="mission">
-  <span class="tag">The rule</span>
-  Make the habit so small you have no excuse. Then never miss twice.
-</div>
+<ul class="kill">
+  <li><span class="when">Phone in hand</span><span class="do">Pick up the book. Read three paragraphs.</span></li>
+  <li><span class="when">Screen, videos, browsing, shopping</span><span class="do">Turn the computer off and get away.</span></li>
+  <li><span class="when">Doing easy tasks, avoiding the hard one</span><span class="do">Write for 2 minutes.</span></li>
+  <li><span class="when">Slumping, napping, eating to kill time</span><span class="do">Do 30 push-ups.</span></li>
+  <li><span class="when">Indoors, alone, saying no</span><span class="do">Get up. Get outside.</span></li>
+</ul>
 
-<div class="sec-lbl">The four laws</div>
-<div class="row"><div class="k">Cue</div><div class="v">Make it obvious. If you have to remember it, you won't.</div></div>
-<div class="row"><div class="k">Craving</div><div class="v">Make it attractive. Pair it with something you already want.</div></div>
-<div class="row"><div class="k">Response</div><div class="v">Make it easy. Two minutes. Shoes on, not a 5K.</div></div>
-<div class="row"><div class="k">Reward</div><div class="v">Make it satisfying. Mark it done the second it's done.</div></div>
-<p class="p muted">For bad habits, flip all four: invisible, unattractive, hard, unsatisfying. Don't analyze why you do them. Remove the cue and add friction.</p>
-
-<div class="sec-lbl">Bad habits to kill</div>
-<p class="p muted">Your list. Each one is a vote against the person you say you're becoming.</p>
-<div class="tbl-wrap">
-<table class="goals kill">
-  <tr><th>Bad habit</th><th>Cue</th><th>Replace with</th><th>Add friction</th></tr>
-  <tr><td>Easy tasks instead of hard work</td><td>Opening email or the to-do list first</td><td>Hardest thing first, before anything else</td><td>No email, Slack or list until the hard block is done</td></tr>
-  <tr><td>Not writing</td><td>Waiting to feel ready</td><td>One sentence</td><td>Writing doc open the night before</td></tr>
-  <tr><td>Taking too long</td><td>No deadline</td><td>Timer on; ship when it rings</td><td>Every task gets a time box before you start</td></tr>
-  <tr><td>At computer by default</td><td>Sitting down "to check something"</td><td>Stand up, pick up the camera, go out</td><td>Laptop closed and off the desk when not working</td></tr>
-  <tr><td>Surfing online</td><td>Browser open with no task</td><td>Write the task on paper first</td><td>Site blocker on video, news and shopping</td></tr>
-  <tr><td>Phone scrolling</td><td>Any pause</td><td>Book in your pocket</td><td>Social apps deleted; phone in another room</td></tr>
-  <tr><td>Videos and movies</td><td>Couch, evening, "just one"</td><td>Read 10 pages or walk the dog</td><td>Log out of every streaming app</td></tr>
-  <tr><td>Reading news as work</td><td>Mornings, "staying informed"</td><td>Read a writer you want to publish next to</td><td>News once a week, Sunday only</td></tr>
-  <tr><td>Online shopping, impulse buys</td><td>Bored, tired, late night</td><td>Put it on a 72-hour list</td><td>Delete saved cards from every browser</td></tr>
-  <tr><td>Porn</td><td>Alone, late, phone in bed</td><td>Leave the room; go to sleep</td><td>Blocker on; phone never in the bedroom</td></tr>
-  <tr><td>Overeating</td><td>Boredom, reward, night</td><td>Walk, call someone, make something</td><td>Plate it, never from the bag; kitchen closed after dinner</td></tr>
-  <tr><td>Naps</td><td>Afternoon slump</td><td>10 min outside</td><td>Don't lie down before bedtime</td></tr>
-  <tr><td>Staying indoors</td><td>No plan for the day</td><td>Out the door with the camera every day</td><td>Shoes and camera by the door</td></tr>
-  <tr><td>Not being with people</td><td>Defaulting to home</td><td>Text one person to meet</td><td>Every "no" comes with another date</td></tr>
-  <tr><td>Saying no</td><td>Reflex, comfort</td><td>Say yes, figure it out after</td><td>No "no" without a counteroffer</td></tr>
-  <tr><td>Not reading</td><td>Phone fills the gaps</td><td>10 pages</td><td>Book on the pillow, phone in the kitchen</td></tr>
-  <tr><td>Not cleaning as you go</td><td>"I'll do it later"</td><td>Put it away now</td><td>Nothing goes down, it goes away</td></tr>
-</table>
-</div>
-
-<div class="sec-lbl">Good habits to install</div>
-<p class="p muted">Start with the two-minute version. The small thing every day beats the big thing twice and quitting.</p>
-<div class="tbl-wrap">
-<table class="goals">
-  <tr><th>Habit</th><th>Two-minute version</th><th>Stack it after</th><th>Done means</th></tr>
-  <tr><td>Meditate</td><td>Sit, 2 min</td><td>Feet hit the floor</td><td>Timer ran out</td></tr>
-  <tr><td>Write</td><td>One sentence</td><td>Meditation ends</td><td>Sentence exists</td></tr>
-  <tr><td>Workout</td><td>Shoes on, 10 push-ups</td><td>Writing ends</td><td>Push-ups done</td></tr>
-  <tr><td>Read</td><td>10 pages</td><td>Getting into bed</td><td>Pages read, phone in the kitchen</td></tr>
-  <tr><td>Zone 2 cardio</td><td>Walk the dog briskly</td><td>Leash comes off the hook</td><td>30 min, can still talk</td></tr>
-  <tr><td>Shoot</td><td>Take 1 frame on purpose</td><td>Leaving the apartment</td><td>Frame on the card</td></tr>
-  <tr><td>See people</td><td>Text one person to meet</td><td>Lunch</td><td>Plan on the calendar</td></tr>
-  <tr><td>Outreach</td><td>Send 1 ask</td><td>Lunch</td><td>Message sent, not drafted</td></tr>
-  <tr><td>Publish</td><td>Hit post</td><td>Thursday 7pm</td><td>It's live</td></tr>
-  <tr><td>Journal</td><td>"Did DFK show up? Y/N"</td><td>Teeth brushed</td><td>One line written</td></tr>
-</table>
-</div>
-<div class="callout"><b>Non-negotiables for the next 14 days:</b> write, workout, one ask.</div>
-
-<div class="sec-lbl">The rules</div>
-<div class="step"><div class="n">1</div><div class="b"><b>Never miss twice.</b> Missing once is an accident. Missing twice is the new habit. The day after a miss, do the two-minute version no matter what.</div></div>
-<div class="step"><div class="n">2</div><div class="b"><b>Bad day = minimum day.</b> One sentence, ten push-ups, one ask. That counts. Zero doesn't.</div></div>
-<div class="step"><div class="n">3</div><div class="b"><b>No new systems.</b> Every hour spent redesigning the tracker is an hour you didn't write, shoot or ask.</div></div>
-<div class="step"><div class="n">4</div><div class="b"><b>Don't analyze a miss.</b> No journaling about why. Log it, do the next rep.</div></div>
-<div class="step"><div class="n">5</div><div class="b"><b>Set up the night before.</b> Camera charged and by the door. Gym clothes on the chair. Writing doc already open.</div></div>
-<div class="step"><div class="n">6</div><div class="b"><b>Done beats good.</b> Ugly and posted beats perfect and in drafts.</div></div>
-<div class="step"><div class="n">7</div><div class="b"><b>Count outputs, not intentions.</b> Pieces published, photos posted, asks sent. Nothing else goes on the scoreboard.</div></div>
-
-<p class="foot">doug kim — updated 2026</p>
+<div class="callout"><span class="when">Can't tell which?</span><span class="do">Get up. Get outside.</span></div>
 </div>
 </body>
 </html>
