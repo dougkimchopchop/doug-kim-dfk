@@ -421,6 +421,7 @@ function startDrag(e, li, it, sec) {
   const sourceUl = li.parentElement;
   const startAfterId = siblingItemId(li.previousElementSibling);
   let dragging = false, ghost = null, currentUl = null;
+  let lastX = 0, lastY = 0, scrollRaf = null;
 
   function onMove(ev) {
     const dx = ev.clientX - startX, dy = ev.clientY - startY;
@@ -433,11 +434,32 @@ function startDrag(e, li, it, sec) {
       ghost.style.width = rect.width + 'px';
       document.body.appendChild(ghost);
     }
-    ghost.style.left = (ev.clientX - offX) + 'px';
-    ghost.style.top = (ev.clientY - offY) + 'px';
+    lastX = ev.clientX; lastY = ev.clientY;
+    hitTest(lastX, lastY);
+    if (!scrollRaf) scrollRaf = requestAnimationFrame(autoScroll);
+  }
+
+  // Auto-scroll the page while the pointer is near the top or bottom edge.
+  function autoScroll() {
+    scrollRaf = null;
+    if (!dragging) return;
+    const edge = 80, h = window.innerHeight;
+    let v = 0;
+    if (lastY < edge) v = -Math.ceil((edge - lastY) / 4);
+    else if (lastY > h - edge) v = Math.ceil((lastY - (h - edge)) / 4);
+    if (v) {
+      window.scrollBy(0, v);
+      hitTest(lastX, lastY);
+      scrollRaf = requestAnimationFrame(autoScroll);
+    }
+  }
+
+  function hitTest(x, y) {
+    ghost.style.left = (x - offX) + 'px';
+    ghost.style.top = (y - offY) + 'px';
     const prevDisplay = ghost.style.display;
     ghost.style.display = 'none'; // don't let the ghost occlude elementFromPoint
-    const elUnder = document.elementFromPoint(ev.clientX, ev.clientY);
+    const elUnder = document.elementFromPoint(x, y);
     ghost.style.display = prevDisplay;
     const ul = elUnder && elUnder.closest && elUnder.closest('ul[data-key]');
     if (ul !== currentUl) {
@@ -445,10 +467,12 @@ function startDrag(e, li, it, sec) {
       currentUl = ul;
       if (currentUl) currentUl.classList.add('drag-over');
     }
-    if (ul === sourceUl) positionInList(sourceUl, li, ev.clientY);
+    if (ul === sourceUl) positionInList(sourceUl, li, y);
   }
 
   function cleanup() {
+    if (scrollRaf) cancelAnimationFrame(scrollRaf);
+    scrollRaf = null;
     document.removeEventListener('pointermove', onMove);
     document.removeEventListener('pointerup', onUp);
     document.removeEventListener('pointercancel', cleanup);
