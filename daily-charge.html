@@ -350,13 +350,13 @@ p.line a:hover{color:var(--accent);border-color:var(--accent);}
   <span>Daily Charge &middot; <span class="dfk-day">Day 1 of 91</span></span>
 </div>
 <script>
-const START=new Date(2026,8,21),END=new Date(2026,11,19),DAY=86400000;
+const START=new Date(2026,9,19),END=new Date(2027,0,16),DAY=86400000;
 const t=new Date();t.setHours(0,0,0,0);
 const total=Math.round((END-START)/DAY)+1;
 const n=Math.min(total,Math.max(1,Math.round((t-START)/DAY)+1));
 document.querySelectorAll(".dfk-day").forEach(e=>e.textContent="Day "+n+" of "+total);
-const f=d=>d.toLocaleDateString("en-US",{month:"long",day:"numeric"});
-document.getElementById("dfk-range").innerHTML=f(START)+" &mdash; "+f(END)+", 2026";
+const f=d=>d.toLocaleDateString("en-US",{month:"long",day:"numeric",year:"numeric"});
+document.getElementById("dfk-range").innerHTML=f(START)+" &mdash; "+f(END);
 </script>
 </body>
 </html>
