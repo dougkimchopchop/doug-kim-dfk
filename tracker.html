@@ -179,6 +179,35 @@ h1{font-family:var(--display);font-weight:600;font-size:clamp(1.8rem,4vw,2.4rem)
 .wk-target-status.pass{color:var(--pass)}
 .wk-target-status.fail{color:var(--fail)}
 
+/* Score tab */
+.score-card{background:var(--card);border:1px solid var(--line-d);border-radius:var(--radius);padding:1.2rem 1.2rem 1.1rem;margin-bottom:1.2rem;text-align:center}
+.score-card .eyebrow{justify-content:center;margin-bottom:.3rem}
+.score-card .score-big{font-size:3.2rem}
+.score-card .score-sub{margin-top:.4rem;letter-spacing:.03em}
+.score-card .score-sub b{color:var(--ribbon)}
+.score-bar{margin-top:.9rem;background:var(--line);height:6px;border-radius:3px;overflow:hidden}
+.score-bar-fill{height:6px;border-radius:3px;background:var(--brass);transition:width .3s}
+
+.breakdown-card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:.4rem 1rem;margin-bottom:1rem}
+.breakdown-row{display:flex;align-items:center;gap:.7rem;padding:.55rem 0;border-bottom:1px solid var(--line)}
+.breakdown-row:last-child{border-bottom:none}
+.breakdown-info{flex:1;min-width:0}
+.breakdown-name{font-size:.84rem;color:var(--ink)}
+.breakdown-detail{font-family:var(--mono);font-size:.6rem;color:var(--ink-muted);margin-top:.15rem;letter-spacing:.02em}
+.breakdown-bar-wrap{width:56px;background:var(--line);height:4px;border-radius:2px;overflow:hidden;flex-shrink:0}
+.breakdown-bar-fill{height:4px;border-radius:2px}
+.breakdown-val{font-family:var(--mono);font-size:.68rem;width:42px;text-align:right;flex-shrink:0;color:var(--ink-soft)}
+.breakdown-val.pass{color:var(--pass)}
+
+.recap-item{margin-bottom:.6rem}
+.recap-item:last-child{margin-bottom:0}
+.recap-text{font-size:.88rem;color:var(--ink);line-height:1.45}
+.recap-text.empty{color:var(--ink-muted);font-style:italic}
+.recap-win-row{display:flex;align-items:baseline;gap:.6rem;margin-bottom:.5rem}
+.recap-win-row:last-child{margin-bottom:0}
+.recap-win-text{font-size:.9rem;color:var(--ink)}
+.recap-win-text.empty{color:var(--ink-muted);font-style:italic}
+
 /* Weekly shipped */
 .shipped-card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:.9rem 1rem;margin-bottom:1rem}
 .shipped-title{font-family:var(--mono);font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:var(--oak-soft);margin-bottom:.8rem}
@@ -255,6 +284,12 @@ footer a:hover{color:var(--ribbon)}
   <span class="sync-text" id="sync-text">Connecting…</span>
 </div>
 
+<div class="tabs">
+  <div class="tab active" id="tab-daily" onclick="switchTab('daily')">Daily</div>
+  <div class="tab" id="tab-week" onclick="switchTab('week')">This Week</div>
+  <div class="tab" id="tab-score" onclick="switchTab('score')">Score</div>
+</div>
+
 <!-- ═══ DAILY ═══ -->
 <div class="panel active" id="panel-daily">
 
@@ -307,6 +342,61 @@ footer a:hover{color:var(--ribbon)}
 
 </div><!-- end daily -->
 
+<!-- ═══ THIS WEEK ═══ -->
+<div class="panel" id="panel-week">
+
+<div class="wk-topbar">
+  <div class="wk-nav">
+    <button onclick="changeWk(-1)">←</button>
+    <span class="wk-range" id="wk-range">Week of —</span>
+    <button onclick="changeWk(1)" id="wk-next">→</button>
+  </div>
+</div>
+
+<div class="sec-lbl" style="display:flex;justify-content:space-between;align-items:center;">
+  <span>Shipped this week</span>
+  <button onclick="toggleSetupGoals()" style="font-family:var(--mono);font-size:.58rem;letter-spacing:.08em;padding:.2rem .6rem;border:1px solid var(--line);background:transparent;color:var(--ink-muted);cursor:pointer;border-radius:var(--radius);" id="setup-toggle-btn">edit goals ↓</button>
+</div>
+
+<div class="shipped-card" id="setup-goals-panel" style="display:none;margin-bottom:.6rem;background:var(--warn-bg);border-color:var(--warn);">
+  <div class="shipped-title" style="color:var(--warn);margin-bottom:.6rem;">Set ship goals for this cycle — these labels apply every week</div>
+  <div id="goal-setup-fields"></div>
+  <button onclick="addGoalField()" style="font-family:var(--mono);font-size:.62rem;padding:.3rem .8rem;border:1px solid var(--line-d);background:transparent;color:var(--ink-muted);cursor:pointer;border-radius:var(--radius);margin-top:.5rem;">+ add goal</button>
+</div>
+
+<div class="shipped-card" id="shipped-fields-container"></div>
+
+<div class="sec-lbl">Big wins</div>
+<div class="wins-card">
+  <div class="win-row"><span class="win-num">1</span><input type="text" class="win-input" id="win1" placeholder="What actually moved?" oninput="saveWins()"></div>
+  <div class="win-row"><span class="win-num">2</span><input type="text" class="win-input" id="win2" placeholder="" oninput="saveWins()"></div>
+  <div class="win-row"><span class="win-num">3</span><input type="text" class="win-input" id="win3" placeholder="" oninput="saveWins()"></div>
+</div>
+
+<div class="sec-lbl">Weekly targets</div>
+<div class="wk-targets" id="wk-targets"></div>
+
+</div><!-- end panel-week -->
+
+<!-- ═══ SCORE ═══ -->
+<div class="panel" id="panel-score">
+  <div class="score-card">
+    <div class="eyebrow" id="score-week-lbl">Week</div>
+    <div class="score-big" id="score-big">—</div>
+    <div class="score-sub" id="score-sub">weekly goals reached</div>
+    <div class="score-bar"><div class="score-bar-fill" id="score-bar-fill" style="width:0%"></div></div>
+  </div>
+
+  <div class="sec-lbl">Weekly targets — breakdown</div>
+  <div class="breakdown-card" id="score-breakdown"></div>
+
+  <div class="sec-lbl">Shipped this week</div>
+  <div class="shipped-card" id="score-shipped"></div>
+
+  <div class="sec-lbl">Big wins</div>
+  <div class="wins-card" id="score-wins"></div>
+</div><!-- end panel-score -->
+
 <footer>
   <span><a href="https://doug-kim-dfk.vercel.app" target="_blank" rel="noopener">← Doug Kim</a></span>
   <span id="last-updated">Daily · 2026</span>
@@ -347,12 +437,42 @@ const SUPABASE_URL='https://rpmxkhgirhlfwqefdopo.supabase.co';
 const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJwbXhraGdpcmhsZndxZWZkb3BvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY2MDUzMTQsImV4cCI6MjA5MjE4MTMxNH0.bAUNydSiWh60mxD23RLYXpSpRxrzt0q2JQ7yDSZmOW4';
 const LS_KEY='dfk_tracker';
 
-let data={},cur=0,saveTimer=null;
+let data={},cur=0,wkOffset=0,saveTimer=null;
 
 function todayIdx(){return Math.max(0,Math.min(89,Math.floor((Date.now()-START.getTime())/86400000)))}
 function dk(d){return 'd'+d}
 function gd(d){return data[dk(d)]||{}}
 function dayDate(d){const dt=new Date(START);dt.setDate(dt.getDate()+d);return dt}
+/* Weeks run Monday–Sunday. One-time migration of old Sunday-start week keys
+   (w<Sunday date>) into Monday-start keys. The Sun 2026-09-27 key was written on
+   that Sunday, so it belongs to the week of Mon 2026-09-21; earlier Sunday keys
+   map to the following Monday (6 of 7 days overlap). Old keys are left in place. */
+function ymd(dt){return dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0')+'-'+String(dt.getDate()).padStart(2,'0')}
+function migrateWeeksToMonday(){
+  if(data.wk_monday_migrated)return false;
+  Object.keys(data).forEach(k=>{
+    const m=/^w(\d{4})-(\d{2})-(\d{2})$/.exec(k);if(!m)return;
+    const s=new Date(+m[1],+m[2]-1,+m[3]);if(s.getDay()!==0)return;
+    const t=new Date(s);t.setDate(s.getDate()+(ymd(s)>='2026-09-27'?-6:1));
+    const tk='w'+ymd(t);const src=data[k]||{};const tgt=data[tk]||(data[tk]={});
+    Object.keys(src).forEach(f=>{
+      if(!(f in tgt))tgt[f]=src[f];
+      else if(typeof tgt[f]==='number'&&typeof src[f]==='number')tgt[f]=Math.max(tgt[f],src[f]);
+    });
+  });
+  data.wk_monday_migrated=true;return true;
+}
+function weekKey(offset){
+  const today=todayIdx();const dt=dayDate(today);const mdow=(dt.getDay()+6)%7;
+  const mon=new Date(dt);mon.setDate(dt.getDate()-mdow+(offset*7));
+  return 'w'+ymd(mon);
+}
+function weekDays(offset){
+  const today=todayIdx();const dt=dayDate(today);const mdow=(dt.getDay()+6)%7;
+  const base=today-mdow+(offset*7);const days=[];
+  for(let i=0;i<7;i++)days.push(base+i);return days;
+}
+
 function habitScore(d){
   const dd=gd(d);
   const hDone=HABITS.filter(h=>dd[h.id]===true).length;
@@ -523,6 +643,197 @@ function renderPhases(){
 
 function jmp(d){if(d<=todayIdx()){cur=d;updateNav();renderGrid();renderWeightInput();renderStreak();renderPhases();updateHeader();}}
 
+const WK_TARGETS=[
+  {id:'pushups',   name:'Push-ups',       goal:700, unit:'reps'},
+  {id:'rolls',     name:'Rolls shot',     goal:5,   unit:'rolls'},
+  {id:'sub_post',  name:'Thursday essay', goal:1,   unit:'posts'},
+  {id:'sub_notes', name:'Sub notes',      goal:5,   unit:'notes'},
+  {id:'sub_restack',name:'Sub restacks',  goal:20,  unit:''},
+  {id:'ig_posts',  name:'Instagram',      goal:3,   unit:'posts'},
+  {id:'guitar',    name:'Guitar practice',goal:7,   unit:'hrs'},
+  {id:'language',  name:'Language',       goal:7,   unit:'hrs'},
+];
+
+/* ── WEEKLY ── */
+function renderWeekly(){
+  const days=weekDays(wkOffset);
+  const dt0=days[0]>=0?dayDate(days[0]):new Date(START.getTime()+days[0]*86400000);
+  const dt6=days[6]>=0?dayDate(days[6]):new Date(START.getTime()+days[6]*86400000);
+  document.getElementById('wk-range').textContent='Week of '+dt0.toLocaleDateString('en-US',{month:'short',day:'numeric'})+' – '+dt6.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+  document.getElementById('wk-next').style.opacity=wkOffset===0?'0.3':'1';
+
+  // Render targets
+  const wk=weekKey(wkOffset);const wd=data[wk]||{};
+  document.getElementById('wk-targets').innerHTML=WK_TARGETS.map(t=>{
+    const val=wd['target_'+t.id]||0;const pct=Math.min(100,Math.round(val/t.goal*100));
+    const hit=val>=t.goal;const col=hit?'var(--pass)':pct>=50?'var(--warn)':'var(--ribbon)';
+    return `<div class="wk-target">
+      <div class="wk-target-name">${t.name} <span class="wk-target-goal">goal: ${t.goal}${t.unit?' '+t.unit:''}</span></div>
+      <div class="wk-target-input-row">
+        <input type="number" min="0" value="${val||''}" placeholder="0" oninput="saveWkTarget('${t.id}',this.value)" id="wkt-${t.id}">
+        <span class="wk-target-unit">${t.unit}</span>
+      </div>
+      <div class="wk-bar"><div class="wk-bar-fill" style="width:${pct}%;background:${col}"></div></div>
+      <div class="wk-target-status ${hit?'pass':'fail'}">${val?( hit?'✓ Hit':''+val+' / '+t.goal):'—'}</div>
+    </div>`;
+  }).join('');
+
+  renderShippedFields();
+  // Wins
+  ['win1','win2','win3'].forEach(id=>{
+    const el=document.getElementById(id);if(el)el.value=wd[id]||'';
+  });
+
+  renderScore();
+}
+
+function changeWk(dir){
+  const newOffset=wkOffset+dir;if(newOffset>0)return;if(newOffset<-12)return;
+  wkOffset=newOffset;renderWeekly();
+}
+
+function saveWkTarget(id,val){
+  const wk=weekKey(wkOffset);if(!data[wk])data[wk]={};
+  const n=parseInt(val)||0;
+  if(n>0)data[wk]['target_'+id]=n;else delete data[wk]['target_'+id];
+  scheduleSave();
+  // refresh bar/status inline
+  const t=WK_TARGETS.find(t=>t.id===id);if(!t)return;
+  const pct=Math.min(100,Math.round(n/t.goal*100));const hit=n>=t.goal;
+  const col=hit?'var(--pass)':pct>=50?'var(--warn)':'var(--ribbon)';
+  const card=document.getElementById('wkt-'+id).closest('.wk-target');
+  if(card){
+    card.querySelector('.wk-bar-fill').style.width=pct+'%';
+    card.querySelector('.wk-bar-fill').style.background=col;
+    card.querySelector('.wk-target-status').textContent=n?(hit?'✓ Hit':n+' / '+t.goal):'—';
+    card.querySelector('.wk-target-status').className='wk-target-status '+(hit?'pass':'fail');
+  }
+}
+
+function switchTab(t){
+  document.getElementById('tab-daily').classList.toggle('active',t==='daily');
+  document.getElementById('tab-week').classList.toggle('active',t==='week');
+  document.getElementById('tab-score').classList.toggle('active',t==='score');
+  document.getElementById('panel-daily').classList.toggle('active',t==='daily');
+  document.getElementById('panel-week').classList.toggle('active',t==='week');
+  document.getElementById('panel-score').classList.toggle('active',t==='score');
+  if(t==='score')renderScore();
+}
+
+function renderScore(){
+  const days=weekDays(wkOffset).filter(d=>d>=0&&d<=90);
+  const wk=weekKey(wkOffset);const wd=data[wk]||{};
+
+  const allDays=weekDays(wkOffset);
+  let weekNum=Math.floor(allDays[0]/7)+1;if(weekNum<1)weekNum=1;
+  document.getElementById('score-week-lbl').textContent='Week '+weekNum;
+
+  const rows=WK_TARGETS.map(t=>{
+    const val=wd['target_'+t.id]||0;
+    const pct=Math.min(100,Math.round(val/t.goal*100));
+    const hit=val>=t.goal;
+    const col=hit?'var(--pass)':pct>=50?'var(--warn)':'var(--ribbon)';
+    return {name:t.name,detail:val+' / '+t.goal+(t.unit?' '+t.unit:''),pct,hit,col};
+  });
+
+  const overall=Math.round(rows.reduce((s,r)=>s+r.pct,0)/rows.length);
+  const hitCount=rows.filter(r=>r.hit).length;
+
+  document.getElementById('score-big').textContent=overall+'%';
+  document.getElementById('score-sub').innerHTML='weekly goals reached &nbsp;·&nbsp; <b>'+hitCount+' of '+rows.length+'</b> hit outright';
+  document.getElementById('score-bar-fill').style.width=overall+'%';
+
+  document.getElementById('score-breakdown').innerHTML=rows.map(r=>
+    `<div class="breakdown-row">
+      <div class="breakdown-info"><div class="breakdown-name">${r.name}</div><div class="breakdown-detail">${r.detail}</div></div>
+      <div class="breakdown-bar-wrap"><div class="breakdown-bar-fill" style="width:${r.pct}%;background:${r.col}"></div></div>
+      <div class="breakdown-val${r.hit?' pass':''}">${r.hit?'✓ ':''}${r.pct}%</div>
+    </div>`
+  ).join('');
+
+  const goals=getShipGoals();
+  document.getElementById('score-shipped').innerHTML=goals.map((g,i)=>{
+    const v=wd['shipped_goal_'+i]||'';
+    const label=g||('Goal '+(i+1));
+    return `<div class="recap-item"><div class="shipped-label">${label}</div><div class="recap-text${v?'':' empty'}">${v||'— nothing logged yet'}</div></div>`;
+  }).join('');
+
+  document.getElementById('score-wins').innerHTML=['win1','win2','win3'].map((id,i)=>{
+    const v=wd[id]||'';
+    return `<div class="recap-win-row"><span class="win-num">${i+1}</span><span class="recap-win-text${v?'':' empty'}">${v||'—'}</span></div>`;
+  }).join('');
+}
+
+/* ── SHIP GOALS ── */
+const DEFAULT_GOALS=['Istanbul Essay','PM Outreach','Photos to Editors','Songbook'];
+
+function getShipGoals(){return data.ship_goals||DEFAULT_GOALS;}
+
+function toggleSetupGoals(){
+  const panel=document.getElementById('setup-goals-panel');
+  const btn=document.getElementById('setup-toggle-btn');
+  const open=panel.style.display==='none';
+  panel.style.display=open?'block':'none';
+  btn.textContent=open?'close ↑':'edit goals ↓';
+  if(open)renderGoalSetupFields();
+}
+
+function renderGoalSetupFields(){
+  const goals=getShipGoals();
+  document.getElementById('goal-setup-fields').innerHTML=goals.map((g,i)=>
+    `<div class="setup-goal-row">
+      <input type="text" value="${g.replace(/"/g,'&quot;')}" oninput="updateGoalField(${i},this.value)" placeholder="Goal name">
+      <button onclick="removeGoalField(${i})">✕</button>
+    </div>`
+  ).join('');
+}
+
+function updateGoalField(i,val){
+  const goals=getShipGoals().slice();goals[i]=val;
+  data.ship_goals=goals;scheduleSave();renderShippedFields();
+}
+
+function removeGoalField(i){
+  const goals=getShipGoals().slice();goals.splice(i,1);
+  data.ship_goals=goals;scheduleSave();renderGoalSetupFields();renderShippedFields();
+}
+
+function addGoalField(){
+  const goals=getShipGoals().slice();if(goals.length>=8)return;
+  goals.push('');data.ship_goals=goals;scheduleSave();renderGoalSetupFields();renderShippedFields();
+}
+
+function renderShippedFields(){
+  const goals=getShipGoals();const wk=weekKey(wkOffset);const wd=data[wk]||{};
+  document.getElementById('shipped-fields-container').innerHTML=goals.map((g,i)=>{
+    const id='shipped_goal_'+i;const val=wd[id]||'';
+    const label=g||('Goal '+(i+1));
+    const mb=i===goals.length-1?'margin-bottom:0':'';
+    return `<div class="shipped-item" style="${mb}">
+      <div class="shipped-label">${label}</div>
+      <textarea class="shipped-input" id="field-${id}" placeholder="What moved on this?" rows="2" oninput="saveShipped()">${val}</textarea>
+    </div>`;
+  }).join('');
+}
+
+function saveShipped(){
+  const wk=weekKey(wkOffset);if(!data[wk])data[wk]={};
+  const goals=getShipGoals();
+  goals.forEach((_,i)=>{
+    const el=document.getElementById('field-shipped_goal_'+i);
+    if(el){const v=el.value;if(v)data[wk]['shipped_goal_'+i]=v;else delete data[wk]['shipped_goal_'+i];}
+  });
+  scheduleSave();
+}
+
+function saveWins(){
+  const wk=weekKey(wkOffset);if(!data[wk])data[wk]={};
+  ['win1','win2','win3'].forEach(id=>{
+    const el=document.getElementById(id);if(el){const v=el.value;if(v)data[wk][id]=v;else delete data[wk][id];}
+  });
+  scheduleSave();
+}
+
 /* Init */
 document.getElementById('hdr-date').textContent=new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
 
@@ -530,8 +841,11 @@ const TURNS_60=new Date(2027,5,19);
 document.getElementById('cd60-num').textContent=Math.ceil((TURNS_60-new Date())/86400000);
 
 async function init(){
-  await loadData();cur=todayIdx();
+  await loadData();
+  if(migrateWeeksToMonday())saveData();
+  cur=todayIdx();
   updateNav();renderGrid();renderWeightInput();renderStreak();renderPhases();updateHeader();updateStats();
+  renderWeekly();
   document.getElementById('last-updated').textContent='Synced '+new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
 }
 init();
@@ -559,6 +873,7 @@ setInterval(function(){
     if(wasOnToday){
       cur=t;
       updateNav();renderGrid();renderWeightInput();renderStreak();renderPhases();updateHeader();updateStats();
+      if(wkOffset===0)renderWeekly();
     }
   }
 },60000);
