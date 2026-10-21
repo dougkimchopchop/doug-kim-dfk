@@ -96,16 +96,6 @@ h1{font-family:var(--display);font-weight:600;font-size:clamp(1.8rem,4vw,2.4rem)
 
 /* Number inputs (Write/Read) */
 .num-inputs{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-bottom:1.2rem}
-.num-inputs3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.6rem;margin-bottom:1.2rem}
-.num-card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:.9rem 1rem}
-.num-card-title{font-family:var(--mono);font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:var(--oak-soft);margin-bottom:.6rem;display:flex;justify-content:space-between;align-items:center}
-.num-card-target{color:var(--ink-muted);font-size:.58rem}
-.num-input-row{display:flex;align-items:center;gap:.6rem}
-.num-input-row input[type=number]{background:var(--paper);border:1px solid var(--line-d);border-radius:var(--radius);padding:.4rem .5rem;color:var(--ink);font-family:var(--display);font-size:1.3rem;width:70px;text-align:center;-moz-appearance:textfield}
-.num-input-row input[type=number]::-webkit-inner-spin-button,
-.num-input-row input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none}
-.num-input-row input[type=number]:focus{outline:none;border-color:var(--ribbon)}
-.num-unit{font-family:var(--mono);font-size:.65rem;color:var(--ink-muted)}
 .num-pass{font-family:var(--mono);font-size:.58rem;margin-top:.4rem}
 .num-pass.pass{color:var(--pass)}
 .num-pass.warn{color:var(--warn)}
@@ -258,7 +248,6 @@ footer a:hover{color:var(--ribbon)}
   .grid{grid-template-columns:repeat(2,1fr)}
   .wk-targets{grid-template-columns:1fr}
   .num-inputs{grid-template-columns:1fr}
-  .num-inputs3{grid-template-columns:1fr}
 }
 @media(prefers-reduced-motion:reduce){*{transition:none !important}}
 </style>
@@ -298,37 +287,6 @@ footer a:hover{color:var(--ribbon)}
   </div>
 </div>
 
-<div class="sec-lbl">Weekly targets</div>
-<div class="wk-targets" id="wk-targets"></div>
-
-<div class="sec-lbl">Log Today</div>
-<div class="num-inputs3" id="log-today">
-  <div class="num-card">
-    <div class="num-card-title">Deep Work <span class="num-card-target">goal: 4/day</span></div>
-    <div class="num-input-row">
-      <input type="number" min="0" step="1" id="log-deepwork" placeholder="0" oninput="saveTodayMetric('deepwork_blocks',this.value)">
-      <span class="num-unit">blocks</span>
-    </div>
-  </div>
-  <div class="num-card">
-    <div class="num-card-title">Outside <span class="num-card-target">goal: 2 hrs/day</span></div>
-    <div class="num-input-row">
-      <input type="number" min="0" step="0.5" id="log-outside" placeholder="0" oninput="saveTodayMetric('outside_blocks',this.value)">
-      <span class="num-unit">hrs</span>
-    </div>
-  </div>
-  <div class="num-card">
-    <div class="num-card-title">Screen Time <span class="num-card-target">budget: 1hr/day</span></div>
-    <div class="num-input-row">
-      <input type="number" min="0" step="0.1" id="log-screentime" placeholder="0" oninput="saveTodayMetric('screen_time_hrs',this.value)">
-      <span class="num-unit">hrs</span>
-    </div>
-  </div>
-</div>
-
-<div class="sec-lbl">Deep Work &amp; Discipline — this week</div>
-<div class="wk-targets" id="wk-rollup"></div>
-
 <div class="sec-lbl" style="display:flex;justify-content:space-between;align-items:center;">
   <span>Shipped this week</span>
   <button onclick="toggleSetupGoals()" style="font-family:var(--mono);font-size:.58rem;letter-spacing:.08em;padding:.2rem .6rem;border:1px solid var(--line);background:transparent;color:var(--ink-muted);cursor:pointer;border-radius:var(--radius);" id="setup-toggle-btn">edit goals ↓</button>
@@ -348,6 +306,9 @@ footer a:hover{color:var(--ribbon)}
   <div class="win-row"><span class="win-num">2</span><input type="text" class="win-input" id="win2" placeholder="" oninput="saveWins()"></div>
   <div class="win-row"><span class="win-num">3</span><input type="text" class="win-input" id="win3" placeholder="" oninput="saveWins()"></div>
 </div>
+
+<div class="sec-lbl">Weekly targets</div>
+<div class="wk-targets" id="wk-targets"></div>
 
 </div><!-- end panel-week -->
 
@@ -418,7 +379,7 @@ function weekDays(offset){
   for(let i=0;i<7;i++)days.push(base+i);return days;
 }
 
-const DEEPWORK_PASS=4; const SCREEN_PASS=1; const OUTSIDE_PASS=2; // used by Weekly rollup
+const DEEPWORK_PASS=4; const SCREEN_PASS=1; const OUTSIDE_PASS=2; // used by Score tab breakdown
 
 function setSyncStatus(s,msg){document.getElementById('sync-dot').className='sync-dot'+(s?' '+s:'');document.getElementById('sync-text').textContent=msg;}
 
@@ -487,8 +448,6 @@ function renderWeekly(){
     </div>`;
   }).join('');
 
-  fillTodayInputs();
-  renderWeeklyRollup();
   renderShippedFields();
   // Wins
   ['win1','win2','win3'].forEach(id=>{
@@ -519,56 +478,6 @@ function saveWkTarget(id,val){
     card.querySelector('.wk-target-status').textContent=n?(hit?'✓ Hit':n+' / '+t.goal):'—';
     card.querySelector('.wk-target-status').className='wk-target-status '+(hit?'pass':'fail');
   }
-}
-
-function renderWeeklyRollup(){
-  const days=weekDays(wkOffset).filter(d=>d>=0&&d<=90);
-  const dwTotal=days.reduce((s,d)=>s+(gd(d).deepwork_blocks||0),0);
-  const outTotal=days.reduce((s,d)=>s+(gd(d).outside_blocks||0),0);
-  const stDays=days.filter(d=>gd(d).screen_time_hrs!==undefined);
-  const stAvg=stDays.length?stDays.reduce((s,d)=>s+gd(d).screen_time_hrs,0)/stDays.length:null;
-
-  const dwGoal=DEEPWORK_PASS*7,outGoal=OUTSIDE_PASS*7;
-  const dwPct=Math.min(100,Math.round(dwTotal/dwGoal*100));
-  const outPct=Math.min(100,Math.round(outTotal/outGoal*100));
-  const stPct=stAvg===null?0:(stAvg<=SCREEN_PASS?100:Math.max(10,Math.round(SCREEN_PASS/stAvg*100)));
-
-  const dwHit=dwTotal>=dwGoal,outHit=outTotal>=outGoal,stHit=stAvg!==null&&stAvg<=SCREEN_PASS;
-  const barCol=(hit,pct)=>hit?'var(--pass)':pct>=50?'var(--warn)':'var(--ribbon)';
-
-  document.getElementById('wk-rollup').innerHTML=`
-    <div class="wk-target">
-      <div class="wk-target-name">Deep Work <span class="wk-target-goal">goal: ${dwGoal} blocks</span></div>
-      <div class="wk-bar"><div class="wk-bar-fill" style="width:${dwPct}%;background:${barCol(dwHit,dwPct)}"></div></div>
-      <div class="wk-target-status ${dwHit?'pass':'fail'}">${dwTotal} / ${dwGoal} blocks</div>
-    </div>
-    <div class="wk-target">
-      <div class="wk-target-name">Outside <span class="wk-target-goal">goal: ${outGoal} hrs</span></div>
-      <div class="wk-bar"><div class="wk-bar-fill" style="width:${outPct}%;background:${barCol(outHit,outPct)}"></div></div>
-      <div class="wk-target-status ${outHit?'pass':'fail'}">${outTotal} / ${outGoal} hrs</div>
-    </div>
-    <div class="wk-target">
-      <div class="wk-target-name">Screen Time <span class="wk-target-goal">budget: ${SCREEN_PASS}hr/day avg</span></div>
-      <div class="wk-bar"><div class="wk-bar-fill" style="width:${stPct}%;background:${barCol(stHit,stPct)}"></div></div>
-      <div class="wk-target-status ${stHit?'pass':'fail'}">${stAvg===null?'no data yet':(Math.round(stAvg*10)/10)+'hrs/day avg'}</div>
-    </div>
-  `;
-}
-
-function saveTodayMetric(key,val){
-  const d=todayIdx();if(!data[dk(d)])data[dk(d)]={};
-  const n=parseFloat(val);
-  if(val===''||isNaN(n))delete data[dk(d)][key];else data[dk(d)][key]=n;
-  scheduleSave();
-  renderWeeklyRollup();
-  if(document.getElementById('panel-score').classList.contains('active'))renderScore();
-}
-
-function fillTodayInputs(){
-  const d=todayIdx();const dd=gd(d);
-  document.getElementById('log-deepwork').value=dd.deepwork_blocks||'';
-  document.getElementById('log-outside').value=dd.outside_blocks||'';
-  document.getElementById('log-screentime').value=dd.screen_time_hrs!==undefined?dd.screen_time_hrs:'';
 }
 
 function switchTab(t){
