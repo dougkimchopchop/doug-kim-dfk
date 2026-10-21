@@ -379,8 +379,6 @@ function weekDays(offset){
   for(let i=0;i<7;i++)days.push(base+i);return days;
 }
 
-const DEEPWORK_PASS=4; const SCREEN_PASS=1; const OUTSIDE_PASS=2; // used by Score tab breakdown
-
 function setSyncStatus(s,msg){document.getElementById('sync-dot').className='sync-dot'+(s?' '+s:'');document.getElementById('sync-text').textContent=msg;}
 
 async function loadData(){
@@ -503,21 +501,6 @@ function renderScore(){
     const col=hit?'var(--pass)':pct>=50?'var(--warn)':'var(--ribbon)';
     return {name:t.name,detail:val+' / '+t.goal+(t.unit?' '+t.unit:''),pct,hit,col};
   });
-
-  const dwTotal=days.reduce((s,d)=>s+(gd(d).deepwork_blocks||0),0);
-  const outTotal=days.reduce((s,d)=>s+(gd(d).outside_blocks||0),0);
-  const stDays=days.filter(d=>gd(d).screen_time_hrs!==undefined);
-  const stAvg=stDays.length?stDays.reduce((s,d)=>s+gd(d).screen_time_hrs,0)/stDays.length:null;
-  const dwGoal=DEEPWORK_PASS*7,outGoal=OUTSIDE_PASS*7;
-  const dwPct=Math.min(100,Math.round(dwTotal/dwGoal*100));
-  const outPct=Math.min(100,Math.round(outTotal/outGoal*100));
-  const stPct=stAvg===null?0:(stAvg<=SCREEN_PASS?100:Math.max(10,Math.round(SCREEN_PASS/stAvg*100)));
-  const dwHit=dwTotal>=dwGoal,outHit=outTotal>=outGoal,stHit=stAvg!==null&&stAvg<=SCREEN_PASS;
-  const barCol=(hit,pct)=>hit?'var(--pass)':pct>=50?'var(--warn)':'var(--ribbon)';
-
-  rows.push({name:'Deep Work',detail:dwTotal+' / '+dwGoal+' blocks',pct:dwPct,hit:dwHit,col:barCol(dwHit,dwPct)});
-  rows.push({name:'Outside',detail:outTotal+' / '+outGoal+' hrs',pct:outPct,hit:outHit,col:barCol(outHit,outPct)});
-  rows.push({name:'Screen Time',detail:(stAvg===null?'no data yet':(Math.round(stAvg*10)/10)+'hrs/day avg (budget '+SCREEN_PASS+'hr)'),pct:stPct,hit:stHit,col:barCol(stHit,stPct)});
 
   const overall=Math.round(rows.reduce((s,r)=>s+r.pct,0)/rows.length);
   const hitCount=rows.filter(r=>r.hit).length;
