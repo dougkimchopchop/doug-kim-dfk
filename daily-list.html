@@ -28,14 +28,13 @@
     margin: 40px 0 6px; padding-top: 24px; border-top: 1px solid var(--oak-soft);
   }
   section:first-of-type .divider { margin-top: 18px; }
-  .divider.collapsible {
-    cursor: pointer; display: flex; align-items: center; justify-content: space-between;
-    -webkit-user-select: none; user-select: none;
+  .sec-head.collapsible {
+    cursor: pointer; -webkit-user-select: none; user-select: none;
   }
-  .divider.collapsible .chev {
-    font-size: 15px; color: var(--ink-soft); transition: transform .15s ease; flex: none; margin-left: 10px;
+  .sec-head.collapsible .chev {
+    font-size: 13px; color: var(--ink-soft); transition: transform .15s ease; flex: none; margin-left: auto;
   }
-  .divider.collapsible:not(.collapsed) .chev { transform: rotate(90deg); }
+  .sec-head.collapsible:not(.collapsed) .chev { transform: rotate(90deg); }
   .sec-body.collapsed { display: none; }
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   body {
@@ -280,7 +279,8 @@ async function api(path, opts) {
   return res.json();
 }
 
-const collapsedDividers = new Set(['The Fucking Hard Things']);
+const collapsedSections = new Set();
+const sectionDefaultsApplied = new Set();
 
 function render(data) {
   const sections = data.sections || [];
@@ -290,30 +290,31 @@ function render(data) {
     const section = document.createElement('section');
     const isPhase = /^phase\b/i.test(sec.label);
     const color = isPhase ? 'var(--bright-red)' : DOT_COLORS[cycleIndex++ % DOT_COLORS.length];
-    const isCollapsed = !!sec.divider && collapsedDividers.has(sec.divider);
-    const dividerHtml = sec.divider
-      ? '<div class="divider collapsible' + (isCollapsed ? ' collapsed' : '') + '"><span>' + esc(sec.divider) + '</span><span class="chev">▸</span></div>'
-      : '';
+
+    // Default collapse state (only applied the first time a section key is seen —
+    // after that, the user's own expand/collapse choice sticks for the session).
+    if (!sectionDefaultsApplied.has(sec.key)) {
+      sectionDefaultsApplied.add(sec.key);
+      if (isPhase || /^completed\b/i.test(sec.label)) collapsedSections.add(sec.key);
+    }
+    const isCollapsed = collapsedSections.has(sec.key);
+
+    const dividerHtml = sec.divider ? '<div class="divider">' + esc(sec.divider) + '</div>' : '';
     section.innerHTML =
       dividerHtml +
-      '<div class="sec-body' + (isCollapsed ? ' collapsed' : '') + '">' +
-        '<div class="sec-head"><span class="dot" style="background:' + color + '"></span><h2>' + esc(sec.label) + '</h2></div>' +
-        '<ul data-key="' + sec.key + '"></ul>' +
-      '</div>';
+      '<div class="sec-head collapsible' + (isCollapsed ? ' collapsed' : '') + '"><span class="dot" style="background:' + color + '"></span><h2>' + esc(sec.label) + '</h2><span class="chev">▸</span></div>' +
+      '<ul class="sec-body' + (isCollapsed ? ' collapsed' : '') + '" data-key="' + sec.key + '"></ul>';
     sectionsEl.appendChild(section);
 
-    if (sec.divider) {
-      const divEl = section.querySelector('.divider');
-      const bodyEl = section.querySelector('.sec-body');
-      divEl.addEventListener('click', () => {
-        const nowCollapsed = !bodyEl.classList.contains('collapsed');
-        bodyEl.classList.toggle('collapsed', nowCollapsed);
-        divEl.classList.toggle('collapsed', nowCollapsed);
-        if (nowCollapsed) collapsedDividers.add(sec.divider); else collapsedDividers.delete(sec.divider);
-      });
-    }
+    const headEl = section.querySelector('.sec-head');
+    const ul = section.querySelector('.sec-body');
+    headEl.addEventListener('click', () => {
+      const nowCollapsed = !ul.classList.contains('collapsed');
+      ul.classList.toggle('collapsed', nowCollapsed);
+      headEl.classList.toggle('collapsed', nowCollapsed);
+      if (nowCollapsed) collapsedSections.add(sec.key); else collapsedSections.delete(sec.key);
+    });
 
-    const ul = section.querySelector('ul');
     const isMajor = !!sec.divider;
     sec.items.forEach((it) => {
       const li = document.createElement('li');
