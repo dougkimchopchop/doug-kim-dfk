@@ -147,8 +147,12 @@ module.exports = async (req, res) => {
     const isMajor = !!body.major;
     const type = String(body.type || '');
     const text = String(body.text || '').trim();
+    const section = String(body.section || '').trim().toLowerCase();
     if (!id) { res.status(400).json({ error: 'no id' }); return; }
-    if (type === 'to_do' && text && PAGE_ID) {
+    // Groceries is a recurring checklist, not an accomplishment log — never archive
+    // its completions into the "Completed" section, even if an item happens to be
+    // a to_do checkbox instead of a plain bullet.
+    if (type === 'to_do' && text && PAGE_ID && section !== 'groceries') {
       try { await archiveCompleted(text); } catch (e) { /* best-effort — still complete below even if archiving fails */ }
     }
     await notion('/blocks/' + id, { method: 'DELETE' });
