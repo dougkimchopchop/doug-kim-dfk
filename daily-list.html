@@ -634,11 +634,21 @@ async function addItem(sectionKey, input) {
   input.value = '';
   try {
     await ensureKeyThen(() => api('/api/add', { method:'POST', headers: headers(), body: JSON.stringify({ section: sectionKey, text }) }));
-    load();
+    await load();
+    focusAddInput(sectionKey);
   } catch (e) {
     input.value = text;
     statusEl.textContent = 'Could not add: ' + e.message;
   }
+}
+
+// After a task is submitted, the list reloads and rebuilds every add-row
+// input from scratch — re-focus the same section's fresh input so the
+// cursor is ready for the next task without clicking "+" again.
+function focusAddInput(sectionKey) {
+  const ul = sectionsEl.querySelector('ul[data-key="' + sectionKey + '"]');
+  const input = ul && ul.querySelector('.add-row input');
+  if (input) input.focus();
 }
 
 /* ── Completed tab ── */
