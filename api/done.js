@@ -149,14 +149,17 @@ module.exports = async (req, res) => {
     const text = String(body.text || '').trim();
     const section = String(body.section || '').trim().toLowerCase();
     if (!id) { res.status(400).json({ error: 'no id' }); return; }
-    // Groceries is a recurring checklist, not an accomplishment log — never archive
-    // its completions into the "Completed" section, even if an item happens to be
-    // a to_do checkbox instead of a plain bullet.
-    if (type === 'to_do' && text && PAGE_ID && section !== 'groceries') {
+    // Groceries and Quotidian are recurring checklists, not accomplishment logs —
+    // never archive their completions into the "Completed" section (even if an
+    // item happens to be a to_do checkbox instead of a plain bullet), and never
+    // count them toward the completed-task tracker/counter either.
+    const IGNORED_SECTIONS = ['groceries', 'quotidian'];
+    const ignored = IGNORED_SECTIONS.includes(section);
+    if (type === 'to_do' && text && PAGE_ID && !ignored) {
       try { await archiveCompleted(text); } catch (e) { /* best-effort — still complete below even if archiving fails */ }
     }
     await notion('/blocks/' + id, { method: 'DELETE' });
-    await logCompletion(isMajor);
+    if (!ignored) await logCompletion(isMajor);
     res.status(200).json({ ok: true });
   } catch (e) {
     res.status(500).json({ error: String((e && e.message) || e) });

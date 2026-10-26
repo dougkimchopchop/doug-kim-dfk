@@ -28,6 +28,15 @@
     margin: 40px 0 6px; padding-top: 24px; border-top: 1px solid var(--oak-soft);
   }
   section:first-of-type .divider { margin-top: 18px; }
+  .divider.collapsible {
+    cursor: pointer; display: flex; align-items: center; justify-content: space-between;
+    -webkit-user-select: none; user-select: none;
+  }
+  .divider.collapsible .chev {
+    font-size: 15px; color: var(--ink-soft); transition: transform .15s ease; flex: none; margin-left: 10px;
+  }
+  .divider.collapsible:not(.collapsed) .chev { transform: rotate(90deg); }
+  .sec-body.collapsed { display: none; }
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   body {
     margin: 0; background: var(--paper); color: var(--ink);
@@ -271,6 +280,8 @@ async function api(path, opts) {
   return res.json();
 }
 
+const collapsedDividers = new Set(['The Fucking Hard Things']);
+
 function render(data) {
   const sections = data.sections || [];
   sectionsEl.innerHTML = '';
@@ -279,12 +290,28 @@ function render(data) {
     const section = document.createElement('section');
     const isPhase = /^phase\b/i.test(sec.label);
     const color = isPhase ? 'var(--bright-red)' : DOT_COLORS[cycleIndex++ % DOT_COLORS.length];
-    const dividerHtml = sec.divider ? '<div class="divider">' + esc(sec.divider) + '</div>' : '';
+    const isCollapsed = !!sec.divider && collapsedDividers.has(sec.divider);
+    const dividerHtml = sec.divider
+      ? '<div class="divider collapsible' + (isCollapsed ? ' collapsed' : '') + '"><span>' + esc(sec.divider) + '</span><span class="chev">▸</span></div>'
+      : '';
     section.innerHTML =
       dividerHtml +
-      '<div class="sec-head"><span class="dot" style="background:' + color + '"></span><h2>' + esc(sec.label) + '</h2></div>' +
-      '<ul data-key="' + sec.key + '"></ul>';
+      '<div class="sec-body' + (isCollapsed ? ' collapsed' : '') + '">' +
+        '<div class="sec-head"><span class="dot" style="background:' + color + '"></span><h2>' + esc(sec.label) + '</h2></div>' +
+        '<ul data-key="' + sec.key + '"></ul>' +
+      '</div>';
     sectionsEl.appendChild(section);
+
+    if (sec.divider) {
+      const divEl = section.querySelector('.divider');
+      const bodyEl = section.querySelector('.sec-body');
+      divEl.addEventListener('click', () => {
+        const nowCollapsed = !bodyEl.classList.contains('collapsed');
+        bodyEl.classList.toggle('collapsed', nowCollapsed);
+        divEl.classList.toggle('collapsed', nowCollapsed);
+        if (nowCollapsed) collapsedDividers.add(sec.divider); else collapsedDividers.delete(sec.divider);
+      });
+    }
 
     const ul = section.querySelector('ul');
     const isMajor = !!sec.divider;
