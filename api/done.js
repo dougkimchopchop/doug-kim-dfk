@@ -16,7 +16,7 @@ const NV = '2022-06-28';
 // We reuse the single dfk_tracker row (id=1) and add a "task_log" map of
 // { "YYYY-MM-DD": { total, major } } alongside the existing habit-tracker fields.
 // "major" = items from a section that sits under a heading_1 divider (currently
-// just "The Fucking Hard Things" / the 90-day Phase lists) — flagged by the client.
+// just "The Fucking Hard Things" / the 100-day Phase lists) — flagged by the client.
 const SUPABASE_URL = 'https://rpmxkhgirhlfwqefdopo.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJwbXhraGdpcmhsZndxZWZkb3BvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY2MDUzMTQsImV4cCI6MjA5MjE4MTMxNH0.bAUNydSiWh60mxD23RLYXpSpRxrzt0q2JQ7yDSZmOW4';
 

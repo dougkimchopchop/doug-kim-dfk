@@ -296,7 +296,7 @@ footer a:hover{color:var(--ribbon)}
 <div class="stats">
   <div class="sc"><div class="sc-lbl">Score</div><div class="sc-num" id="sc-score">0%</div><div class="sc-sub" id="sc-frac">0 / 6</div></div>
   <div class="sc"><div class="sc-lbl">Streak</div><div class="sc-num" id="sc-streak">0</div><div class="sc-sub">days won</div></div>
-  <div class="sc"><div class="sc-lbl">Day</div><div class="sc-num" id="sc-day">—</div><div class="sc-sub">of 90</div></div>
+  <div class="sc"><div class="sc-lbl">Day</div><div class="sc-num" id="sc-day">—</div><div class="sc-sub">of 100</div></div>
   <div class="sc"><div class="sc-lbl">Phase</div><div class="sc-phase" id="sc-phase">—</div><div class="sc-sub" id="sc-pdays"></div></div>
 </div>
 
@@ -304,7 +304,7 @@ footer a:hover{color:var(--ribbon)}
 
 <div class="nav">
   <button onclick="cd(-1)">←</button>
-  <span class="nav-lbl" id="nav-lbl">Day 1 of 90</span>
+  <span class="nav-lbl" id="nav-lbl">Day 1 of 100</span>
   <button onclick="cd(1)">→</button>
 </div>
 
@@ -426,13 +426,13 @@ const HABITS=[
 const TOTAL_CHECKS=HABITS.length;
 
 const PHASES=[
-  {name:'Phase 1 — Output',          dates:'Oct 19 – Nov 17', start:0, end:29,label:'Phase 1',days:'Days 1–30'},
-  {name:'Phase 2 — Get paid',        dates:'Nov 18 – Dec 17',  start:30,end:59,label:'Phase 2',days:'Days 31–60'},
-  {name:'Phase 3 — Raise everything',dates:'Dec 18 – Jan 16',  start:60,end:89,label:'Phase 3',days:'Days 61–90'},
+  {name:'Phase 1 — Output',          dates:'Nov 2 – Dec 1', start:0, end:29,label:'Phase 1',days:'Days 1–30'},
+  {name:'Phase 2 — Get paid',        dates:'Dec 2 – Dec 31',  start:30,end:59,label:'Phase 2',days:'Days 31–60'},
+  {name:'Phase 3 — Raise everything',dates:'Jan 1 – Feb 9',  start:60,end:99,label:'Phase 3',days:'Days 61–100'},
 ];
 
 const DAYS=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-const START=new Date(2026,9,19);
+const START=new Date(2026,10,2);
 const SUPABASE_URL='https://rpmxkhgirhlfwqefdopo.supabase.co';
 const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJwbXhraGdpcmhsZndxZWZkb3BvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY2MDUzMTQsImV4cCI6MjA5MjE4MTMxNH0.bAUNydSiWh60mxD23RLYXpSpRxrzt0q2JQ7yDSZmOW4';
 const LS_KEY='dfk_tracker';
@@ -622,7 +622,7 @@ function updateStats(){
 function cd(d){cur=Math.max(0,Math.min(todayIdx(),cur+d));updateNav();renderGrid();renderWeightInput();renderStreak();renderPhases();updateHeader();}
 
 function updateNav(){
-  document.getElementById('nav-lbl').textContent='Day '+(cur+1)+' of 90 · '+dayDate(cur).toLocaleDateString('en-US',{month:'short',day:'numeric'});
+  document.getElementById('nav-lbl').textContent='Day '+(cur+1)+' of 100 · '+dayDate(cur).toLocaleDateString('en-US',{month:'short',day:'numeric'});
 }
 
 function renderStreak(){
@@ -721,7 +721,7 @@ function switchTab(t){
 }
 
 function renderScore(){
-  const days=weekDays(wkOffset).filter(d=>d>=0&&d<=90);
+  const days=weekDays(wkOffset).filter(d=>d>=0&&d<=100);
   const wk=weekKey(wkOffset);const wd=data[wk]||{};
 
   const allDays=weekDays(wkOffset);

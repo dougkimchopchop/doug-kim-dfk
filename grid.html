@@ -71,7 +71,7 @@ table.heat{border-collapse:collapse;min-width:max-content}
 </nav>
 <span class="eyebrow">Daily</span>
 <h1 style="font-family:var(--display);font-weight:600;font-size:clamp(1.6rem,3.5vw,2.2rem);line-height:1.05;margin:0 0 .3rem;">Grid</h1>
-<p style="font-family:var(--mono);font-size:.68rem;color:var(--ink-soft);margin:0 0 1rem;">90-day heatmap — every habit, every day. Tap a cell to log it.</p>
+<p style="font-family:var(--mono);font-size:.68rem;color:var(--ink-soft);margin:0 0 1rem;">100-day heatmap — every habit, every day. Tap a cell to log it.</p>
 
 <div class="sync-bar">
   <div class="sync-dot" id="sync-dot"></div>
@@ -124,7 +124,7 @@ const DEFAULT_GOALS=['Istanbul Essay','PM Outreach','Photos to Editors','Songboo
 
 const DAYS_SHORT=['S','M','T','W','T','F','S'];
 const MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-const START=new Date(2026,9,19);
+const START=new Date(2026,10,2);
 const LS_KEY='dfk_tracker';
 const SUPABASE_URL='https://rpmxkhgirhlfwqefdopo.supabase.co';
 const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJwbXhraGdpcmhsZndxZWZkb3BvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY2MDUzMTQsImV4cCI6MjA5MjE4MTMxNH0.bAUNydSiWh60mxD23RLYXpSpRxrzt0q2JQ7yDSZmOW4';
@@ -213,7 +213,7 @@ function buildGrid(){
   let numRow='<tr><th class="habit-head"></th>';
   let lastMonth=-1,monthSpan=0,monthCells=[];
 
-  for(let d=0;d<90;d++){
+  for(let d=0;d<100;d++){
     const dt=dayDate(d);const dow=dt.getDay();const mon=dt.getMonth();
     const isWeekSep=dow===1&&d>0;const cls=(isWeekSep?'week-sep ':'')+'day-col';
     if(mon!==lastMonth){if(lastMonth!==-1)monthCells.push({month:lastMonth,span:monthSpan});lastMonth=mon;monthSpan=0;}
@@ -233,7 +233,7 @@ function buildGrid(){
   HABITS.forEach((habit,hi)=>{
     const hid=HABIT_IDS[hi];
     bodyHTML+=`<tr class="habit-row" data-hi="${hi}"><td class="habit-name">${habit}</td>`;
-    for(let d=0;d<90;d++){
+    for(let d=0;d<100;d++){
       const dt=dayDate(d);const dow=dt.getDay();
       const isFuture=d>today;const isToday=d===today;const isWeekSep=dow===1&&d>0;
       const dd=getDay(d);const state=dd[hid];
@@ -281,7 +281,7 @@ function buildWeeklySummaries(){
 
   // Find all weeks that have started
   let weeks=[];
-  for(let d=0;d<90;d+=7){
+  for(let d=0;d<100;d+=7){
     if(d>today+7)break;
     weeks.push(d);
   }
@@ -291,7 +291,7 @@ function buildWeeklySummaries(){
   let html='<div class="sec-lbl" style="margin-bottom:.8rem">Weekly Archive</div>';
 
   weeks.forEach(startD=>{
-    const endD=Math.min(startD+6,90);
+    const endD=Math.min(startD+6,100);
     const dt0=dayDate(startD);const dt1=dayDate(endD);
     const wk=weekKey(startD);const wd=data[wk]||{};
     const label=dt0.toLocaleDateString('en-US',{month:'short',day:'numeric'})+' – '+dt1.toLocaleDateString('en-US',{month:'short',day:'numeric'});
