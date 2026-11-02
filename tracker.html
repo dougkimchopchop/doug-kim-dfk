@@ -439,7 +439,7 @@ const LS_KEY='dfk_tracker';
 
 let data={},cur=0,wkOffset=0,saveTimer=null;
 
-function todayIdx(){return Math.max(0,Math.min(89,Math.floor((Date.now()-START.getTime())/86400000)))}
+function todayIdx(){return Math.max(0,Math.min(99,Math.floor((Date.now()-START.getTime())/86400000)))}
 function dk(d){return 'd'+d}
 function gd(d){return data[dk(d)]||{}}
 function dayDate(d){const dt=new Date(START);dt.setDate(dt.getDate()+d);return dt}

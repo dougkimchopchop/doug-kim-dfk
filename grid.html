@@ -134,7 +134,7 @@ let saveTimer=null;
 
 function dk(d){return 'd'+d}
 function dayDate(d){const dt=new Date(START);dt.setDate(dt.getDate()+d);return dt}
-function todayIdx(){return Math.max(0,Math.min(89,Math.round((new Date()-START)/86400000)))}
+function todayIdx(){return Math.max(0,Math.min(99,Math.round((new Date()-START)/86400000)))}
 function getDay(d){return data[dk(d)]||{}}
 /* Weeks run Monday–Sunday. One-time migration of old Sunday-start week keys
    (w<Sunday date>) into Monday-start keys. The Sun 2026-09-27 key was written on
@@ -217,7 +217,7 @@ function buildGrid(){
     const dt=dayDate(d);const dow=dt.getDay();const mon=dt.getMonth();
     const isWeekSep=dow===1&&d>0;const cls=(isWeekSep?'week-sep ':'')+'day-col';
     if(mon!==lastMonth){if(lastMonth!==-1)monthCells.push({month:lastMonth,span:monthSpan});lastMonth=mon;monthSpan=0;}
-    monthSpan++;if(d===89)monthCells.push({month:mon,span:monthSpan});
+    monthSpan++;if(d===99)monthCells.push({month:mon,span:monthSpan});
     const isToday=d===today;
     dayRow+=`<th class="${cls}" style="${isToday?'color:var(--ribbon)':''}">${DAYS_SHORT[dow]}</th>`;
     numRow+=`<th class="${cls}"><span class="day-num${isToday?' today-num':''}${dow===0?' sun':''}">${dt.getDate()}</span></th>`;
