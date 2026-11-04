@@ -74,6 +74,7 @@ h1{font-family:var(--display);font-weight:600;font-size:clamp(1.8rem,4vw,2.4rem)
 .nav button{background:transparent;border:1px solid var(--line);border-radius:var(--radius);padding:.3rem .8rem;font-family:var(--mono);font-size:.75rem;cursor:pointer;color:var(--ink)}
 .nav button:hover{background:var(--ink);color:var(--paper)}
 .nav-lbl{font-family:var(--mono);font-size:.65rem;flex:1;text-align:center;color:var(--ink-soft);letter-spacing:.06em;text-transform:uppercase}
+.nav-day{font-weight:700;color:#D62828}
 
 /* Section label */
 .sec-lbl{font-family:var(--mono);font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:var(--oak-soft);border-bottom:1px solid var(--line);padding-bottom:.4rem;margin-bottom:.9rem}
@@ -623,7 +624,7 @@ function updateStats(){
 function cd(d){cur=Math.max(0,Math.min(todayIdx(),cur+d));updateNav();renderGrid();renderWeightInput();renderStreak();renderPhases();updateHeader();}
 
 function updateNav(){
-  document.getElementById('nav-lbl').textContent='Day '+(cur+1)+' of 100 · '+dayDate(cur).toLocaleDateString('en-US',{month:'short',day:'numeric'});
+  document.getElementById('nav-lbl').innerHTML='<span class="nav-day">Day '+(cur+1)+'</span> of 100 · '+dayDate(cur).toLocaleDateString('en-US',{month:'short',day:'numeric'});
 }
 
 function renderStreak(){
