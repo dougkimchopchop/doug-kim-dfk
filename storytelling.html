@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Storytelling Basics — Doug Kim</title>
+<meta name="description" content="The basic craft of storytelling across fiction, essays, narrative nonfiction, documentary, film and audio.">
+<link rel="stylesheet" href="styles.css">
+<style>
+.breadcrumb{font-family:var(--mono);font-size:.65rem;color:var(--ink-soft);margin-bottom:1.4rem;display:flex;align-items:center;gap:.4rem}
+.breadcrumb a{color:var(--ink-soft);text-decoration:none}
+.breadcrumb a:hover{color:var(--ribbon)}
+.breadcrumb-sep{color:var(--oak-soft)}
+.h1{font-family:var(--display);font-weight:600;font-size:clamp(1.6rem,3.5vw,2.2rem);line-height:1.1;margin:0 0 .5rem}
+.lede{font-size:.94rem;color:var(--ink-soft);line-height:1.6;margin:0 0 .6rem}
+.mission{border:1px solid var(--line);border-left:2px solid var(--ribbon);background:var(--card);border-radius:var(--radius);padding:1rem 1.2rem;margin:1rem 0 1.4rem;font-size:1rem;line-height:1.6}
+.mission .tag{font-family:var(--mono);font-size:.62rem;color:var(--oak-soft);letter-spacing:.1em;text-transform:uppercase;display:block;margin-bottom:.4rem}
+.sec-lbl{margin-top:2rem;scroll-margin-top:1rem}
+.p{font-size:.88rem;color:var(--ink);line-height:1.55;margin:.4rem 0 .7rem}
+.muted{color:var(--ink-soft)}
+.phase{border:1px solid var(--line);border-radius:var(--radius);background:var(--card);padding:.8rem 1.1rem;margin-bottom:.6rem}
+.phase .when{font-family:var(--mono);font-size:.65rem;color:var(--ribbon);letter-spacing:.06em;text-transform:uppercase}
+.phase .name{font-family:var(--display);font-weight:600;font-size:1rem;margin:.1rem 0 .3rem}
+ul.tight{margin:.2rem 0 0;padding-left:1.1rem;font-size:.86rem;line-height:1.55}
+ul.tight li{margin:.15rem 0}
+.row{display:flex;gap:1rem;border-top:1px dashed var(--line);padding:.7rem 0;align-items:flex-start}
+.row:first-of-type{border-top:none}
+.row .k{font-family:var(--mono);font-size:.66rem;color:var(--ribbon);text-transform:uppercase;letter-spacing:.05em;min-width:92px;padding-top:.15rem}
+.row .v{font-size:.87rem;line-height:1.55}
+.step{display:flex;gap:.9rem;border-top:1px dashed var(--line);padding:.6rem 0}
+.step:first-child{border-top:none}
+.step .n{font-family:var(--display);font-weight:700;color:var(--ribbon);min-width:24px}
+.step .b{font-size:.88rem;line-height:1.55}
+.callout{background:var(--pass-bg);border-left:3px solid var(--pass);border-radius:var(--radius);padding:.8rem 1.1rem;font-size:.88rem;margin:.6rem 0}
+.callout.warn{background:var(--warn-bg);border-left-color:var(--warn)}
+.foot{text-align:center;font-family:var(--mono);font-size:.7rem;color:var(--ink-soft);margin-top:2rem}
+a.inline{color:var(--ribbon)}
+.jump{display:flex;flex-wrap:wrap;gap:.3rem .8rem;font-family:var(--mono);font-size:.65rem;margin:.2rem 0 .4rem}
+.jump a{color:var(--ribbon);text-decoration:none;border-bottom:1px solid rgba(122,46,46,.3)}
+.reads{list-style:none;margin:0;padding:0}
+.reads li{padding:.6rem 0;border-top:1px dashed var(--line)}
+.reads li:first-child{border-top:none}
+.reads a.t{font-family:var(--display);font-weight:600;font-size:.98rem;color:var(--ink);text-decoration:none;border-bottom:1px solid var(--oak-soft)}
+.reads a.t:hover{color:var(--ribbon);border-color:var(--ribbon)}
+.reads .by{font-family:var(--mono);font-size:.62rem;color:var(--ink-soft);margin-left:.35rem}
+.reads .steal{display:block;font-size:.86rem;line-height:1.5;margin-top:.15rem}
+.reads .steal b{font-family:var(--mono);font-size:.6rem;letter-spacing:.08em;text-transform:uppercase;color:var(--brass);margin-right:.35rem}
+
+.chips{display:flex;flex-wrap:wrap;gap:.25rem;margin:.45rem 0 .55rem}
+.chips span{font-family:var(--mono);font-size:.6rem;padding:.12rem .4rem;border:1px solid var(--line-d);border-radius:2px;background:var(--paper);color:var(--ink-soft)}
+.chips span.t{background:var(--fail-bg);border-color:var(--ribbon);color:var(--ribbon);font-weight:700}
+.chips span.b{background:var(--warn-bg);border-color:var(--warn);color:var(--warn)}
+.phase h3{font-family:var(--display);font-weight:600;font-size:1.05rem;margin:.1rem 0 .1rem;line-height:1.25}
+.lab{font-family:var(--mono);font-size:.6rem;letter-spacing:.08em;text-transform:uppercase;color:var(--brass);margin-right:.35rem}
+.phase p{font-size:.86rem;line-height:1.5;margin:.35rem 0}
+.phase a,.step a,.row a,.p a,.callout a,.mission a,.punch a{color:var(--ribbon)}
+.tbl-wrap{overflow-x:auto}
+table.pick{width:100%;border-collapse:collapse;font-size:.84rem;background:var(--card);border:1px solid var(--line);margin:.5rem 0 1rem}
+table.pick th,table.pick td{text-align:left;padding:.5rem .65rem;border-top:1px solid var(--line);vertical-align:top}
+table.pick th{font-family:var(--mono);font-size:.6rem;letter-spacing:.08em;text-transform:uppercase;color:var(--oak-soft);border-top:none}
+.punch-head{font-family:var(--display);font-weight:600;font-size:.98rem;margin:1.1rem 0 .2rem}
+.punch label{display:flex;gap:.6rem;align-items:flex-start;padding:.5rem 0;border-top:1px dashed var(--line);font-size:.87rem;line-height:1.5;cursor:pointer}
+.punch input{margin-top:.28rem;accent-color:var(--pass);flex-shrink:0;width:16px;height:16px}
+.punch label:has(input:checked) .it{color:var(--ink-soft);text-decoration:line-through}
+.prog{font-family:var(--mono);font-size:.68rem;color:var(--ink-soft);margin:.3rem 0 .2rem}
+.prog b{color:var(--pass)}
+.bar{height:3px;background:var(--line);border-radius:1px;overflow:hidden;margin-bottom:.5rem}
+.bar i{display:block;height:100%;width:0;background:var(--pass);transition:width .2s}
+blockquote.q{margin:.5rem 0;padding:.2rem 0 .2rem .9rem;border-left:2px solid var(--brass);font-size:.9rem;line-height:1.55}
+blockquote.q cite{display:block;font-family:var(--mono);font-size:.62rem;font-style:normal;color:var(--ink-soft);margin-top:.25rem}
+</style>
+<link rel="apple-touch-icon" href="/icons/icon-writing-practice.png">
+</head>
+<body>
+<div class="page">
+<nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Doug Kim</a><span class="breadcrumb-sep">/</span><a href="structure.html">Structure</a><span class="breadcrumb-sep">/</span><span>Storytelling Basics</span></nav>
+<span class="eyebrow">Craft · the foundation</span>
+<h1 class="h1">Storytelling Basics</h1>
+<p class="lede">The same mechanics run under a short story, a personal essay, a magazine feature, a documentary and a feature film. What changes is the tools you have and the promises you’ve made about truth.</p>
+<div class="jump"><a href="#basics">The ten basics</a><a href="#spine">The spine</a><a href="#shapes">Three shapes</a><a href="#forms">By form</a><a href="#translate">Film → essay</a><a href="#test">Ten questions</a><a href="#practice">Practice</a><a href="#deeper">Go deeper</a></div>
+<div class="mission"><span class="tag">The whole page in one line</span>Someone wants something, something’s in the way, one thing leads to the next, and by the end something has changed that we care about.</div>
+
+<div class="sec-lbl" id="basics">The ten basics</div>
+<div class="step"><div class="n">1</div><div class="b"><b>Someone wants something.</b> A person with a want gives the reader something to follow. In an essay that person is you, built on purpose as a character (Gornick’s persona).</div></div><div class="step"><div class="n">2</div><div class="b"><b>Something’s in the way.</b> No obstacle, no story. It can be a person, the world, or the character’s own flaw. The best ones are aimed at that flaw (Arndt).</div></div><div class="step"><div class="n">3</div><div class="b"><b>Something’s at stake.</b> What’s lost if this fails? Arndt looks for three layers: outside, inside, and what it would mean for how to live.</div></div><div class="step"><div class="n">4</div><div class="b"><b>One thing causes the next.</b> Trey Parker’s rule: between beats, you want “therefore” or “but.” If “and then” belongs there, you have a list of events.</div></div><div class="step"><div class="n">5</div><div class="b"><b>It escalates.</b> George Saunders: “a continual system of escalation.” Each beat should raise the stakes or shift them. Repeating a beat doesn’t count.</div></div><div class="step"><div class="n">6</div><div class="b"><b>There’s a question hanging.</b> Ira Glass calls it bait. Raising a question early promises an answer, and that’s what pulls the reader along.</div></div><div class="step"><div class="n">7</div><div class="b"><b>You see it happen.</b> Scenes hold what’s specific: a place, a body, a line someone actually said. Summary moves time. Use it, but know which one you’re in.</div></div><div class="step"><div class="n">8</div><div class="b"><b>Somebody changes.</b> Or fails to, or the reader’s understanding does. Something at the end has to be different from the start.</div></div><div class="step"><div class="n">9</div><div class="b"><b>It means something.</b> Glass’s second building block: the anecdote and the moment of reflection. A sequence of events with no reflection can feel pointless. Reflection with no events is a lecture.</div></div><div class="step"><div class="n">10</div><div class="b"><b>The ending is surprising and inevitable.</b> Arndt’s test: a good ending surprises while staying logical. A great one also says something about how to live. Andrew Stanton’s commandment holds throughout: make me care.</div></div>
+
+<div class="sec-lbl" id="spine">The story spine · test any idea in a minute</div>
+<blockquote class="q">“Once upon a time there was ___. Every day, ___. One day ___. Because of that, ___. Because of that, ___. Until finally ___.”<cite>Rule #4, Pixar’s 22 Rules, compiled by Emma Coats</cite></blockquote>
+<p class="p">It works on nonfiction too. Here’s <a href="https://www.online-literature.com/orwell/887/" target="_blank" rel="noopener">“Shooting an Elephant”</a>:</p>
+<div class="row"><div class="k">Once</div><div class="v">there was a British police officer in Burma who hated his job.</div></div>
+<div class="row"><div class="k">Every day</div><div class="v">the locals jeered at him.</div></div>
+<div class="row"><div class="k">One day</div><div class="v">an elephant killed a man, and he was sent to deal with it.</div></div>
+<div class="row"><div class="k">Because</div><div class="v">the animal had calmed down, he decided not to shoot.</div></div>
+<div class="row"><div class="k">But</div><div class="v">a huge crowd was watching, so he had to.</div></div>
+<div class="row"><div class="k">Finally</div><div class="v">he admitted he’d done it to avoid looking a fool.</div></div>
+<p class="p muted">If you can’t fill this in for your own piece, the trouble isn’t the sentences.</p>
+
+<div class="sec-lbl" id="shapes">Three shapes that work everywhere</div>
+<div class="row"><div class="k">Man in a hole</div><div class="v">Trouble, then the climb out. One of <a href="https://www.openculture.com/2023/02/kurt-vonnegut-diagrams-the-shape-of-all-stories-from-kafkas-metamorphosis-to-cinderella.html" target="_blank" rel="noopener">Vonnegut’s story shapes</a>. Most travel mishap stories are this. Ask what’s different when you’re out.</div></div>
+<div class="row"><div class="k">Mystery</div><div class="v">A question, clues, then an answer that changes the question. Gladwell’s “Ketchup Conundrum.” Sarah Polley’s <i>Stories We Tell</i> digs into her own family this way.</div></div>
+<div class="row"><div class="k">The job</div><div class="v">A plan, a team, things going wrong. <i>Man on Wire</i> tells a high-wire walk as a heist. It gives any true story an engine if someone is trying to pull something off.</div></div>
+<p class="p">For essay-specific shapes like the braid and the borrowed form, go to <a href="structure.html#shapes">Structure</a>.</p>
+
+<div class="sec-lbl" id="forms">What changes by form</div>
+<div class="phase"><h3>Fiction</h3><p><span class="lab">Special power</span>You can enter any mind, and invent whatever the story needs.</p><p><span class="lab">The job</span>Earn belief. Keep the reader asking what happens next and why. Saunders reads stories line by line to find what makes you read the next one.</p><p><span class="lab">Study</span><a href="https://archive.vcu.edu/english/engweb/webtexts/hour/" target="_blank" rel="noopener">Chopin, “The Story of an Hour”</a>, and Saunders’s book <i>A Swim in a Pond in the Rain</i>.</p></div>
+<div class="phase"><h3>Personal essay &amp; memoir</h3><p><span class="lab">Special power</span>You can think on the page. Lopate: the reader gets both the self who lived it and the self who understands it now.</p><p><span class="lab">The job</span>Make yourself a character, and find the story in the situation. No inventing.</p><p><span class="lab">Study</span>Your <a href="structure.html">Structure</a> page and <a href="essay-practice.html">Essay Practice</a>.</p></div>
+<div class="phase"><h3>Narrative nonfiction &amp; reporting</h3><p><span class="lab">Special power</span>You can go find out. Sources, documents and experts can be turned into plot.</p><p><span class="lab">The job</span>Pick a question and a person to carry it, and keep the complications in. Your access and your facts have to hold up.</p><p><span class="lab">Study</span><a href="https://www.newyorker.com/magazine/2004/09/06/the-ketchup-conundrum" target="_blank" rel="noopener">Gladwell, “The Ketchup Conundrum”</a> with <a href="https://niemanstoryboard.org/?p=865" target="_blank" rel="noopener">Nieman’s reading</a>, and Jack Hart’s <a href="https://www.pw.org/content/storycraft_the_complete_guide_to_writing_narrative_nonfiction" target="_blank" rel="noopener"><i>Storycraft</i></a>.</p></div>
+<div class="phase"><h3>Documentary</h3><p><span class="lab">Special power</span>Real faces and real time. The viewer sees for themselves.</p><p><span class="lab">The job</span>Sheila Curran Bernard’s line: these stories depend “not on creative invention” but “on creative arrangement.” Choose your point of attack, where the film starts, and what the viewer knows when.</p><p><span class="lab">Study</span><i>Man on Wire</i>, <i>Stories We Tell</i>, and <a href="https://documentary.org/feature/storys-thing" target="_blank" rel="noopener">this review of Bernard’s book</a>.</p></div>
+<div class="phase"><h3>Feature film</h3><p><span class="lab">Special power</span>Image, sound, performance. Behavior can replace explanation entirely.</p><p><span class="lab">The job</span>Everything has to be visible or audible, and time is fixed. So structure carries more of the weight, and endings get built first. Pixar’s saying, via Arndt: the last thing you end up doing is the first act.</p><p><span class="lab">Study</span>Arndt’s <a href="https://vimeo.com/238637906" target="_blank" rel="noopener">Endings</a> and <a href="https://www.youtube.com/watch?v=jM-yPOPivU0" target="_blank" rel="noopener">Beginnings</a>, and <a href="https://www.ted.com/talks/andrew_stanton_the_clues_to_a_great_story?subtitle=en" target="_blank" rel="noopener">Andrew Stanton’s TED talk</a>.</p></div>
+<div class="phase"><h3>Audio</h3><p><span class="lab">Special power</span>A voice in someone’s ear. It’s intimate, and the listener can’t skim.</p><p><span class="lab">The job</span>Keep moving. Alternate anecdote and reflection, and keep raising questions. Your drafts can borrow this by being read aloud.</p><p><span class="lab">Study</span><a href="https://adelaidescreenwriter.blogspot.com/2012/04/ira-glass-on-building-blocks-of-story.html" target="_blank" rel="noopener">Ira Glass on the building blocks</a>, plus Gladwell’s <i>Revisionist History</i>.</p></div>
+
+<div class="sec-lbl" id="translate">Film terms → your essay</div>
+<div class="tbl-wrap"><table class="pick"><tr><th>Film term</th><th>In a personal essay</th></tr>
+<tr><td>Protagonist</td><td>You, built as a character with a want and a flaw</td></tr>
+<tr><td>Acceptable imperfection</td><td>The life or belief you were getting by on</td></tr>
+<tr><td>Inciting incident</td><td>The day it stopped working, or the stranger who walked up</td></tr>
+<tr><td>Antagonist</td><td>A person, a place, or your own habit. For you, sometimes the camera.</td></tr>
+<tr><td>Climax</td><td>The turn. It can be one small decision.</td></tr>
+<tr><td>Theme</td><td>The story, in Gornick’s sense: the thing you came to say</td></tr>
+</table></div>
+
+<div class="sec-lbl" id="test">Ten questions for any story</div>
+<div class="step"><div class="n">1</div><div class="b">Who’s it about, and what do they want?</div></div>
+<div class="step"><div class="n">2</div><div class="b">What’s in the way?</div></div>
+<div class="step"><div class="n">3</div><div class="b">What’s lost if it fails?</div></div>
+<div class="step"><div class="n">4</div><div class="b">What question is the reader holding right now?</div></div>
+<div class="step"><div class="n">5</div><div class="b">Is every link “but” or “therefore”?</div></div>
+<div class="step"><div class="n">6</div><div class="b">Does it get harder as it goes?</div></div>
+<div class="step"><div class="n">7</div><div class="b">Where do I actually see it happen?</div></div>
+<div class="step"><div class="n">8</div><div class="b">What’s different at the end?</div></div>
+<div class="step"><div class="n">9</div><div class="b">What did I come here to say?</div></div>
+<div class="step"><div class="n">10</div><div class="b">Why should a stranger care?</div></div>
+
+<div class="sec-lbl" id="practice">Practice</div>
+<p class="p">Checks save on this device only.</p>
+<div class="prog"><b id="pc">0</b> of 12 done</div><div class="bar"><i id="pb"></i></div>
+<div class="punch"><div class="punch-head">Learn the mechanics</div><label><input type="checkbox" data-id="s1"><span class="it">Fill in the story spine for a film you love, an essay you love, and something that happened to you.</span></label><label><input type="checkbox" data-id="s2"><span class="it">Take a recent draft and write “therefore,” “but,” or “and then” between every beat. Fix each “and then.”</span></label><label><input type="checkbox" data-id="s3"><span class="it">List your last piece’s beats and mark where the stakes rise. Flat line? Add or reorder one.</span></label><label><input type="checkbox" data-id="s4"><span class="it">For one piece, write who wants what, and what’s in the way, in one sentence.</span></label><div class="punch-head">Cross-train</div><label><input type="checkbox" data-id="s5"><span class="it">Watch one documentary with a notebook and pause after 10 minutes. What question has it planted?</span></label><label><input type="checkbox" data-id="s6"><span class="it">Watch a Pixar film, then write its three stakes and its dominant and underdog values.</span></label><label><input type="checkbox" data-id="s7"><span class="it">Read one short story with Saunders’s question: what makes me want to read the next line?</span></label><label><input type="checkbox" data-id="s8"><span class="it">Listen to one <i>This American Life</i> act. Mark every anecdote and every reflection.</span></label><div class="punch-head">Apply</div><label><input type="checkbox" data-id="s9"><span class="it">Tell a story out loud to one person, then write down where they leaned in and where they drifted.</span></label><label><input type="checkbox" data-id="s10"><span class="it">Write the same encounter three ways: as a short story opening, as a film treatment and as an essay opening.</span></label><label><input type="checkbox" data-id="s11"><span class="it">Cut one draft down to scene only, then add just two moments of reflection.</span></label><label><input type="checkbox" data-id="s12"><span class="it">Run the ten questions on your next Thursday piece before it goes in the bank.</span></label></div>
+
+<div class="sec-lbl" id="deeper">Go deeper</div>
+<ul class="reads">
+<li><a class="t" href="https://www.ted.com/talks/andrew_stanton_the_clues_to_a_great_story?subtitle=en" target="_blank" rel="noopener">The Clues to a Great Story</a><span class="by">Andrew Stanton, TED</span><span class="steal"><b>Start here</b>The Pixar writer works from the end back to the beginning.</span></li>
+<li><a class="t" href="https://adelaidescreenwriter.blogspot.com/2012/04/ira-glass-on-building-blocks-of-story.html" target="_blank" rel="noopener">Ira Glass on Storytelling</a><span class="by">Video series</span><span class="steal"><b>Use for</b>Anecdote, reflection and bait.</span></li>
+<li><a class="t" href="https://vimeo.com/238637906" target="_blank" rel="noopener">Endings</a><span class="by">Michael Arndt, video</span><span class="steal"><b>Use for</b>Stakes and values. Notes are at <a href="https://nofilmschool.com/michael-arndt-writer" target="_blank" rel="noopener" style="color:var(--ribbon)">No Film School</a>.</span></li>
+<li><a class="t" href="https://openculture.com/2013/03/pixars_22_rules_of_good_storytelling.html" target="_blank" rel="noopener">Pixar’s 22 Rules of Storytelling</a><span class="by">Emma Coats, via Open Culture</span><span class="steal"><b>Use for</b>A quick checklist when you’re stuck.</span></li>
+<li><a class="t" href="https://www.goodreads.com/author_blog_posts/8414248-the-key-to-story-structure-in-two-words-therefore-but?tab=author" target="_blank" rel="noopener">Therefore &amp; But</a><span class="by">Trey Parker &amp; Matt Stone, via Scott Myers</span><span class="steal"><b>Use for</b>The fastest structure test there is.</span></li>
+<li><a class="t" href="https://www.inkl.com/news/advice-from-a-master-always-be-escalating" target="_blank" rel="noopener">Always Be Escalating</a><span class="by">George Saunders</span><span class="steal"><b>Use for</b>Why a story needs to keep moving.</span></li>
+<li><a class="t" href="https://www.openculture.com/2023/02/kurt-vonnegut-diagrams-the-shape-of-all-stories-from-kafkas-metamorphosis-to-cinderella.html" target="_blank" rel="noopener">Vonnegut’s Story Shapes</a><span class="by">Open Culture</span><span class="steal"><b>Use for</b>Graphing your story’s ups and downs.</span></li>
+<li><a class="t" href="https://masterclass.com/articles/malcolm-gladwells-tips-for-structuring-a-story-like-the-ketchup-conundrum" target="_blank" rel="noopener">Structuring a Story Like “The Ketchup Conundrum”</a><span class="by">Malcolm Gladwell, MasterClass</span><span class="steal"><b>Use for</b>Questions, promises and leaving the puzzle unfinished.</span></li>
+</ul>
+<p class="foot">Storytelling Basics · pairs with <a href="structure.html" style="color:inherit">Structure</a> and <a href="essay-practice.html" style="color:inherit">Essay Practice</a></p>
+</div>
+<script>
+(function(){
+var K='storytelling-punch-v1',s={};
+try{s=JSON.parse(localStorage.getItem(K)||'{}')||{}}catch(e){s={}}
+var b=[].slice.call(document.querySelectorAll('.punch input'));
+function u(){var n=b.filter(function(i){return i.checked}).length;document.getElementById('pc').textContent=n;document.getElementById('pb').style.width=(n/b.length*100)+'%'}
+b.forEach(function(i){i.checked=!!s[i.dataset.id];i.addEventListener('change',function(){s[i.dataset.id]=i.checked;try{localStorage.setItem(K,JSON.stringify(s))}catch(e){}u()})});
+u();
+})();
+</script>
+</body>
+</html>
