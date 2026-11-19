@@ -84,6 +84,7 @@
   .txt { flex: 1; cursor: text; border-radius: 2px; }
   .txt:hover { background: rgba(42,38,34,0.05); }
   .txt.urgent { color: var(--bright-red); }
+  .txt.top3 { color: var(--bright-red); }
   .edit-input {
     flex: 1; background: var(--card); border: 1px solid var(--brass); border-radius: 2px;
     color: var(--ink); font-size: 16px; font-family: 'Source Serif 4', serif;
@@ -316,14 +317,18 @@ function render(data) {
     });
 
     const isMajor = !!sec.divider;
-    sec.items.forEach((it) => {
+    sec.items.forEach((it, itemIndex) => {
       const li = document.createElement('li');
       li.dataset.id = it.id;
       const urgent = isDueSoon(it.text);
+      // First three items of every section are highlighted red, except the
+      // Hard Work / Phase section (position-based, so it stays correct as
+      // items are added, completed, or reordered).
+      const isTop3 = !isPhase && itemIndex < 3;
       li.innerHTML =
         '<span class="drag-handle" title="Drag to move">⠿</span>' +
         '<input type="checkbox" class="chk">' +
-        '<span class="txt' + (urgent ? ' urgent' : '') + '">' + linkify(it.text) + '</span>';
+        '<span class="txt' + (urgent ? ' urgent' : '') + (isTop3 ? ' top3' : '') + '">' + linkify(it.text) + '</span>';
       li.querySelector('.chk').addEventListener('change', () => complete(li, it, isMajor, sec.label));
       li.querySelector('.txt').addEventListener('click', (e) => {
         if (e.target.tagName === 'A') return; // let links navigate, don't start editing
